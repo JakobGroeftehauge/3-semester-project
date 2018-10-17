@@ -12,15 +12,13 @@
 #include "Timer.h"
 #include "can_lib.h"
 #include <util/delay.h>
+#include <stdint.h>
 
 
-#define ID_TAG_BASE 0x80
-#define NB_TARGET   2 // 2 Sensor Nodes
-#define DATA_BUFFER_SIZE 2 // Up to 8 bytes Max
-#define BUTTON_0 7 // PortC, pin 7
-#define BUTTON_PRESS (!(PINC & (1 << BUTTON_0)))
-#define FALSE 0
-#define TRUE 1
+//#define ID_TAG_BASE 0x80
+#define DATA_BUFFER_SIZE 2 // Up to 8 bytes Max -- Payload
+#define FALSE 0 // Def of booleans
+#define TRUE 1 // Def of booleans
 
 
 #define bit_get(p,m) ((p) & (m))
@@ -32,12 +30,12 @@
 #define LONGBIT(x) ((unsigned long)0x00000001 << (x))
 
 
-volatile uint8_t CTC_flag;
+volatile uint8_t CTC_flag; //Volatile --> it can change, for the compiler,
+							//unsigned integer 8 bit - also char 
 
-void sys_init(void);
+void sys_init(void); //Definition of functions. Functions are described below main. Functions can also be described above main
 void io_init(void);
 
-//HEj
 
 int main(void)
 {
@@ -52,10 +50,7 @@ int main(void)
 	
 	sei(); // Enable global interrupts for Timer execution
 	
-		bit_set(DDRD, BIT(1));
-		bit_set(DDRD, BIT(7));
-		
-		bit_set(PORTD, BIT(1));
+	
 	
 	uint8_t payload_buffer[DATA_BUFFER_SIZE]; // setup buffer for payload
 	st_cmd_t message_object; // Remote Tx MOb (Requests remote data from Sensor Nodes)
@@ -78,9 +73,9 @@ int main(void)
 	message_object.ctrl.ide = FALSE; //Setup standard CAN frame (Define IDE-bit)
 	//message_object.ctrl.rtr = FALSE; //This message object do not expect a reply
 	message_object.dlc = DATA_BUFFER_SIZE; //Define size of payload
-	message_object.cmd = CMD_TX; //Configure MOb mode (page 233), send message. 
+	message_object.cmd = CMD_TX; //Configure MOb mode (command to execute) (page 233). CMD_TX - transmit message. 
 
-	while(can_cmd(&message_object) != CAN_CMD_ACCEPTED); //Check if CAN_CMD is accepted
+	while(can_cmd(&message_object) != CAN_CMD_ACCEPTED); //Execute command specified in MOb. Check if CAN_CMD is accepted.
 
 	while(can_get_status(&message_object) == CAN_STATUS_NOT_COMPLETED);
 	{
@@ -98,23 +93,23 @@ int main(void)
 
 void sys_init(void) {
 	// Make sure sys clock is at least 8MHz
-	CLKPR = 0x80;
-	CLKPR = 0x00;
+	CLKPR = 0x80; //Clock prescaler register - Clock prescaler set enable
+	CLKPR = 0x00; //See datasheet: set prescaler to 1 
 	
 	io_init();
-	//timer_init();
+	
 	can_init(0);
 }
 
 void io_init(void) {
 	
-	// Init PORTB[7:0] // LED port
-	DDRB = 0xFF;
-	LED_Reg_Write(0x00); // clear all LEDs
+	bit_set(DDRD, BIT(1));
+	bit_set(DDRD, BIT(7));
+	bit_set(PORTD, BIT(1));
 	
 	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
-	DDRC = 0b00000100; // 0x40;
-	PORTC = 0x00; // activate pull-up on PC[7] (button)
+	DDRC = 0b00000100; // 0x40; 
+	PORTC = 0x00; // 
 	
 
 }
