@@ -8,17 +8,12 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-//#include "LED.h"
-//#include "Timer.h"
 #include "can_lib.h"
 #include <util/delay.h>
 
 
 #define ID_TAG_BASE 0x80
-#define NB_TARGET   2 // 2 Sensor Nodes
 #define DATA_BUFFER_SIZE 2 // Up to 8 bytes Max
-#define BUTTON_0 7 // PortC, pin 7
-#define BUTTON_PRESS (!(PINC & (1 << BUTTON_0)))
 #define FALSE 0
 #define TRUE 1
 
@@ -74,7 +69,7 @@ int main(void)
 	// Configure transmission message
 	message_object.id.std = 0xCCCC; //Define CAN-ID
 	message_object.ctrl.ide = FALSE; //Setup standard CAN frame (Define IDE-bit)
-	//message_object.ctrl.rtr = FALSE; //This message object do not expect a reply
+	message_object.ctrl.rtr = FALSE; //This message object do not expect a reply
 	message_object.dlc = DATA_BUFFER_SIZE; //Define size of payload
 	message_object.cmd = CMD_TX; //Configure MOb mode (page 233), "CMD_TX" send message. 
 
@@ -86,7 +81,7 @@ int main(void)
 	};
 	 //Wait for message to be sent
 
-	//delay_ms(10000);
+	//delay_ms(10000); //Out comment when using hte debugger-tool
 
 	}
 
@@ -107,7 +102,6 @@ void io_init(void) {
 	
 	// Init PORTB[7:0] // LED port
 	DDRB = 0xFF;
-	//LED_Reg_Write(0x00); // clear all LEDs
 	
 	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
 	DDRC = 0b00000100; // 0x40;
