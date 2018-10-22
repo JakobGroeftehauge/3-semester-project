@@ -8,8 +8,8 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "LED.h"
-#include "Timer.h"
+//#include "LED.h"
+//#include "Timer.h"
 #include "can_lib.h"
 #include <util/delay.h>
 #include <stdint.h>
@@ -69,9 +69,9 @@ int main(void)
 	} //clear payload_buffer
 
 	// Configure transmission message
-	message_object.id.std = 0xCCCC; //Define CAN-ID
+	message_object.id.std = 0x80; //Define CAN-ID
 	message_object.ctrl.ide = FALSE; //Setup standard CAN frame (Define IDE-bit)
-	//message_object.ctrl.rtr = FALSE; //This message object do not expect a reply
+	message_object.ctrl.rtr = FALSE; //This message object do not expect a reply
 	message_object.dlc = DATA_BUFFER_SIZE; //Define size of payload
 	message_object.cmd = CMD_TX; //Configure MOb mode (command to execute) (page 233). CMD_TX - transmit message. 
 
