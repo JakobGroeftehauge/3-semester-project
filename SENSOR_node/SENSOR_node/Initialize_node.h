@@ -24,4 +24,4 @@ extern void setSamplingFrequency(uint8_t);
 extern bool checkParameters();
 
 extern void sendReply();
-
+//test
