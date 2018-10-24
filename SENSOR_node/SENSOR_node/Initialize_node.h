@@ -9,8 +9,19 @@
 #ifndef INCFILE1_H_
 #define INCFILE1_H_
 
- // HEJ MADS
-
-
-
 #endif /* INCFILE1_H_ */
+
+extern uint8_t findByte(uint8_t);
+
+extern void setSensorType(uint8_t,uint8_t);
+
+extern void setTransmissionFrequency(uint8_t); 
+
+extern void setFilter(uint8_t,uint8_t);
+
+extern void setSamplingFrequency(uint8_t);
+
+extern bool checkParameters();
+
+extern void sendReply();
+
