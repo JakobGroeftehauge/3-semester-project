@@ -25,3 +25,28 @@ extern bool checkParameters();
 
 extern void sendReply();
 //test
+
+typedef enum{
+	thermistor,
+	potentiometer,
+	other_sensor
+	}sensor_Types;
+	
+typedef enum {
+	celsius,
+	degrees,
+	percentage,
+	other_unit
+}units;
+
+// Struct
+typedef  struct{
+	uint16_t		CAN_ID;
+	sensor_Types    sensor_Type;
+	units			unit;
+	bool			resistor_MOSFET;
+	uint8_t			transmission_frequency;
+	uint16_t		filter_data;
+	uint8_t			sampling_frequency;
+	
+} sensor_at_node;
