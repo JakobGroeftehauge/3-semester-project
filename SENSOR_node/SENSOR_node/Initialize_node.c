@@ -5,23 +5,31 @@
  *  Author: lars-p
  */ 
 
-#include "Initialize_node.h"
 #include "definition.h"
+#include "Initialize_node.h"
+
 
 void NodeSetup();
 {
 	ADC_setup();
 	
 	sei(); 
+	void (*ADCPIN[2])();
+	ADCPIN[0]=ADC_pin1;
+	ADCPIN[1]=ADC_pin2;
+	ADCPIN[2]=ADC_pin3;
+	
+	void (*timers[2])();
+	timers[0]=TransmissionType1;
+	timers[1]=TransmissionType2;
+	timers[2]=TransmissionType3;
 }
 
 void SensorType(uint8_t type_of_sensor, uint8_t sensor_Number)
 {	
-	ADCPIN[]={ADC_pin1(), ADC_pin2(),ADC_pin3()}
-
 	switch(type_of_sensor)
 	{
-		case 0: /// thermistor
+		case 1: /// thermistor
 		{
 			if (sensor[i].resistor_MOSFET) // depends on what sensor number there is being used.
 			{
@@ -29,7 +37,7 @@ void SensorType(uint8_t type_of_sensor, uint8_t sensor_Number)
 				MOSFET_Pin();
 				
 				//Setup of pins for input and ADC
-				ADCPIN[sensor_Number]
+				(*ADCPIN[sensor_Number])();
 				
 			}
 			else
@@ -38,22 +46,35 @@ void SensorType(uint8_t type_of_sensor, uint8_t sensor_Number)
 			}
 			break;
 		}
-		case 1: //Potentiometer
+		case 2: //Potentiometer
 		{
 			//Setup of pins for input and ADC
-			ADCPIN[sensor_Number];
+				(*ADCPIN[sensor_Number])();
 			break;
 		}
 		default : //other_sensor
 		{
 			//Setup of pins for input and ADC
-			ADCPIN[sensor_Number];
+				(*ADCPIN[sensor_Number])();
 			break;
 		}
 	
 	}
 	
 }
+
+void setTransmissionFrequency(uint8_t k) 
+{
+	switch(k)
+	{
+		case(1):
+		{
+		
+		}
+	
+	}
+}
+
 
 void SamplingFrequency(uint8_t a)
 {

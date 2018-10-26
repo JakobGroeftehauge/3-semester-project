@@ -5,7 +5,6 @@
  *  Author: lars-p
  */ 
 
-
 #ifndef INCFILE1_H_
 #define INCFILE1_H_
 
@@ -20,10 +19,10 @@ extern void NodeSetup();								// STARTED ON - NOT DONE
 
 extern void SensorType(uint8_t, uint8_t);				// STARTED ON - NOT DONE
 
-// extern void setTransmissionFrequency(uint8_t);		// NOT STARTED
+ extern void setTransmissionFrequency(uint8_t);			// NOT STARTED
 
-// extern void setFilter(uint8_t,uint8_t);				// NOT STARTED
-
+ extern void Filter(uint8_t,uint8_t);					// NOT STARTED
+>
 extern void SamplingFrequency(uint8_t);					// NOT STARTED
 
 extern bool checkParameters();							// NOT STARTED

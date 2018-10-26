@@ -3,10 +3,10 @@
  *
  * Created: 25-10-2018 08:41:32
  *  Author: lars-p
+ DATASHEET: http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7647-Automotive-Microcontrollers-ATmega16M1-32M1-64M1-32C1-64C1_datasheet.pdf#G1179702
  */ 
-
+#include <stdint.h>
 #include <avr/io.h>
-
 
 #ifndef DEFINITION_H_
 #define DEFINITION_H_
@@ -22,6 +22,10 @@
 #define bit_write(c,p,m) (c ? bit_set(p,m) : bit_clear(p,m))
 #define BIT(x) (0x01 << (x))
 #define LONGBIT(x) ((unsigned long)0x00000001 << (x))
+
+typedef int bool;
+#define true 1
+#define false 0
 
 //------------------------------------------------------------------------------
 //Definitions for ADC Pins
@@ -67,6 +71,12 @@
 //------------------------------------------------------------------------------
 //Definitions for TIMER
 //------------------------------------------------------------------------------
+#define TransmissionType1() {}
+
+#define TransmissionType2() {}
+	
+#define TransmissionType3() {}
+	
 
 //------------------------------------------------------------------------------
 //Definitions for CAN
