@@ -10,18 +10,50 @@
 #define INCFILE1_H_
 
 #endif /* INCFILE1_H_ */
+//------------------------------------------------------------------------------
+//Definitions
+//
+//------------------------------------------------------------------------------
+extern uint8_t findByte(uint8_t);						// NOT STARTED
 
-extern uint8_t findByte(uint8_t);
+extern void NodeSetup();								// STARTED ON - NOT DONE
 
-extern void setSensorType(uint8_t,uint8_t);
+extern void SensorType(uint8_t, uint8_t);				// STARTED ON - NOT DONE
 
-extern void setTransmissionFrequency(uint8_t); 
+// extern void setTransmissionFrequency(uint8_t);		// NOT STARTED
 
-extern void setFilter(uint8_t,uint8_t);
+// extern void setFilter(uint8_t,uint8_t);				// NOT STARTED
 
-extern void setSamplingFrequency(uint8_t);
+extern void SamplingFrequency(uint8_t);					// NOT STARTED
 
-extern bool checkParameters();
+extern bool checkParameters();							// NOT STARTED
 
-extern void sendReply();
+extern void sendReply();								// NOT STARTED 
 //test
+
+typedef enum{
+	thermistor,
+	potentiometer,
+	other_sensor
+	}sensor_Types;
+	
+typedef enum {
+	celsius,
+	degrees,
+	percentage,
+	other_unit
+}units;
+
+// Struct
+typedef  struct{
+	uint16_t		CAN_ID;
+	uint16_t		sensor_Number;
+	sensor_Types    sensor_Type;
+	units			unit;	//Will be used to determent the translation of the ADC data.
+	bool			resistor_MOSFET;
+	uint8_t			transmission_frequency;
+	uint16_t		filter_data;
+	uint8_t			sampling_frequency;
+	
+} sensor_at_node;
+

@@ -138,6 +138,12 @@
     <Compile Include="definition.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Initialize_sensor_at_node.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Initialize_sensor_at_node.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Initialize_node.c">
       <SubType>compile</SubType>
     </Compile>
