@@ -14,48 +14,43 @@ void NodeSetup();
 	ADC_setup();
 	
 	sei(); 
-	void (*ADCPIN[2])();
-	ADCPIN[0]=ADC_pin1;
-	ADCPIN[1]=ADC_pin2;
-	ADCPIN[2]=ADC_pin3;
-	
-	void (*timers[2])();
-	timers[0]=TransmissionType1;
-	timers[1]=TransmissionType2;
-	timers[2]=TransmissionType3;
+			
 }
 
-void SensorType(uint8_t type_of_sensor, uint8_t sensor_Number)
+void SensorType(uint8_t type_of_sensor, uint8_t MOSFET)
 {	
 	switch(type_of_sensor)
 	{
 		case 1: /// thermistor
 		{
-			if (sensor[i].resistor_MOSFET) // depends on what sensor number there is being used.
+			if (MOSFET)	// depends on what sensor number there is being used.
+											// Sensor is a array of the struct created by the decoder.
 			{
 				//setup of pins for the MOSFET (NEED TO BE DEFINED)
 				MOSFET_Pin();
 				
 				//Setup of pins for input and ADC
-				(*ADCPIN[sensor_Number])();
+				ADC_pin1();
 				
 			}
 			else
 			{
-			//error 
+			ADC_pin1();
 			}
 			break;
 		}
+		
 		case 2: //Potentiometer
 		{
 			//Setup of pins for input and ADC
-				(*ADCPIN[sensor_Number])();
+				ADC_pin2();
 			break;
 		}
+		
 		default : //other_sensor
 		{
 			//Setup of pins for input and ADC
-				(*ADCPIN[sensor_Number])();
+				ADC_pin3();
 			break;
 		}
 	
@@ -63,20 +58,62 @@ void SensorType(uint8_t type_of_sensor, uint8_t sensor_Number)
 	
 }
 
-void setTransmissionFrequency(uint8_t k) 
+void setTransmissionFrequency(uint8_t Tfrequency) 
 {
-	switch(k)
+	switch(Tfrequency)
 	{
-		case(1):
+		case 1:
 		{
+			//Set timer for specific transmission frequency
+			TransmissionType1();
+			break;
+		}
 		
+		case 2:
+		{
+			//Set timer for specific transmission frequency
+			TransmissionType2();
+			break;
+		}
+		default
+		{
+			//Set timer for specific transmission frequency
+			TransmissionType3();
+			break;
 		}
 	
 	}
 }
 
-
-void SamplingFrequency(uint8_t a)
+void SamplingFrequency(uint8_t Sfrequency)
 {
+switch(Sfrequency)
+{
+	case 1:
+	{
+		//Set timer for specific sampling frequency
+		SamplingType1();
+		break;
+	}
+	
+	case 2:
+	{
+		//Set timer for specific sampling frequency
+		SamplingType2();
+		break;
+	}
+	default
+	{
+		//Set timer for specific sampling frequency
+		SamplingType3();
+		break;
+	}
+	
+}
 
+}
+
+void Filter(uint8_t,uint8_t)
+{
+	
 }

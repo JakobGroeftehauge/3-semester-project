@@ -2,11 +2,12 @@
  * definition.h
  *
  * Created: 25-10-2018 08:41:32
- *  Author: lars-p
+ *  Author: Lars-p
  DATASHEET: http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7647-Automotive-Microcontrollers-ATmega16M1-32M1-64M1-32C1-64C1_datasheet.pdf#G1179702
  */ 
 #include <stdint.h>
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #ifndef DEFINITION_H_
 #define DEFINITION_H_
@@ -40,36 +41,45 @@ typedef int bool;
 	
 #define ADC_pin1()	{ADMUX = 0<<REFS1 | 1<<REFS0 | 1<<ADLAR| 0<<MUX4 | 0<<MUX3 | 0<<MUX2 | 0<<MUX1 | 0<<MUX0;
 					bit_clear{DDRE,BIT(2);}	
-	//0<<REFS1 and 1<<REFS0 = External Vref and AVcc with external capacitor connected on the AREF pin.
-	//1<<ADLAR = Left adjusted ADC result
-	// 0<<MUX3, MUX2, MUX0 and MUX1 = ADC0 (Pin setup, Page 232)}
+	//0<< REFS1 and 1<<REFS0 = External Vref and AVcc with external capacitor connected on the AREF pin.
+	//1<< ADLAR = Left adjusted ADC result
+	//0<< MUX3, MUX2, MUX0 and MUX1 = ADC0 (Pin setup, Page 232)}
 	
-	// PORTE setup for ADC0 input 
+	//PORTE setup for ADC0 input 
 	
 #define ADC_pin2()	{ADMUX = 0<<REFS1 | 1<<REFS0 | 1<<ADLAR | 0<<MUX4 | 0<<MUX3 | 0<<MUX2 | 0<<MUX1 | 1<<MUX0;
 					bit_clear{DDRE,BIT(4);}
-	//0<<REFS1 and 1<<REFS0 = External Vref and AVcc with external capacitor connected on the AREF pin.
-	//1<<ADLAR = Left adjusted ADC result
-	// 0<<MUX3, MUX2 and MUX1 and 1<<MUX0 = ADC1 (Pin setup, Page 232)}
+	//0<< REFS1 and 1<<REFS0 = External Vref and AVcc with external capacitor connected on the AREF pin.
+	//1<< ADLAR = Left adjusted ADC result
+	//0<< MUX3, MUX2 and MUX1 and 1<<MUX0 = ADC1 (Pin setup, Page 232)}
 	
-	// PORTD4 setup for ADC1 input	
+	//PORTD4 setup for ADC1 input	
 	
 #define ADC_pin3()	{ADMUX = 0<<REFS1 | 1<<REFS0 | 1<<ADLAR | 0<<MUX4|0<<MUX3|0<<MUX2|1<<MUX1|0<<MUX0;
 					bit_clear{DDRD,BIT(5);}
-	//0<<REFS1 and 1<<REFS0 = External Vref and AVcc with external capacitor connected on the AREF pin.
-	//1<<ADLAR = Left adjusted ADC result
-	// 0<<MUX3, MUX2 and MUX0 and 1<<MUX1 = ADC2 (Pin setup, Page 232)}
+	//0<< REFS1 and 1<<REFS0 = External Vref and AVcc with external capacitor connected on the AREF pin.
+	//1<< ADLAR = Left adjusted ADC result
+	//0<< MUX3, MUX2 and MUX0 and 1<<MUX1 = ADC2 (Pin setup, Page 232)}
 	
-	// PORTD5 setup for ADC2 input
+	//PORTD5 setup for ADC2 input
 //------------------------------------------------------------------------------
-//Definitions for MOSFET
+//Definitions for MOSFET - PIN USED FOR MOSFET NOT DEFINED! 
 //------------------------------------------------------------------------------
 #define MOSFET_Pin() {bit_set(DDRD,BIT(1);
 					  bit_set(PORTD,BIT(1)}
-	//PIN USED FOR MOSFET IS NOT DEFINED YET
+	
 
 //------------------------------------------------------------------------------
-//Definitions for TIMER
+// Definitions for Timer0 - NOT SETUPED YET
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// Definitions for Timer1 - NOT SETUPED YET
+//------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------
+//Definitions for TransmissionsTIMER (TIMER0)- NOT DEFINED!
 //------------------------------------------------------------------------------
 #define TransmissionType1() {}
 
@@ -77,6 +87,14 @@ typedef int bool;
 	
 #define TransmissionType3() {}
 	
+//------------------------------------------------------------------------------
+//Definitions for SamplingsTIMER (TIMER1) - NOT DEFINED!
+//------------------------------------------------------------------------------
+#define SamplingType1() {}
+
+#define SamplingType2() {}
+
+#define SamplingType3() {}
 
 //------------------------------------------------------------------------------
 //Definitions for CAN
