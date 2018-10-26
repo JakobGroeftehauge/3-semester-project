@@ -138,12 +138,6 @@
     <Compile Include="definition.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Initialize_sensor_at_node.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Initialize_sensor_at_node.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="Initialize_node.c">
       <SubType>compile</SubType>
     </Compile>
@@ -151,6 +145,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="payloadProtocol.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="payloadProtocol.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
