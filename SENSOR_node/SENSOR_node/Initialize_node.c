@@ -9,34 +9,26 @@
 #include "Initialize_node.h"
 
 
-void NodeSetup();
+void NodeSetup()
 {
 	ADC_setup();
+	ADC_input1();
+	ADC_input2();
+	ADC_input3();
 	
 	sei(); 
 			
 }
 
-void SensorType(uint8_t type_of_sensor, uint8_t MOSFET)
+void SensorType(uint8_t type_of_sensor) //SHOULD NOT BE HERE! 
 {	
 	switch(type_of_sensor)
 	{
 		case 1: /// thermistor
 		{
-			if (MOSFET)	// depends on what sensor number there is being used.
-											// Sensor is a array of the struct created by the decoder.
-			{
-				//setup of pins for the MOSFET (NEED TO BE DEFINED)
-				MOSFET_Pin();
-				
+					
 				//Setup of pins for input and ADC
 				ADC_pin1();
-				
-			}
-			else
-			{
-			ADC_pin1();
-			}
 			break;
 		}
 		
@@ -58,7 +50,7 @@ void SensorType(uint8_t type_of_sensor, uint8_t MOSFET)
 	
 }
 
-void setTransmissionFrequency(uint8_t Tfrequency) 
+void setTransmissionFrequency(uint8_t Tfrequency)  // SHOULD NOT BE HERE
 {
 	switch(Tfrequency)
 	{
@@ -75,7 +67,7 @@ void setTransmissionFrequency(uint8_t Tfrequency)
 			TransmissionType2();
 			break;
 		}
-		default
+		default:
 		{
 			//Set timer for specific transmission frequency
 			TransmissionType3();
@@ -85,35 +77,35 @@ void setTransmissionFrequency(uint8_t Tfrequency)
 	}
 }
 
-void SamplingFrequency(uint8_t Sfrequency)
+void setSamplingFrequency(uint8_t Sfrequency) // SHOULD NOT BE HERE
 {
-switch(Sfrequency)
-{
-	case 1:
+	switch(Sfrequency)
 	{
-		//Set timer for specific sampling frequency
-		SamplingType1();
-		break;
-	}
+		case 1:
+		{
+			//Set timer for specific sampling frequency
+			SamplingType1();
+			break;
+		}
 	
-	case 2:
-	{
-		//Set timer for specific sampling frequency
-		SamplingType2();
-		break;
-	}
-	default
-	{
-		//Set timer for specific sampling frequency
-		SamplingType3();
-		break;
-	}
+		case 2:
+		{
+			//Set timer for specific sampling frequency
+			SamplingType2();
+			break;
+		}
+		default:
+		{
+			//Set timer for specific sampling frequency
+			SamplingType3();
+			break;
+		}
 	
-}
+	}
 
 }
 
-void Filter(uint8_t,uint8_t)
+void Filter(uint8_t a,uint8_t b) //Should not be here
 {
 	
 }
