@@ -1,0 +1,61 @@
+
+CAN_BOOT_LOADER_EXAMPLE_GCC for AT90CAN128/64/32
+================================================
+
+Compiling notes versus targeted device using AVRStudio Plug-in GCC
+
+---- USING AN EXTERNAL MAKEFILE IS NOT NECESARY ----
+
+1/Select the targeted device in:
+    Edit Current Configuration Options-> General -> Device :
+        either: at90can128
+        either: at90can64
+            or: at90can32
+
+2/Select the optimization:
+    Edit Current Configuration Options-> General -> Optimization :
+          -Os :  Optimize for size is working well !
+
+3/Select Options:
+    Edit Current Configuration Options-> General :
+             X : Unsigned Chars
+             X : Unsigned Bitfields
+             
+4/To have more information on the project, select:
+    Edit Current Configuration Options-> General :
+             X : Generate Map File
+             X : Generate List File
+           note: Create Hex File is selected by default
+
+5/Selection of all the directories of the project and the library (The selection
+  of the  AVR GCC library is automatic):
+    Edit Current Configuration Options-> Include Directories
+
+6/Re-allocation of the code (The Bootloader code must be flashed in the
+  "Bootloader Flash Section - Because the code is larger than 4K, the 8K section
+  will be used:
+    Edit Current Configuration Options-> Memory Settings :
+           Add -> Memory Type = Flash 
+                  Name        = .text
+                  Address(hex)= 0xf000 for at90can128
+                              = 0x7000 for at90can64
+                              = 0x3000 for at90can32 
+
+
+Rename of the Hex files:
+    for at90can128: file name = can128_can_bootloader_example_gcc.hex
+    for at90can64 : file name =  can64_can_bootloader_example_gcc.hex
+    for at90can32 : file name =  can32_can_bootloader_example_gcc.hex
+
+
+======================
+
+Note 1: 
+    Total number of errors: 0 
+    Total number of warnings: 0
+                                
+Note 2:
+    AT90CAN128:      Program: 5 616 bytes
+                        Data:   320 bytes
+    AT90CAN64 & 32:  Program: 5 444 bytes
+                        Data:   320 bytes
