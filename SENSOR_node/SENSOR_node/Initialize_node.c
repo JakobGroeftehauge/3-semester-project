@@ -5,8 +5,6 @@
  *  Author: lars-p
  */ 
 
-#include "definition.h"
-#include "Initialize_node.h"
 //#include "definition.h"
 //#include "Initialize_node.h"
 
@@ -111,7 +109,7 @@ void setSamplingFrequency(uint8_t Sfrequency) // SHOULD NOT BE HERE
 void Filter(uint8_t a,uint8_t b) //Should not be here
 {
 	
-}}
+}
 =======
 //void NodeSetup();
 //{
