@@ -102,12 +102,6 @@ Disassembly of section .text:
   b6:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 000000ba <can_clear_all_mob>:
-            }
-        } // while (evaluate ...
-    } // while (bt_not_found ...
-
-    return (bt_performed);
-}
   ba:	80 e0       	ldi	r24, 0x00	; 0
   bc:	ad ee       	ldi	r26, 0xED	; 237
   be:	b0 e0       	ldi	r27, 0x00	; 0
@@ -212,55 +206,31 @@ Disassembly of section .text:
  184:	08 95       	ret
 
 00000186 <can_fixed_baudrate>:
-//! @return Baudrate Status
-//!         fixed = 1: baudrate performed
-//------------------------------------------------------------------------------
-uint8_t can_fixed_baudrate(uint8_t mode)
-{
-    Can_reset();
  186:	81 e0       	ldi	r24, 0x01	; 1
  188:	80 93 d8 00 	sts	0x00D8, r24	; 0x8000d8 <__TEXT_REGION_LENGTH__+0x7e00d8>
-    Can_conf_bt();
  18c:	82 e0       	ldi	r24, 0x02	; 2
  18e:	80 93 e2 00 	sts	0x00E2, r24	; 0x8000e2 <__TEXT_REGION_LENGTH__+0x7e00e2>
  192:	8c e0       	ldi	r24, 0x0C	; 12
  194:	80 93 e3 00 	sts	0x00E3, r24	; 0x8000e3 <__TEXT_REGION_LENGTH__+0x7e00e3>
  198:	87 e3       	ldi	r24, 0x37	; 55
  19a:	80 93 e4 00 	sts	0x00E4, r24	; 0x8000e4 <__TEXT_REGION_LENGTH__+0x7e00e4>
-    return 1;
  19e:	81 e0       	ldi	r24, 0x01	; 1
  1a0:	08 95       	ret
 
 000001a2 <can_init>:
-//!         ==1: baudrate performed 
-//!
-//------------------------------------------------------------------------------
-uint8_t can_init(uint8_t mode)
-{
-    if ((Can_bit_timing(mode))==0) return (0);  // c.f. macro in "can_drv.h"
  1a2:	0e 94 c3 00 	call	0x186	; 0x186 <can_fixed_baudrate>
  1a6:	88 23       	and	r24, r24
  1a8:	41 f0       	breq	.+16     	; 0x1ba <can_init+0x18>
-    can_clear_all_mob();                        // c.f. function in "can_drv.c"
  1aa:	0e 94 5d 00 	call	0xba	; 0xba <can_clear_all_mob>
-    Can_enable();                               // c.f. macro in "can_drv.h" 
  1ae:	e8 ed       	ldi	r30, 0xD8	; 216
  1b0:	f0 e0       	ldi	r31, 0x00	; 0
  1b2:	80 81       	ld	r24, Z
  1b4:	82 60       	ori	r24, 0x02	; 2
  1b6:	80 83       	st	Z, r24
-    return (1);
  1b8:	81 e0       	ldi	r24, 0x01	; 1
-}
  1ba:	08 95       	ret
 
 000001bc <can_cmd>:
-//! @return CAN_CMD_ACCEPTED - command is accepted
-//!         CAN_CMD_REFUSED  - command is refused
-//!
-//------------------------------------------------------------------------------
-uint8_t can_cmd(st_cmd_t* cmd)
-{
  1bc:	0f 93       	push	r16
  1be:	1f 93       	push	r17
  1c0:	cf 93       	push	r28
@@ -270,80 +240,46 @@ uint8_t can_cmd(st_cmd_t* cmd)
  1c8:	cd b7       	in	r28, 0x3d	; 61
  1ca:	de b7       	in	r29, 0x3e	; 62
  1cc:	fc 01       	movw	r30, r24
-  uint8_t mob_handle, cpt;
-  uint32_t u32_temp;
-  
-  if (cmd->cmd == CMD_ABORT)
  1ce:	81 81       	ldd	r24, Z+1	; 0x01
  1d0:	8c 30       	cpi	r24, 0x0C	; 12
  1d2:	99 f4       	brne	.+38     	; 0x1fa <can_cmd+0x3e>
-  {
-    if (cmd->status == MOB_PENDING)
  1d4:	81 85       	ldd	r24, Z+9	; 0x09
  1d6:	80 36       	cpi	r24, 0x60	; 96
  1d8:	69 f4       	brne	.+26     	; 0x1f4 <can_cmd+0x38>
-    {
-      // Rx or Tx not yet performed
-      Can_set_mob(cmd->handle);
  1da:	80 81       	ld	r24, Z
  1dc:	82 95       	swap	r24
  1de:	80 7f       	andi	r24, 0xF0	; 240
  1e0:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <__TEXT_REGION_LENGTH__+0x7e00ed>
-      Can_mob_abort();
  1e4:	af ee       	ldi	r26, 0xEF	; 239
  1e6:	b0 e0       	ldi	r27, 0x00	; 0
  1e8:	8c 91       	ld	r24, X
  1ea:	8f 73       	andi	r24, 0x3F	; 63
  1ec:	8c 93       	st	X, r24
-      Can_clear_status_mob();       // To be sure !
  1ee:	10 92 ee 00 	sts	0x00EE, r1	; 0x8000ee <__TEXT_REGION_LENGTH__+0x7e00ee>
-      cmd->handle = 0;
  1f2:	10 82       	st	Z, r1
-    }
-    cmd->status = STATUS_CLEARED; 
  1f4:	11 86       	std	Z+9, r1	; 0x09
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  1f6:	80 e0       	ldi	r24, 0x00	; 0
  1f8:	38 c5       	rjmp	.+2672   	; 0xc6a <__stack+0x36b>
  1fa:	8f 01       	movw	r16, r30
-    }
-    cmd->status = STATUS_CLEARED; 
-  }
-  else
-  {
-    mob_handle = can_get_mob_free();
  1fc:	0e 94 6e 00 	call	0xdc	; 0xdc <can_get_mob_free>
-    if (mob_handle!= NO_MOB)
  200:	8f 3f       	cpi	r24, 0xFF	; 255
  202:	09 f4       	brne	.+2      	; 0x206 <can_cmd+0x4a>
  204:	2d c5       	rjmp	.+2650   	; 0xc60 <__stack+0x361>
-    {
-      cmd->status = MOB_PENDING; 
  206:	90 e6       	ldi	r25, 0x60	; 96
  208:	d8 01       	movw	r26, r16
  20a:	19 96       	adiw	r26, 0x09	; 9
  20c:	9c 93       	st	X, r25
  20e:	19 97       	sbiw	r26, 0x09	; 9
-      cmd->handle = mob_handle;
  210:	8c 93       	st	X, r24
-      Can_set_mob(mob_handle);
  212:	82 95       	swap	r24
  214:	80 7f       	andi	r24, 0xF0	; 240
  216:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <__TEXT_REGION_LENGTH__+0x7e00ed>
-      Can_clear_mob();
  21a:	ee ee       	ldi	r30, 0xEE	; 238
  21c:	f0 e0       	ldi	r31, 0x00	; 0
  21e:	11 92       	st	Z+, r1
  220:	e8 3f       	cpi	r30, 0xF8	; 248
  222:	f1 05       	cpc	r31, r1
  224:	e1 f7       	brne	.-8      	; 0x21e <can_cmd+0x62>
-          
-      switch (cmd->cmd)
  226:	d8 01       	movw	r26, r16
  228:	11 96       	adiw	r26, 0x01	; 1
  22a:	ec 91       	ld	r30, X
@@ -358,23 +294,11 @@ uint8_t can_cmd(st_cmd_t* cmd)
  23c:	e2 5c       	subi	r30, 0xC2	; 194
  23e:	ff 4f       	sbci	r31, 0xFF	; 255
  240:	0c 94 2f 07 	jmp	0xe5e	; 0xe5e <__tablejump2__>
-          Can_set_idemsk();
-          Can_config_rx();       
-          break;
-        //------------      
-        case CMD_REPLY:
-          for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
  244:	f8 01       	movw	r30, r16
  246:	86 81       	ldd	r24, Z+6	; 0x06
  248:	81 11       	cpse	r24, r1
  24a:	f9 c3       	rjmp	.+2034   	; 0xa3e <__stack+0x13f>
  24c:	0a c4       	rjmp	.+2068   	; 0xa62 <__stack+0x163>
-          
-      switch (cmd->cmd)
-      {
-        //------------      
-        case CMD_TX:    
-          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
  24e:	d8 01       	movw	r26, r16
  250:	1b 96       	adiw	r26, 0x0b	; 11
  252:	8c 91       	ld	r24, X
@@ -438,7 +362,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  2ce:	80 61       	ori	r24, 0x10	; 16
  2d0:	80 83       	st	Z, r24
  2d2:	19 c0       	rjmp	.+50     	; 0x306 <can_cmd+0x14a>
-          else              { Can_set_std_id(cmd->id.std);}
  2d4:	f8 01       	movw	r30, r16
  2d6:	93 81       	ldd	r25, Z+3	; 0x03
  2d8:	82 81       	ldd	r24, Z+2	; 0x02
@@ -462,7 +385,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  300:	80 81       	ld	r24, Z
  302:	8f 7e       	andi	r24, 0xEF	; 239
  304:	80 83       	st	Z, r24
-          for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
  306:	f8 01       	movw	r30, r16
  308:	86 81       	ldd	r24, Z+6	; 0x06
  30a:	88 23       	and	r24, r24
@@ -485,7 +407,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  32c:	9c 91       	ld	r25, X
  32e:	89 17       	cp	r24, r25
  330:	88 f3       	brcs	.-30     	; 0x314 <can_cmd+0x158>
-          if (cmd->ctrl.rtr) Can_set_rtr(); 
  332:	d8 01       	movw	r26, r16
  334:	1a 96       	adiw	r26, 0x0a	; 10
  336:	8c 91       	ld	r24, X
@@ -497,13 +418,11 @@ uint8_t can_cmd(st_cmd_t* cmd)
  342:	84 60       	ori	r24, 0x04	; 4
  344:	80 83       	st	Z, r24
  346:	05 c0       	rjmp	.+10     	; 0x352 <can_cmd+0x196>
-            else Can_clear_rtr();    
  348:	e0 ef       	ldi	r30, 0xF0	; 240
  34a:	f0 e0       	ldi	r31, 0x00	; 0
  34c:	80 81       	ld	r24, Z
  34e:	8b 7f       	andi	r24, 0xFB	; 251
  350:	80 83       	st	Z, r24
-          Can_set_dlc(cmd->dlc);
  352:	ef ee       	ldi	r30, 0xEF	; 239
  354:	f0 e0       	ldi	r31, 0x00	; 0
  356:	90 81       	ld	r25, Z
@@ -512,30 +431,14 @@ uint8_t can_cmd(st_cmd_t* cmd)
  35c:	8c 91       	ld	r24, X
  35e:	89 2b       	or	r24, r25
  360:	80 83       	st	Z, r24
-          Can_config_tx();
  362:	80 81       	ld	r24, Z
  364:	8f 73       	andi	r24, 0x3F	; 63
  366:	80 83       	st	Z, r24
  368:	80 81       	ld	r24, Z
  36a:	80 64       	ori	r24, 0x40	; 64
  36c:	80 83       	st	Z, r24
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  36e:	80 e0       	ldi	r24, 0x00	; 0
-          for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
-          if (cmd->ctrl.rtr) Can_set_rtr(); 
-            else Can_clear_rtr();    
-          Can_set_dlc(cmd->dlc);
-          Can_config_tx();
-          break;
  370:	7c c4       	rjmp	.+2296   	; 0xc6a <__stack+0x36b>
-        //------------      
-        case CMD_TX_DATA:    
-          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
  372:	f8 01       	movw	r30, r16
  374:	83 85       	ldd	r24, Z+11	; 0x0b
  376:	88 23       	and	r24, r24
@@ -584,7 +487,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  3d4:	80 61       	ori	r24, 0x10	; 16
  3d6:	80 83       	st	Z, r24
  3d8:	17 c0       	rjmp	.+46     	; 0x408 <__LOCK_REGION_LENGTH__+0x8>
-          else              { Can_set_std_id(cmd->id.std);}
  3da:	93 81       	ldd	r25, Z+3	; 0x03
  3dc:	82 81       	ldd	r24, Z+2	; 0x02
  3de:	86 95       	lsr	r24
@@ -606,7 +508,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  402:	80 81       	ld	r24, Z
  404:	8f 7e       	andi	r24, 0xEF	; 239
  406:	80 83       	st	Z, r24
-          for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
  408:	d8 01       	movw	r26, r16
  40a:	16 96       	adiw	r26, 0x06	; 6
  40c:	8c 91       	ld	r24, X
@@ -630,7 +531,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  430:	9c 91       	ld	r25, X
  432:	89 17       	cp	r24, r25
  434:	88 f3       	brcs	.-30     	; 0x418 <__LOCK_REGION_LENGTH__+0x18>
-          cmd->ctrl.rtr=0; Can_clear_rtr();
  436:	d8 01       	movw	r26, r16
  438:	1a 96       	adiw	r26, 0x0a	; 10
  43a:	1c 92       	st	X, r1
@@ -640,7 +540,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  442:	80 81       	ld	r24, Z
  444:	8b 7f       	andi	r24, 0xFB	; 251
  446:	80 83       	st	Z, r24
-          Can_set_dlc(cmd->dlc);
  448:	ef ee       	ldi	r30, 0xEF	; 239
  44a:	f0 e0       	ldi	r31, 0x00	; 0
  44c:	90 81       	ld	r25, Z
@@ -648,30 +547,14 @@ uint8_t can_cmd(st_cmd_t* cmd)
  450:	8c 91       	ld	r24, X
  452:	89 2b       	or	r24, r25
  454:	80 83       	st	Z, r24
-          Can_config_tx();
  456:	80 81       	ld	r24, Z
  458:	8f 73       	andi	r24, 0x3F	; 63
  45a:	80 83       	st	Z, r24
  45c:	80 81       	ld	r24, Z
  45e:	80 64       	ori	r24, 0x40	; 64
  460:	80 83       	st	Z, r24
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  462:	80 e0       	ldi	r24, 0x00	; 0
-          else              { Can_set_std_id(cmd->id.std);}
-          for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
-          cmd->ctrl.rtr=0; Can_clear_rtr();
-          Can_set_dlc(cmd->dlc);
-          Can_config_tx();
-          break;
  464:	02 c4       	rjmp	.+2052   	; 0xc6a <__stack+0x36b>
-        //------------      
-        case CMD_TX_REMOTE:       
-          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
  466:	f8 01       	movw	r30, r16
  468:	83 85       	ldd	r24, Z+11	; 0x0b
  46a:	88 23       	and	r24, r24
@@ -720,7 +603,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  4c8:	80 61       	ori	r24, 0x10	; 16
  4ca:	80 83       	st	Z, r24
  4cc:	17 c0       	rjmp	.+46     	; 0x4fc <__LOCK_REGION_LENGTH__+0xfc>
-          else              { Can_set_std_id(cmd->id.std);}
  4ce:	93 81       	ldd	r25, Z+3	; 0x03
  4d0:	82 81       	ldd	r24, Z+2	; 0x02
  4d2:	86 95       	lsr	r24
@@ -742,7 +624,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  4f6:	80 81       	ld	r24, Z
  4f8:	8f 7e       	andi	r24, 0xEF	; 239
  4fa:	80 83       	st	Z, r24
-          cmd->ctrl.rtr=1; Can_set_rtr();
  4fc:	81 e0       	ldi	r24, 0x01	; 1
  4fe:	d8 01       	movw	r26, r16
  500:	1a 96       	adiw	r26, 0x0a	; 10
@@ -753,7 +634,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  50a:	80 81       	ld	r24, Z
  50c:	84 60       	ori	r24, 0x04	; 4
  50e:	80 83       	st	Z, r24
-          Can_set_dlc(cmd->dlc);
  510:	ef ee       	ldi	r30, 0xEF	; 239
  512:	f0 e0       	ldi	r31, 0x00	; 0
  514:	90 81       	ld	r25, Z
@@ -761,30 +641,14 @@ uint8_t can_cmd(st_cmd_t* cmd)
  518:	8c 91       	ld	r24, X
  51a:	89 2b       	or	r24, r25
  51c:	80 83       	st	Z, r24
-          Can_config_tx();
  51e:	80 81       	ld	r24, Z
  520:	8f 73       	andi	r24, 0x3F	; 63
  522:	80 83       	st	Z, r24
  524:	80 81       	ld	r24, Z
  526:	80 64       	ori	r24, 0x40	; 64
  528:	80 83       	st	Z, r24
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  52a:	80 e0       	ldi	r24, 0x00	; 0
-          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
-          else              { Can_set_std_id(cmd->id.std);}
-          cmd->ctrl.rtr=1; Can_set_rtr();
-          Can_set_dlc(cmd->dlc);
-          Can_config_tx();
-          break;
  52c:	9e c3       	rjmp	.+1852   	; 0xc6a <__stack+0x36b>
-        //------------      
-        case CMD_RX:
-          u32_temp=0; Can_set_ext_msk(u32_temp);
  52e:	19 82       	std	Y+1, r1	; 0x01
  530:	1a 82       	std	Y+2, r1	; 0x02
  532:	1b 82       	std	Y+3, r1	; 0x03
@@ -820,7 +684,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  574:	30 e0       	ldi	r19, 0x00	; 0
  576:	f9 01       	movw	r30, r18
  578:	80 83       	st	Z, r24
-          Can_set_dlc(cmd->dlc);
  57a:	ef ee       	ldi	r30, 0xEF	; 239
  57c:	f0 e0       	ldi	r31, 0x00	; 0
  57e:	90 81       	ld	r25, Z
@@ -829,39 +692,21 @@ uint8_t can_cmd(st_cmd_t* cmd)
  584:	8c 91       	ld	r24, X
  586:	89 2b       	or	r24, r25
  588:	80 83       	st	Z, r24
-          Can_clear_rtrmsk();
  58a:	d9 01       	movw	r26, r18
  58c:	8c 91       	ld	r24, X
  58e:	8b 7f       	andi	r24, 0xFB	; 251
  590:	8c 93       	st	X, r24
-          Can_clear_idemsk();
  592:	8c 91       	ld	r24, X
  594:	8e 7f       	andi	r24, 0xFE	; 254
  596:	8c 93       	st	X, r24
-          Can_config_rx();       
  598:	80 81       	ld	r24, Z
  59a:	8f 73       	andi	r24, 0x3F	; 63
  59c:	80 83       	st	Z, r24
  59e:	80 81       	ld	r24, Z
  5a0:	80 68       	ori	r24, 0x80	; 128
  5a2:	80 83       	st	Z, r24
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  5a4:	80 e0       	ldi	r24, 0x00	; 0
-          u32_temp=0; Can_set_ext_msk(u32_temp);
-          Can_set_dlc(cmd->dlc);
-          Can_clear_rtrmsk();
-          Can_clear_idemsk();
-          Can_config_rx();       
-          break;
  5a6:	61 c3       	rjmp	.+1730   	; 0xc6a <__stack+0x36b>
-        //------------      
-        case CMD_RX_DATA:
-          u32_temp=0; Can_set_ext_msk(u32_temp);
  5a8:	19 82       	std	Y+1, r1	; 0x01
  5aa:	1a 82       	std	Y+2, r1	; 0x02
  5ac:	1b 82       	std	Y+3, r1	; 0x03
@@ -897,7 +742,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  5ee:	50 e0       	ldi	r21, 0x00	; 0
  5f0:	fa 01       	movw	r30, r20
  5f2:	80 83       	st	Z, r24
-          Can_set_dlc(cmd->dlc);
  5f4:	ef ee       	ldi	r30, 0xEF	; 239
  5f6:	f0 e0       	ldi	r31, 0x00	; 0
  5f8:	90 81       	ld	r25, Z
@@ -907,7 +751,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  600:	16 97       	sbiw	r26, 0x06	; 6
  602:	89 2b       	or	r24, r25
  604:	80 83       	st	Z, r24
-          cmd->ctrl.rtr=0; Can_set_rtrmsk(); Can_clear_rtr();
  606:	1a 96       	adiw	r26, 0x0a	; 10
  608:	1c 92       	st	X, r1
  60a:	da 01       	movw	r26, r20
@@ -920,35 +763,18 @@ uint8_t can_cmd(st_cmd_t* cmd)
  618:	8c 91       	ld	r24, X
  61a:	8b 7f       	andi	r24, 0xFB	; 251
  61c:	8c 93       	st	X, r24
-          Can_clear_idemsk();
  61e:	da 01       	movw	r26, r20
  620:	8c 91       	ld	r24, X
  622:	8e 7f       	andi	r24, 0xFE	; 254
  624:	8c 93       	st	X, r24
-          Can_config_rx();       
  626:	80 81       	ld	r24, Z
  628:	8f 73       	andi	r24, 0x3F	; 63
  62a:	80 83       	st	Z, r24
  62c:	80 81       	ld	r24, Z
  62e:	80 68       	ori	r24, 0x80	; 128
  630:	80 83       	st	Z, r24
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  632:	80 e0       	ldi	r24, 0x00	; 0
-          u32_temp=0; Can_set_ext_msk(u32_temp);
-          Can_set_dlc(cmd->dlc);
-          cmd->ctrl.rtr=0; Can_set_rtrmsk(); Can_clear_rtr();
-          Can_clear_idemsk();
-          Can_config_rx();       
-          break;
  634:	1a c3       	rjmp	.+1588   	; 0xc6a <__stack+0x36b>
-        //------------      
-        case CMD_RX_REMOTE:
-          u32_temp=0; Can_set_ext_msk(u32_temp);
  636:	19 82       	std	Y+1, r1	; 0x01
  638:	1a 82       	std	Y+2, r1	; 0x02
  63a:	1b 82       	std	Y+3, r1	; 0x03
@@ -984,7 +810,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  67c:	50 e0       	ldi	r21, 0x00	; 0
  67e:	fa 01       	movw	r30, r20
  680:	80 83       	st	Z, r24
-          Can_set_dlc(cmd->dlc);
  682:	ef ee       	ldi	r30, 0xEF	; 239
  684:	f0 e0       	ldi	r31, 0x00	; 0
  686:	90 81       	ld	r25, Z
@@ -994,7 +819,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  68e:	16 97       	sbiw	r26, 0x06	; 6
  690:	89 2b       	or	r24, r25
  692:	80 83       	st	Z, r24
-          cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
  694:	81 e0       	ldi	r24, 0x01	; 1
  696:	1a 96       	adiw	r26, 0x0a	; 10
  698:	8c 93       	st	X, r24
@@ -1008,39 +832,21 @@ uint8_t can_cmd(st_cmd_t* cmd)
  6a8:	8c 91       	ld	r24, X
  6aa:	84 60       	ori	r24, 0x04	; 4
  6ac:	8c 93       	st	X, r24
-          Can_clear_rplv();
  6ae:	80 81       	ld	r24, Z
  6b0:	8f 7d       	andi	r24, 0xDF	; 223
  6b2:	80 83       	st	Z, r24
-          Can_clear_idemsk();
  6b4:	da 01       	movw	r26, r20
  6b6:	8c 91       	ld	r24, X
  6b8:	8e 7f       	andi	r24, 0xFE	; 254
  6ba:	8c 93       	st	X, r24
-          Can_config_rx();       
  6bc:	80 81       	ld	r24, Z
  6be:	8f 73       	andi	r24, 0x3F	; 63
  6c0:	80 83       	st	Z, r24
  6c2:	80 81       	ld	r24, Z
  6c4:	80 68       	ori	r24, 0x80	; 128
  6c6:	80 83       	st	Z, r24
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  6c8:	80 e0       	ldi	r24, 0x00	; 0
-          Can_set_dlc(cmd->dlc);
-          cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
-          Can_clear_rplv();
-          Can_clear_idemsk();
-          Can_config_rx();       
-          break;
  6ca:	cf c2       	rjmp	.+1438   	; 0xc6a <__stack+0x36b>
-        //------------      
-        case CMD_RX_MASKED:
-          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
  6cc:	f8 01       	movw	r30, r16
  6ce:	83 85       	ldd	r24, Z+11	; 0x0b
  6d0:	88 23       	and	r24, r24
@@ -1089,7 +895,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  72e:	80 61       	ori	r24, 0x10	; 16
  730:	80 83       	st	Z, r24
  732:	17 c0       	rjmp	.+46     	; 0x762 <__LOCK_REGION_LENGTH__+0x362>
-          else              { Can_set_std_id(cmd->id.std);}
  734:	93 81       	ldd	r25, Z+3	; 0x03
  736:	82 81       	ldd	r24, Z+2	; 0x02
  738:	86 95       	lsr	r24
@@ -1111,7 +916,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  75c:	80 81       	ld	r24, Z
  75e:	8f 7e       	andi	r24, 0xEF	; 239
  760:	80 83       	st	Z, r24
-          u32_temp=~0; Can_set_ext_msk(u32_temp);
  762:	8f ef       	ldi	r24, 0xFF	; 255
  764:	9f ef       	ldi	r25, 0xFF	; 255
  766:	dc 01       	movw	r26, r24
@@ -1150,7 +954,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  7ae:	30 e0       	ldi	r19, 0x00	; 0
  7b0:	d9 01       	movw	r26, r18
  7b2:	8c 93       	st	X, r24
-          Can_set_dlc(cmd->dlc);
  7b4:	ef ee       	ldi	r30, 0xEF	; 239
  7b6:	f0 e0       	ldi	r31, 0x00	; 0
  7b8:	90 81       	ld	r25, Z
@@ -1159,39 +962,21 @@ uint8_t can_cmd(st_cmd_t* cmd)
  7be:	8c 91       	ld	r24, X
  7c0:	89 2b       	or	r24, r25
  7c2:	80 83       	st	Z, r24
-          Can_clear_rtrmsk();
  7c4:	d9 01       	movw	r26, r18
  7c6:	8c 91       	ld	r24, X
  7c8:	8b 7f       	andi	r24, 0xFB	; 251
  7ca:	8c 93       	st	X, r24
-          Can_set_idemsk();
  7cc:	8c 91       	ld	r24, X
  7ce:	81 60       	ori	r24, 0x01	; 1
  7d0:	8c 93       	st	X, r24
-          Can_config_rx();       
  7d2:	80 81       	ld	r24, Z
  7d4:	8f 73       	andi	r24, 0x3F	; 63
  7d6:	80 83       	st	Z, r24
  7d8:	80 81       	ld	r24, Z
  7da:	80 68       	ori	r24, 0x80	; 128
  7dc:	80 83       	st	Z, r24
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  7de:	80 e0       	ldi	r24, 0x00	; 0
-          u32_temp=~0; Can_set_ext_msk(u32_temp);
-          Can_set_dlc(cmd->dlc);
-          Can_clear_rtrmsk();
-          Can_set_idemsk();
-          Can_config_rx();       
-          break;
  7e0:	44 c2       	rjmp	.+1160   	; 0xc6a <__stack+0x36b>
-        //------------      
-        case CMD_RX_DATA_MASKED:
-          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
  7e2:	f8 01       	movw	r30, r16
  7e4:	83 85       	ldd	r24, Z+11	; 0x0b
  7e6:	88 23       	and	r24, r24
@@ -1240,7 +1025,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  844:	80 61       	ori	r24, 0x10	; 16
  846:	80 83       	st	Z, r24
  848:	17 c0       	rjmp	.+46     	; 0x878 <__LOCK_REGION_LENGTH__+0x478>
-          else              { Can_set_std_id(cmd->id.std);}
  84a:	93 81       	ldd	r25, Z+3	; 0x03
  84c:	82 81       	ldd	r24, Z+2	; 0x02
  84e:	86 95       	lsr	r24
@@ -1262,7 +1046,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  872:	80 81       	ld	r24, Z
  874:	8f 7e       	andi	r24, 0xEF	; 239
  876:	80 83       	st	Z, r24
-          u32_temp=~0; Can_set_ext_msk(u32_temp);
  878:	8f ef       	ldi	r24, 0xFF	; 255
  87a:	9f ef       	ldi	r25, 0xFF	; 255
  87c:	dc 01       	movw	r26, r24
@@ -1301,7 +1084,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  8c4:	50 e0       	ldi	r21, 0x00	; 0
  8c6:	da 01       	movw	r26, r20
  8c8:	8c 93       	st	X, r24
-          Can_set_dlc(cmd->dlc);
  8ca:	ef ee       	ldi	r30, 0xEF	; 239
  8cc:	f0 e0       	ldi	r31, 0x00	; 0
  8ce:	90 81       	ld	r25, Z
@@ -1311,7 +1093,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  8d6:	16 97       	sbiw	r26, 0x06	; 6
  8d8:	89 2b       	or	r24, r25
  8da:	80 83       	st	Z, r24
-          cmd->ctrl.rtr=0; Can_set_rtrmsk(); Can_clear_rtr();
  8dc:	1a 96       	adiw	r26, 0x0a	; 10
  8de:	1c 92       	st	X, r1
  8e0:	da 01       	movw	r26, r20
@@ -1324,35 +1105,18 @@ uint8_t can_cmd(st_cmd_t* cmd)
  8ee:	8c 91       	ld	r24, X
  8f0:	8b 7f       	andi	r24, 0xFB	; 251
  8f2:	8c 93       	st	X, r24
-          Can_set_idemsk();
  8f4:	da 01       	movw	r26, r20
  8f6:	8c 91       	ld	r24, X
  8f8:	81 60       	ori	r24, 0x01	; 1
  8fa:	8c 93       	st	X, r24
-          Can_config_rx();       
  8fc:	80 81       	ld	r24, Z
  8fe:	8f 73       	andi	r24, 0x3F	; 63
  900:	80 83       	st	Z, r24
  902:	80 81       	ld	r24, Z
  904:	80 68       	ori	r24, 0x80	; 128
  906:	80 83       	st	Z, r24
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  908:	80 e0       	ldi	r24, 0x00	; 0
-          u32_temp=~0; Can_set_ext_msk(u32_temp);
-          Can_set_dlc(cmd->dlc);
-          cmd->ctrl.rtr=0; Can_set_rtrmsk(); Can_clear_rtr();
-          Can_set_idemsk();
-          Can_config_rx();       
-          break;
  90a:	af c1       	rjmp	.+862    	; 0xc6a <__stack+0x36b>
-        //------------      
-        case CMD_RX_REMOTE_MASKED:
-          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
  90c:	f8 01       	movw	r30, r16
  90e:	83 85       	ldd	r24, Z+11	; 0x0b
  910:	88 23       	and	r24, r24
@@ -1401,7 +1165,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  96e:	80 61       	ori	r24, 0x10	; 16
  970:	80 83       	st	Z, r24
  972:	17 c0       	rjmp	.+46     	; 0x9a2 <__stack+0xa3>
-          else              { Can_set_std_id(cmd->id.std);}
  974:	93 81       	ldd	r25, Z+3	; 0x03
  976:	82 81       	ldd	r24, Z+2	; 0x02
  978:	86 95       	lsr	r24
@@ -1423,7 +1186,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  99c:	80 81       	ld	r24, Z
  99e:	8f 7e       	andi	r24, 0xEF	; 239
  9a0:	80 83       	st	Z, r24
-          u32_temp=~0; Can_set_ext_msk(u32_temp);
  9a2:	8f ef       	ldi	r24, 0xFF	; 255
  9a4:	9f ef       	ldi	r25, 0xFF	; 255
  9a6:	dc 01       	movw	r26, r24
@@ -1462,7 +1224,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  9ee:	50 e0       	ldi	r21, 0x00	; 0
  9f0:	da 01       	movw	r26, r20
  9f2:	8c 93       	st	X, r24
-          Can_set_dlc(cmd->dlc);
  9f4:	ef ee       	ldi	r30, 0xEF	; 239
  9f6:	f0 e0       	ldi	r31, 0x00	; 0
  9f8:	90 81       	ld	r25, Z
@@ -1472,7 +1233,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  a00:	16 97       	sbiw	r26, 0x06	; 6
  a02:	89 2b       	or	r24, r25
  a04:	80 83       	st	Z, r24
-          cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
  a06:	81 e0       	ldi	r24, 0x01	; 1
  a08:	1a 96       	adiw	r26, 0x0a	; 10
  a0a:	8c 93       	st	X, r24
@@ -1486,39 +1246,21 @@ uint8_t can_cmd(st_cmd_t* cmd)
  a1a:	8c 91       	ld	r24, X
  a1c:	84 60       	ori	r24, 0x04	; 4
  a1e:	8c 93       	st	X, r24
-          Can_clear_rplv();
  a20:	80 81       	ld	r24, Z
  a22:	8f 7d       	andi	r24, 0xDF	; 223
  a24:	80 83       	st	Z, r24
-          Can_set_idemsk();
  a26:	da 01       	movw	r26, r20
  a28:	8c 91       	ld	r24, X
  a2a:	81 60       	ori	r24, 0x01	; 1
  a2c:	8c 93       	st	X, r24
-          Can_config_rx();       
  a2e:	80 81       	ld	r24, Z
  a30:	8f 73       	andi	r24, 0x3F	; 63
  a32:	80 83       	st	Z, r24
  a34:	80 81       	ld	r24, Z
  a36:	80 68       	ori	r24, 0x80	; 128
  a38:	80 83       	st	Z, r24
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  a3a:	80 e0       	ldi	r24, 0x00	; 0
-          Can_set_dlc(cmd->dlc);
-          cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
-          Can_clear_rplv();
-          Can_set_idemsk();
-          Can_config_rx();       
-          break;
  a3c:	16 c1       	rjmp	.+556    	; 0xc6a <__stack+0x36b>
-        //------------      
-        case CMD_REPLY:
-          for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
  a3e:	80 e0       	ldi	r24, 0x00	; 0
  a40:	2a ef       	ldi	r18, 0xFA	; 250
  a42:	30 e0       	ldi	r19, 0x00	; 0
@@ -1537,7 +1279,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  a5c:	9c 91       	ld	r25, X
  a5e:	89 17       	cp	r24, r25
  a60:	88 f3       	brcs	.-30     	; 0xa44 <__stack+0x145>
-          u32_temp=0; Can_set_ext_msk(u32_temp);
  a62:	19 82       	std	Y+1, r1	; 0x01
  a64:	1a 82       	std	Y+2, r1	; 0x02
  a66:	1b 82       	std	Y+3, r1	; 0x03
@@ -1573,7 +1314,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  aa8:	50 e0       	ldi	r21, 0x00	; 0
  aaa:	da 01       	movw	r26, r20
  aac:	8c 93       	st	X, r24
-          Can_set_dlc(cmd->dlc);
  aae:	ef ee       	ldi	r30, 0xEF	; 239
  ab0:	f0 e0       	ldi	r31, 0x00	; 0
  ab2:	90 81       	ld	r25, Z
@@ -1583,7 +1323,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  aba:	16 97       	sbiw	r26, 0x06	; 6
  abc:	89 2b       	or	r24, r25
  abe:	80 83       	st	Z, r24
-          cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
  ac0:	81 e0       	ldi	r24, 0x01	; 1
  ac2:	1a 96       	adiw	r26, 0x0a	; 10
  ac4:	8c 93       	st	X, r24
@@ -1597,39 +1336,21 @@ uint8_t can_cmd(st_cmd_t* cmd)
  ad4:	8c 91       	ld	r24, X
  ad6:	84 60       	ori	r24, 0x04	; 4
  ad8:	8c 93       	st	X, r24
-          Can_set_rplv();
  ada:	80 81       	ld	r24, Z
  adc:	80 62       	ori	r24, 0x20	; 32
  ade:	80 83       	st	Z, r24
-          Can_clear_idemsk();
  ae0:	da 01       	movw	r26, r20
  ae2:	8c 91       	ld	r24, X
  ae4:	8e 7f       	andi	r24, 0xFE	; 254
  ae6:	8c 93       	st	X, r24
-          Can_config_rx();       
  ae8:	80 81       	ld	r24, Z
  aea:	8f 73       	andi	r24, 0x3F	; 63
  aec:	80 83       	st	Z, r24
  aee:	80 81       	ld	r24, Z
  af0:	80 68       	ori	r24, 0x80	; 128
  af2:	80 83       	st	Z, r24
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  af4:	80 e0       	ldi	r24, 0x00	; 0
-          Can_set_dlc(cmd->dlc);
-          cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
-          Can_set_rplv();
-          Can_clear_idemsk();
-          Can_config_rx();       
-          break;
  af6:	b9 c0       	rjmp	.+370    	; 0xc6a <__stack+0x36b>
-        //------------      
-        case CMD_REPLY_MASKED:
-          if (cmd->ctrl.ide){ Can_set_ext_id(cmd->id.ext);}
  af8:	f8 01       	movw	r30, r16
  afa:	83 85       	ldd	r24, Z+11	; 0x0b
  afc:	88 23       	and	r24, r24
@@ -1678,7 +1399,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  b5a:	80 61       	ori	r24, 0x10	; 16
  b5c:	80 83       	st	Z, r24
  b5e:	17 c0       	rjmp	.+46     	; 0xb8e <__stack+0x28f>
-          else              { Can_set_std_id(cmd->id.std);}
  b60:	93 81       	ldd	r25, Z+3	; 0x03
  b62:	82 81       	ldd	r24, Z+2	; 0x02
  b64:	86 95       	lsr	r24
@@ -1700,7 +1420,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  b88:	80 81       	ld	r24, Z
  b8a:	8f 7e       	andi	r24, 0xEF	; 239
  b8c:	80 83       	st	Z, r24
-          for (cpt=0;cpt<cmd->dlc;cpt++) CANMSG = *(cmd->pt_data + cpt);
  b8e:	d8 01       	movw	r26, r16
  b90:	16 96       	adiw	r26, 0x06	; 6
  b92:	8c 91       	ld	r24, X
@@ -1724,7 +1443,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  bb6:	9c 91       	ld	r25, X
  bb8:	89 17       	cp	r24, r25
  bba:	88 f3       	brcs	.-30     	; 0xb9e <__stack+0x29f>
-          u32_temp=~0; Can_set_ext_msk(u32_temp);
  bbc:	8f ef       	ldi	r24, 0xFF	; 255
  bbe:	9f ef       	ldi	r25, 0xFF	; 255
  bc0:	dc 01       	movw	r26, r24
@@ -1763,7 +1481,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  c08:	50 e0       	ldi	r21, 0x00	; 0
  c0a:	da 01       	movw	r26, r20
  c0c:	8c 93       	st	X, r24
-          Can_set_dlc(cmd->dlc);
  c0e:	ef ee       	ldi	r30, 0xEF	; 239
  c10:	f0 e0       	ldi	r31, 0x00	; 0
  c12:	90 81       	ld	r25, Z
@@ -1773,7 +1490,6 @@ uint8_t can_cmd(st_cmd_t* cmd)
  c1a:	16 97       	sbiw	r26, 0x06	; 6
  c1c:	89 2b       	or	r24, r25
  c1e:	80 83       	st	Z, r24
-          cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
  c20:	81 e0       	ldi	r24, 0x01	; 1
  c22:	1a 96       	adiw	r26, 0x0a	; 10
  c24:	8c 93       	st	X, r24
@@ -1787,72 +1503,30 @@ uint8_t can_cmd(st_cmd_t* cmd)
  c34:	8c 91       	ld	r24, X
  c36:	84 60       	ori	r24, 0x04	; 4
  c38:	8c 93       	st	X, r24
-          Can_set_rplv();
  c3a:	80 81       	ld	r24, Z
  c3c:	80 62       	ori	r24, 0x20	; 32
  c3e:	80 83       	st	Z, r24
-          Can_set_idemsk();
  c40:	da 01       	movw	r26, r20
  c42:	8c 91       	ld	r24, X
  c44:	81 60       	ori	r24, 0x01	; 1
  c46:	8c 93       	st	X, r24
-          Can_config_rx();       
  c48:	80 81       	ld	r24, Z
  c4a:	8f 73       	andi	r24, 0x3F	; 63
  c4c:	80 83       	st	Z, r24
  c4e:	80 81       	ld	r24, Z
  c50:	80 68       	ori	r24, 0x80	; 128
  c52:	80 83       	st	Z, r24
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  c54:	80 e0       	ldi	r24, 0x00	; 0
-          Can_set_dlc(cmd->dlc);
-          cmd->ctrl.rtr=1; Can_set_rtrmsk(); Can_set_rtr();
-          Can_set_rplv();
-          Can_set_idemsk();
-          Can_config_rx();       
-          break;
  c56:	09 c0       	rjmp	.+18     	; 0xc6a <__stack+0x36b>
-        //------------      
-        default:
-          // case CMD_NONE or not implemented command
-          cmd->status = STATUS_CLEARED; 
  c58:	f8 01       	movw	r30, r16
  c5a:	11 86       	std	Z+9, r1	; 0x09
-    {
-      cmd->status = MOB_NOT_REACHED;
-      return CAN_CMD_REFUSED;
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
  c5c:	80 e0       	ldi	r24, 0x00	; 0
-          break;
-        //------------      
-        default:
-          // case CMD_NONE or not implemented command
-          cmd->status = STATUS_CLEARED; 
-          break;
  c5e:	05 c0       	rjmp	.+10     	; 0xc6a <__stack+0x36b>
-        //------------      
-      } // switch (cmd ...
-    } // if (mob_handle ...
-    else
-    {
-      cmd->status = MOB_NOT_REACHED;
  c60:	8f e1       	ldi	r24, 0x1F	; 31
  c62:	d8 01       	movw	r26, r16
  c64:	19 96       	adiw	r26, 0x09	; 9
  c66:	8c 93       	st	X, r24
-      return CAN_CMD_REFUSED;
  c68:	8f ef       	ldi	r24, 0xFF	; 255
-    }
-  } // else of no CMD_ABORT
-  return CAN_CMD_ACCEPTED;
-}
  c6a:	0f 90       	pop	r0
  c6c:	0f 90       	pop	r0
  c6e:	0f 90       	pop	r0
@@ -1864,23 +1538,13 @@ uint8_t can_cmd(st_cmd_t* cmd)
  c7a:	08 95       	ret
 
 00000c7c <can_get_status>:
-//!         CAN_STATUS_ERROR         - Error in configuration or in the
-//!                                    CAN communication
-//!
-//------------------------------------------------------------------------------
-uint8_t can_get_status (st_cmd_t* cmd)
-{
  c7c:	ef 92       	push	r14
  c7e:	ff 92       	push	r15
  c80:	1f 93       	push	r17
  c82:	cf 93       	push	r28
  c84:	df 93       	push	r29
  c86:	fc 01       	movw	r30, r24
-    uint8_t a_status, rtn_val;
-     
-    a_status = cmd->status;
  c88:	91 85       	ldd	r25, Z+9	; 0x09
-    if ((a_status==STATUS_CLEARED)||(a_status==MOB_NOT_REACHED)||(a_status==MOB_DISABLE))
  c8a:	99 23       	and	r25, r25
  c8c:	09 f4       	brne	.+2      	; 0xc90 <can_get_status+0x14>
  c8e:	92 c0       	rjmp	.+292    	; 0xdb4 <can_get_status+0x138>
@@ -1891,20 +1555,12 @@ uint8_t can_get_status (st_cmd_t* cmd)
  c98:	09 f4       	brne	.+2      	; 0xc9c <can_get_status+0x20>
  c9a:	90 c0       	rjmp	.+288    	; 0xdbc <can_get_status+0x140>
  c9c:	ef 01       	movw	r28, r30
-    {
-        return CAN_STATUS_ERROR;
-    }
-
-    Can_set_mob(cmd->handle);
  c9e:	80 81       	ld	r24, Z
  ca0:	82 95       	swap	r24
  ca2:	80 7f       	andi	r24, 0xF0	; 240
  ca4:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <__TEXT_REGION_LENGTH__+0x7e00ed>
-    a_status = can_get_mob_status();
  ca8:	0e 94 8e 00 	call	0x11c	; 0x11c <can_get_mob_status>
  cac:	18 2f       	mov	r17, r24
-    
-    switch (a_status)
  cae:	80 32       	cpi	r24, 0x20	; 32
  cb0:	59 f0       	breq	.+22     	; 0xcc8 <can_get_status+0x4c>
  cb2:	20 f4       	brcc	.+8      	; 0xcbc <can_get_status+0x40>
@@ -1918,12 +1574,6 @@ uint8_t can_get_status (st_cmd_t* cmd)
  cc2:	80 3a       	cpi	r24, 0xA0	; 160
  cc4:	09 f0       	breq	.+2      	; 0xcc8 <can_get_status+0x4c>
  cc6:	6c c0       	rjmp	.+216    	; 0xda0 <can_get_status+0x124>
-            rtn_val = CAN_STATUS_NOT_COMPLETED;
-            break;
-        //---------------      
-        case MOB_RX_COMPLETED:     
-        case MOB_RX_COMPLETED_DLCW:
-            cmd->dlc = Can_get_dlc();
  cc8:	0f 2e       	mov	r0, r31
  cca:	ff ee       	ldi	r31, 0xEF	; 239
  ccc:	ef 2e       	mov	r14, r31
@@ -1933,26 +1583,20 @@ uint8_t can_get_status (st_cmd_t* cmd)
  cd4:	80 81       	ld	r24, Z
  cd6:	8f 70       	andi	r24, 0x0F	; 15
  cd8:	8e 83       	std	Y+6, r24	; 0x06
-            can_get_data(cmd->pt_data);
  cda:	8f 81       	ldd	r24, Y+7	; 0x07
  cdc:	98 85       	ldd	r25, Y+8	; 0x08
  cde:	0e 94 a6 00 	call	0x14c	; 0x14c <can_get_data>
-            cmd->ctrl.rtr = Can_get_rtr();
  ce2:	80 91 f0 00 	lds	r24, 0x00F0	; 0x8000f0 <__TEXT_REGION_LENGTH__+0x7e00f0>
  ce6:	82 fb       	bst	r24, 2
  ce8:	88 27       	eor	r24, r24
  cea:	80 f9       	bld	r24, 0
  cec:	8a 87       	std	Y+10, r24	; 0x0a
-            if (Can_get_ide()) // if extended frame
  cee:	f7 01       	movw	r30, r14
  cf0:	80 81       	ld	r24, Z
  cf2:	84 ff       	sbrs	r24, 4
  cf4:	2d c0       	rjmp	.+90     	; 0xd50 <can_get_status+0xd4>
-            {
-                cmd->ctrl.ide = 1; // extended frame
  cf6:	81 e0       	ldi	r24, 0x01	; 1
  cf8:	8b 87       	std	Y+11, r24	; 0x0b
-                Can_get_ext_id(cmd->id.ext);
  cfa:	e3 ef       	ldi	r30, 0xF3	; 243
  cfc:	f0 e0       	ldi	r31, 0x00	; 0
  cfe:	80 81       	ld	r24, Z
@@ -1995,12 +1639,7 @@ uint8_t can_get_status (st_cmd_t* cmd)
  d4a:	11 24       	eor	r1, r1
  d4c:	8a 83       	std	Y+2, r24	; 0x02
  d4e:	13 c0       	rjmp	.+38     	; 0xd76 <can_get_status+0xfa>
-            }
-            else // else standard frame
-                {
-                    cmd->ctrl.ide = 0;
  d50:	1b 86       	std	Y+11, r1	; 0x0b
-                    Can_get_std_id(cmd->id.std);
  d52:	e3 ef       	ldi	r30, 0xF3	; 243
  d54:	f0 e0       	ldi	r31, 0x00	; 0
  d56:	80 81       	ld	r24, Z
@@ -2018,83 +1657,41 @@ uint8_t can_get_status (st_cmd_t* cmd)
  d70:	88 0f       	add	r24, r24
  d72:	89 0f       	add	r24, r25
  d74:	8a 83       	std	Y+2, r24	; 0x02
-                }
-            // Status field of descriptor: 0x20 if Rx completed
-            // Status field of descriptor: 0xA0 if Rx completed with DLCWarning    
-            cmd->status = a_status;
  d76:	19 87       	std	Y+9, r17	; 0x09
-            Can_mob_abort();        // Freed the MOB
  d78:	ef ee       	ldi	r30, 0xEF	; 239
  d7a:	f0 e0       	ldi	r31, 0x00	; 0
  d7c:	80 81       	ld	r24, Z
  d7e:	8f 73       	andi	r24, 0x3F	; 63
  d80:	80 83       	st	Z, r24
-            Can_clear_status_mob(); //   and reset MOb status
  d82:	10 92 ee 00 	sts	0x00EE, r1	; 0x8000ee <__TEXT_REGION_LENGTH__+0x7e00ee>
-            rtn_val = CAN_STATUS_COMPLETED;
  d86:	80 e0       	ldi	r24, 0x00	; 0
-            break;
  d88:	1c c0       	rjmp	.+56     	; 0xdc2 <can_get_status+0x146>
-        //---------------      
-        case MOB_TX_COMPLETED:     
-            // Status field of descriptor: 0x40 if Tx completed
-            cmd->status = a_status;
  d8a:	80 e4       	ldi	r24, 0x40	; 64
  d8c:	89 87       	std	Y+9, r24	; 0x09
-            Can_mob_abort();        // Freed the MOB
  d8e:	ef ee       	ldi	r30, 0xEF	; 239
  d90:	f0 e0       	ldi	r31, 0x00	; 0
  d92:	80 81       	ld	r24, Z
  d94:	8f 73       	andi	r24, 0x3F	; 63
  d96:	80 83       	st	Z, r24
-            Can_clear_status_mob(); //   and reset MOb status
  d98:	10 92 ee 00 	sts	0x00EE, r1	; 0x8000ee <__TEXT_REGION_LENGTH__+0x7e00ee>
-            rtn_val = CAN_STATUS_COMPLETED;
  d9c:	80 e0       	ldi	r24, 0x00	; 0
-            break;
  d9e:	11 c0       	rjmp	.+34     	; 0xdc2 <can_get_status+0x146>
-        //---------------      
-        default:
-            // Status field of descriptor: (bin)000b.scfa if MOb error
-            cmd->status = a_status;
  da0:	19 87       	std	Y+9, r17	; 0x09
-            Can_mob_abort();        // Freed the MOB
  da2:	ef ee       	ldi	r30, 0xEF	; 239
  da4:	f0 e0       	ldi	r31, 0x00	; 0
  da6:	80 81       	ld	r24, Z
  da8:	8f 73       	andi	r24, 0x3F	; 63
  daa:	80 83       	st	Z, r24
-            Can_clear_status_mob(); //   and reset MOb status
  dac:	10 92 ee 00 	sts	0x00EE, r1	; 0x8000ee <__TEXT_REGION_LENGTH__+0x7e00ee>
-            rtn_val = CAN_STATUS_ERROR;
  db0:	82 e0       	ldi	r24, 0x02	; 2
-            break;
  db2:	07 c0       	rjmp	.+14     	; 0xdc2 <can_get_status+0x146>
-    uint8_t a_status, rtn_val;
-     
-    a_status = cmd->status;
-    if ((a_status==STATUS_CLEARED)||(a_status==MOB_NOT_REACHED)||(a_status==MOB_DISABLE))
-    {
-        return CAN_STATUS_ERROR;
  db4:	82 e0       	ldi	r24, 0x02	; 2
  db6:	05 c0       	rjmp	.+10     	; 0xdc2 <can_get_status+0x146>
  db8:	82 e0       	ldi	r24, 0x02	; 2
  dba:	03 c0       	rjmp	.+6      	; 0xdc2 <can_get_status+0x146>
  dbc:	82 e0       	ldi	r24, 0x02	; 2
  dbe:	01 c0       	rjmp	.+2      	; 0xdc2 <can_get_status+0x146>
-    
-    switch (a_status)
-    {
-        case MOB_NOT_COMPLETED:
-            // cmd->status not updated
-            rtn_val = CAN_STATUS_NOT_COMPLETED;
  dc0:	81 e0       	ldi	r24, 0x01	; 1
-            break;
-             
-    } // switch (a_status...
- 
-    return (rtn_val);
-}
  dc2:	df 91       	pop	r29
  dc4:	cf 91       	pop	r28
  dc6:	1f 91       	pop	r17
@@ -2103,54 +1700,26 @@ uint8_t can_get_status (st_cmd_t* cmd)
  dcc:	08 95       	ret
 
 00000dce <io_init>:
-	can_init(0);
-}
-
-void io_init(void) {
-	
-	bit_set(DDRD, BIT(1));
  dce:	51 9a       	sbi	0x0a, 1	; 10
-	bit_set(DDRD, BIT(7));
  dd0:	57 9a       	sbi	0x0a, 7	; 10
-	bit_set(PORTD, BIT(1));	  //Turn on LED on the node
  dd2:	59 9a       	sbi	0x0b, 1	; 11
-	
-	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
-	DDRC = 0b00000100; // 0x40;
  dd4:	84 e0       	ldi	r24, 0x04	; 4
  dd6:	87 b9       	out	0x07, r24	; 7
-	PORTC = 0x00; //
  dd8:	18 b8       	out	0x08, r1	; 8
  dda:	08 95       	ret
 
 00000ddc <sys_init>:
-
-
-
-void sys_init(void) {
-	// Make sure sys clock is at least 8MHz
-	CLKPR = 0x80; //Clock prescaler register - Clock prescaler set enable
  ddc:	e1 e6       	ldi	r30, 0x61	; 97
  dde:	f0 e0       	ldi	r31, 0x00	; 0
  de0:	80 e8       	ldi	r24, 0x80	; 128
  de2:	80 83       	st	Z, r24
-	CLKPR = 0x00; //See datasheet: set prescaler to 1
  de4:	10 82       	st	Z, r1
-	
-	io_init();
  de6:	0e 94 e7 06 	call	0xdce	; 0xdce <io_init>
-	can_init(0);
  dea:	80 e0       	ldi	r24, 0x00	; 0
  dec:	0e 94 d1 00 	call	0x1a2	; 0x1a2 <can_init>
  df0:	08 95       	ret
 
 00000df2 <main>:
-
-void sys_init(void);
-void io_init(void);
-
-int main(void)
-{
  df2:	cf 93       	push	r28
  df4:	df 93       	push	r29
  df6:	cd b7       	in	r28, 0x3d	; 61
@@ -2161,76 +1730,37 @@ int main(void)
  e00:	de bf       	out	0x3e, r29	; 62
  e02:	0f be       	out	0x3f, r0	; 63
  e04:	cd bf       	out	0x3d, r28	; 61
-	sys_init();  //Initialize I/O, CAN etc.
  e06:	0e 94 ee 06 	call	0xddc	; 0xddc <sys_init>
-
-	sei();		// Enable interrupts
  e0a:	78 94       	sei
-
-	uint8_t incoming_msg_buffer[DATA_BUFFER_SIZE]; //Buffer to store payload from the buffer
-	st_cmd_t incoming_msg; //message object to store incoming messages
-
-	// Se
-	incoming_msg.pt_data = &incoming_msg_buffer;
  e0c:	ce 01       	movw	r24, r28
  e0e:	01 96       	adiw	r24, 0x01	; 1
  e10:	9b 87       	std	Y+11, r25	; 0x0b
  e12:	8a 87       	std	Y+10, r24	; 0x0a
-	incoming_msg.status = 0; 
  e14:	1c 86       	std	Y+12, r1	; 0x0c
-	for (i=0; i<DATA_BUFFER_SIZE; i++) 
-	{
-	incoming_msg_buffer[i]= 0x00;
-	};   //Clear data buffer
-
-	incoming_msg.id.std = 0x80; // CAN_ID on hte node
  e16:	68 94       	set
  e18:	ee 24       	eor	r14, r14
  e1a:	e7 f8       	bld	r14, 7
  e1c:	f1 2c       	mov	r15, r1
-	incoming_msg.ctrl.ide = 0; // This message object accepts only standard (2.0A) CAN frames
-	incoming_msg.ctrl.rtr = 0; // this message object is not requesting a remote node to transmit data back
-	incoming_msg.dlc = DATA_BUFFER_SIZE; // Number of bytes (8 max) of data to expect
  e1e:	02 e0       	ldi	r16, 0x02	; 2
-	incoming_msg.cmd = CMD_RX; // assign this as a "Receive Standard (2.0A) CAN frame" message object
  e20:	14 e0       	ldi	r17, 0x04	; 4
-	while (1)
-	{
-
-	for (i=0; i<DATA_BUFFER_SIZE; i++) 
-	{
-	incoming_msg_buffer[i]= 0x00;
  e22:	19 82       	std	Y+1, r1	; 0x01
  e24:	1a 82       	std	Y+2, r1	; 0x02
-	};   //Clear data buffer
-
-	incoming_msg.id.std = 0x80; // CAN_ID on hte node
  e26:	fe 82       	std	Y+6, r15	; 0x06
  e28:	ed 82       	std	Y+5, r14	; 0x05
-	incoming_msg.ctrl.ide = 0; // This message object accepts only standard (2.0A) CAN frames
  e2a:	1e 86       	std	Y+14, r1	; 0x0e
-	incoming_msg.ctrl.rtr = 0; // this message object is not requesting a remote node to transmit data back
  e2c:	1d 86       	std	Y+13, r1	; 0x0d
-	incoming_msg.dlc = DATA_BUFFER_SIZE; // Number of bytes (8 max) of data to expect
  e2e:	09 87       	std	Y+9, r16	; 0x09
-	incoming_msg.cmd = CMD_RX; // assign this as a "Receive Standard (2.0A) CAN frame" message object
  e30:	1c 83       	std	Y+4, r17	; 0x04
-
-	while(can_cmd(&incoming_msg) != CAN_CMD_ACCEPTED); //Wait for the MOb to configure
  e32:	ce 01       	movw	r24, r28
  e34:	03 96       	adiw	r24, 0x03	; 3
  e36:	0e 94 de 00 	call	0x1bc	; 0x1bc <can_cmd>
  e3a:	81 11       	cpse	r24, r1
  e3c:	fa cf       	rjmp	.-12     	; 0xe32 <main+0x40>
-
-	while(can_get_status(&incoming_msg) != CAN_STATUS_COMPLETED); //Wait for message to arrive 
  e3e:	ce 01       	movw	r24, r28
  e40:	03 96       	adiw	r24, 0x03	; 3
  e42:	0e 94 3e 06 	call	0xc7c	; 0xc7c <can_get_status>
  e46:	81 11       	cpse	r24, r1
  e48:	fa cf       	rjmp	.-12     	; 0xe3e <main+0x4c>
-
-		bit_flip(PORTD, BIT(7)); //Turn on/off LED on board
  e4a:	8b b1       	in	r24, 0x0b	; 11
  e4c:	80 58       	subi	r24, 0x80	; 128
  e4e:	8b b9       	out	0x0b, r24	; 11

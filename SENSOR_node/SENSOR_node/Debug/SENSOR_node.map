@@ -31,6 +31,7 @@ Discarded input sections
  .text          0x00000000        0x0 Initialize_node.o
  .data          0x00000000        0x0 Initialize_node.o
  .bss           0x00000000        0x0 Initialize_node.o
+<<<<<<< HEAD
  .text.NodeSetup
                 0x00000000       0x10 Initialize_node.o
  .text.SensorType
@@ -51,10 +52,30 @@ Discarded input sections
  .comment       0x00000000       0x31 Initialize_node.o
  .debug_frame   0x00000000       0x64 Initialize_node.o
  COMMON         0x00000000        0x4 Initialize_node.o
+=======
+ .debug_line    0x00000000        0x0 Initialize_node.o
+ .debug_str     0x00000000      0x113 Initialize_node.o
+ .comment       0x00000000       0x31 Initialize_node.o
+>>>>>>> Initialisation_mads
  .text          0x00000000        0x0 main.o
  .data          0x00000000        0x0 main.o
  .bss           0x00000000        0x0 main.o
  COMMON         0x00000000        0x1 main.o
+ .text          0x00000000        0x0 payloadProtocol.o
+ .data          0x00000000        0x0 payloadProtocol.o
+ .bss           0x00000000        0x0 payloadProtocol.o
+ .text.decodeHubServiceMessage
+                0x00000000       0x4c payloadProtocol.o
+ .debug_info    0x00000000      0x1b7 payloadProtocol.o
+ .debug_abbrev  0x00000000       0xae payloadProtocol.o
+ .debug_loc     0x00000000       0x28 payloadProtocol.o
+ .debug_aranges
+                0x00000000       0x20 payloadProtocol.o
+ .debug_ranges  0x00000000       0x10 payloadProtocol.o
+ .debug_line    0x00000000       0xe5 payloadProtocol.o
+ .debug_str     0x00000000      0x29d payloadProtocol.o
+ .comment       0x00000000       0x31 payloadProtocol.o
+ .debug_frame   0x00000000       0x24 payloadProtocol.o
  .text          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .data          0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
@@ -123,6 +144,7 @@ LOAD can_drv.o
 LOAD can_lib.o
 LOAD Initialize_node.o
 LOAD main.o
+LOAD payloadProtocol.o
 START GROUP
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a
 END GROUP

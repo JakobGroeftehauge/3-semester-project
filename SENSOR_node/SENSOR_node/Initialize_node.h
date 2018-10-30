@@ -8,7 +8,8 @@
 #ifndef INCFILE1_H_
 #define INCFILE1_H_
 
-#endif /* INCFILE1_H_ */
+#include <stdint.h>
+
 //------------------------------------------------------------------------------
 //Definitions
 uint8_t type_of_sensor;
@@ -28,19 +29,32 @@ extern void		setTransmissionFrequency(uint8_t Tfrequency);	// STARTED ON - NOT D
 
 extern void		Filter(uint8_t,uint8_t);						// NOT STARTED
 
+<<<<<<< HEAD
 extern void		setTransmissionFrequency(uint8_t Sfrequency);	// STARTED ON - NOT DONE
 
 extern uint8_t	checkParameters();								// NOT STARTED
 
 extern void		sendReply();									// NOT STARTED 
 
+=======
+extern void setTransmissionFrequency(uint8_t);			// NOT STARTED
+
+extern void Filter(uint8_t,uint8_t);					// NOT STARTED
+
+extern void SamplingFrequency(uint8_t);					// NOT STARTED
+
+//extern bool checkParameters();							// NOT STARTED
+
+extern void sendReply();								// NOT STARTED
+//test
+>>>>>>> Initialisation_mads
 
 typedef enum{
 	thermistor,
 	potentiometer,
 	other_sensor
-	}sensor_Types;
-	
+}sensor_Types;
+
 typedef enum {
 	celsius,
 	degrees,
@@ -49,13 +63,18 @@ typedef enum {
 }units;
 
 // Struct
-typedef  struct{
+typedef  struct {
 	uint16_t		CAN_ID;
 	sensor_Types    sensor_Type;
+	int8_t			range_min;
+	int8_t			range_max;
 	units			unit;	//Will be used to determent the translation of the ADC data.
 	uint8_t			transmission_frequency;
 	uint16_t		filter_data;
 	uint8_t			sampling_frequency;
 	
-} sensor_at_node;
+}sensor_at_node ;
+
+#endif /* INCFILE1_H_ */
+
 

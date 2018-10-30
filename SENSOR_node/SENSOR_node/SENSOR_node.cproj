@@ -139,12 +139,21 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Initialize_node.c">
+<<<<<<< HEAD
+=======
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Initialize_node.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
+>>>>>>> Initialisation_mads
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="payloadProtocol.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="payloadProtocol.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
