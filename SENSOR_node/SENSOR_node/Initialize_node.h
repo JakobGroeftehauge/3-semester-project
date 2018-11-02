@@ -29,25 +29,13 @@ extern void		setTransmissionFrequency(uint8_t Tfrequency);	// STARTED ON - NOT D
 
 extern void		Filter(uint8_t,uint8_t);						// NOT STARTED
 
-<<<<<<< HEAD
 extern void		setTransmissionFrequency(uint8_t Sfrequency);	// STARTED ON - NOT DONE
 
 extern uint8_t	checkParameters();								// NOT STARTED
 
 extern void		sendReply();									// NOT STARTED 
 
-=======
-extern void setTransmissionFrequency(uint8_t);			// NOT STARTED
 
-extern void Filter(uint8_t,uint8_t);					// NOT STARTED
-
-extern void SamplingFrequency(uint8_t);					// NOT STARTED
-
-//extern bool checkParameters();							// NOT STARTED
-
-extern void sendReply();								// NOT STARTED
-//test
->>>>>>> Initialisation_mads
 
 typedef enum{
 	thermistor,
