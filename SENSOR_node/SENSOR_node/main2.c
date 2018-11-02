@@ -22,7 +22,7 @@ int main2(void)
 	uint16_t sensorValue;
 	if (tick>=1)
 	{	
-		tick--
+		tick--;
 		samplingCounter++;
 		transmitCounter++;
 		
