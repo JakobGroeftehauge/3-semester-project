@@ -48,7 +48,20 @@ int main2(void)
 		}
 	}
 }
-
+int Wire_off(int a )
+{
+	if (a<102)
+	{
+	// FUNCTION TRANSMIT ERROR MESSAGE FOR  LOW WIRE-OFF DETECTION!! 
+	return 1;
+	}
+	if ( a>921)
+	{
+		// FUNCTION TRANSMIT ERROR MESSAGE FOR  HIGH WIRE-OFF DETECTION!!
+		return 1;
+	}
+return 0;	
+}
 ISR(TIMER0_COMPA_vect)
 {
 	tick++;
