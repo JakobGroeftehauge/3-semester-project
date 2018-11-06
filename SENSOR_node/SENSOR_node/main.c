@@ -10,6 +10,9 @@
 #include <avr/interrupt.h>
 #include "can_lib.h"
 #include <util/delay.h>
+#include <stdio.h>
+//#include "can_lib.h"
+//#include <util/delay.h>
 
 
 #define DATA_BUFFER_SIZE 2 // Up to 8 bytes Max
@@ -33,7 +36,8 @@ void io_init(void);
 
 int main(void)
 {
-	sys_init();  //Initialize I/O, CAN etc.
+	printf("Hello Senior");
+	/*sys_init();  //Initialize I/O, CAN etc.
 
 	sei();		// Enable interrupts
 
@@ -93,6 +97,7 @@ void io_init(void) {
 	// Init PORTC[7:0] // PORTC[3:2] => RXCAN:TXCAN
 	DDRC = 0b00000100; // 0x40;
 	PORTC = 0x00; //
+	PORTC = 0x00; //*/
 	
 
 }
