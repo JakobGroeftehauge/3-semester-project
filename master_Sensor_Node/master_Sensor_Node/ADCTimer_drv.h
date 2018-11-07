@@ -84,8 +84,6 @@
 
 #define  Timer0_1ms() (OCR0A=124)
 
-
-
-
+extern void ADCtimerSetup(); 
 
 #endif /* ADCTIMER_DRV_H_ */
