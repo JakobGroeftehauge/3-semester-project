@@ -141,12 +141,6 @@
     <Compile Include="config.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Initialize_node.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Initialize_node.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>

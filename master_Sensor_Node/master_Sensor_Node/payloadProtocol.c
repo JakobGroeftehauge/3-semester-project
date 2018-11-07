@@ -6,6 +6,36 @@
  */ 
 #include "payloadProtocol.h"
 
+//Decoding message from hub and determinds what kind of message type it is. 
+void decodemessage(st_cmd_t* message_struct)
+{
+	switch ((message_struct ->pt_data[0]&0b11110000))// only looks a first nibble
+	{
+		uint8_t message_array[8];
+		for(uint8_t i = 0; i>8; i++)
+		{
+			message_array[i] = message_struct ->pt_data[i];
+		}
+		case 0b11000000: // CAN ID FOR A SERVICE MESSAGE
+		{
+			if (message_struct->id == sensor1 -> CAN_ID) //Sensor1 is a struct of sensor_at_node and needs to be init in main as global and with a can ID;
+			{
+			decodeHubServiceMessage(message_array,sensor1);
+			}
+			if (message_struct->id == sensor2 -> CAN_ID) //Sensor2 is a struct of sensor_at_node and needs to be init in main as global and with a can ID;
+			{
+			decodeHubServiceMessage(message_array,sensor2)
+			}
+		}
+		default:
+		{
+			//SEND BACK ERROR?
+		}
+		
+	}	
+}
+
+
 // decodeHubServiceMessage(uint8_t message_array[8],sensor_at_node* sensor) takes the array of message bytes
 // and fills out the given sensor struct
 void decodeHubServiceMessage(uint8_t message_array[8],sensor_at_node* sensor)

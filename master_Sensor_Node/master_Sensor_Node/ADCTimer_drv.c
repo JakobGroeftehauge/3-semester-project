@@ -20,5 +20,8 @@ void NodeSetup()
 	Timer0_interrupt();
 	Timer0_1ms();
 	sei();
+	
+	sensor_at_node sensor1;
+	sensor_at_node sensor2;
 }
 
