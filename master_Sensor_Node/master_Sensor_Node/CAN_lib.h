@@ -32,6 +32,7 @@ typedef enum {
 typedef  struct{
 	uint8_t cmd;
 	uint16_t id;
+	uint16_t mask; 
 	uint8_t dlc;
 	uint8_t* pt_data;
 	uint8_t MObNumber; 
@@ -44,5 +45,7 @@ extern uint8_t can_cmd(st_cmd_t*);
 extern uint8_t can_init();
 
 extern void extra_delay(uint16_t delaytimes);
+
+extern void transfer_data(st_cmd_t*);
 
 #endif /* CAN_LIB_H_ */

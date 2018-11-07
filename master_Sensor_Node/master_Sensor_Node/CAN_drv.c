@@ -210,9 +210,9 @@ void setup_receive_mob(st_cmd_t* MObStruct){
 	
 	CANIE2 |= ( 1 << MObStruct->MObNumber);				// Enable interrupts for the current mob
 	
-	CANIDM1 = (MObStruct->id / 8);   	// Setup mask with the ID's to be received
+	CANIDM1 = (MObStruct->mask / 8);   	// Setup mask with the ID's to be received
 
-	CANIDM2 = ((MObStruct->id & 0x07) << 5); 	// ""
+	CANIDM2 = ((MObStruct->mask & 0x07) << 5); 	// ""
 
 	CANIDM3 = 0x00; 	// ""
 

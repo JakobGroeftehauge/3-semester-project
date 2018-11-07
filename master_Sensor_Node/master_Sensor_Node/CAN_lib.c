@@ -84,6 +84,34 @@ void can_tx(st_cmd_t* MObStruct) {
 
 }
 
+void transfer_data(st_cmd_t* recieveMOb)
+{
+
+CANPAGE = recieveMOb->MObNumber << 4;
+
+ recieveMOb->id = CANIDT1 + (CANIDT2*8);
+ 
+
+if ( CANSTMOB & ( 1 << RXOK) ){  	// Interrupt caused by receive finished
+
+	recieveMOb->dlc = ( CANCDMOB & 0x0F );	// Save number of bytes to be recieved
+
+
+
+	for (int8_t i = 0; i < recieveMOb->dlc; i++){
+
+		recieveMOb->pt_data[i] = CANMSG; 		// Get data, INDX auto increments CANMSG
+	} 
+
+	CANCDMOB = (( 1 << CONMOB1 ) | ( 8 << DLC0));  //Enable transmission, set data length to 8. 
+	
+	CANSTMOB = 0x00; //reset MOb status register
+
+	// Note - the DLC field of the CANCDMO register is updated by the received MOb. If the value differs from expected DLC, an error is set
+
+} 
+}
+
 
 uint8_t can_init()
 {
