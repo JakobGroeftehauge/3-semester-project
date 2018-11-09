@@ -10,7 +10,7 @@
 
 
 //#define F_CPU 1600000UL
-#define FILTER_LENGTH 10
+#define FILTER_LENGTH 100
 
 	volatile uint8_t whereToStoreNext = 0;
 
@@ -22,27 +22,34 @@ int main(void)
 {
  
 	bit_set(DDRD, BIT(1));
+	bit_set(DDRD, BIT(7));
+	bit_set(PORTD, BIT(1)); 
+	//bit_set(PORTD, BIT(7));
+	
 	uint8_t i; 
-	uint8_t buffer[FILTER_LENGTH];
-	uint16_t result; 
-	uint8_t input = 1; 
+	float buffer[FILTER_LENGTH];
+	float result; 
+	float input = 180; 
+	float coefficient[FILTER_LENGTH] = {1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45,1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45,1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45,1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45,1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45, 1.45, 4.243, 567.3, 2.454, 23.45}; 
+	//float multiplier = 0.0045;
 
     /* Replace with your application code */
     while (1) 
     {
 
-	
+	//bit_set(PORTD, BIT(7));
 	result = 0; 
-	buffer[whereToStoreNext] = 0; 
-	updatePointer();
+	bit_set(PORTD, BIT(7)); 
+	buffer[whereToStoreNext] = result; 
+	//bit_clear(PORTD, BIT(1));
 	for(i = 0; i < FILTER_LENGTH; i++)
 	{
-	result += buffer[i]; 
+	updatePointer();
+	result += buffer[whereToStoreNext] * coefficient[FILTER_LENGTH-(i+1)]; 
     }
+	updatePointer(); 
 
-	result = result / FILTER_LENGTH; 
-
-	bit_clear(PORTD, BIT(1));
+	bit_clear(PORTD, BIT(7));
 	_delay_ms(30); 
 }
 
