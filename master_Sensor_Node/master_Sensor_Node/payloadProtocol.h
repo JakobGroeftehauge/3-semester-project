@@ -12,14 +12,6 @@
 #include "ADCTimer_drv.h"
 
 
-
-
-extern void decodemessage(struct st_cmd_t a);
-
-extern void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node*);
-
-extern void sendServiceMessage(uint8_t type, uint8_t unit, uint8_t range_min, uint8_t range_max, uint8_t trans_frq, uint8_t sampl_frq, uint8_t filt_type, uint8_t filt_par);
-
 typedef enum{
 	thermistor,
 	potentiometer,
@@ -45,5 +37,14 @@ typedef  struct {
 	uint8_t			sampling_frequency;
 	
 }sensor_at_node ;
+
+sensor_at_node Sensor1;		//Holdes the data of each sensor used in a struct
+sensor_at_node Sensor2;
+
+extern void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node* sensor);
+
+extern void sendServiceMessage(uint8_t type, uint8_t unit, uint8_t range_min, uint8_t range_max, uint8_t trans_frq, uint8_t sampl_frq, uint8_t filt_type, uint8_t filt_par);
+
+extern void decodeMessage(st_cmd_t* message_struct);
 
 #endif /* PAYLOADPROTOCOL_H_ */

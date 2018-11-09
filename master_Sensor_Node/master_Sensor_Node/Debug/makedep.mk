@@ -8,8 +8,6 @@ CAN_drv.c
 
 CAN_lib.c
 
-Initialize_node.c
-
 main.c
 
 payloadProtocol.c

@@ -3,31 +3,31 @@ master_Sensor_Node.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  00000464  2**0
+  0 .data         00000000  00800100  00800100  00000560  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000003f0  00000000  00000000  00000074  2**1
+  1 .text         000004ec  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000002  00800100  00800100  00000464  2**0
+  2 .bss          00000022  00800100  00800100  00000560  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000464  2**0
+  3 .comment      00000030  00000000  00000000  00000560  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000494  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000590  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 000000e0  00000000  00000000  000004d4  2**0
+  5 .debug_aranges 00000110  00000000  00000000  000005d0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00001314  00000000  00000000  000005b4  2**0
+  6 .debug_info   00001818  00000000  00000000  000006e0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000e90  00000000  00000000  000018c8  2**0
+  7 .debug_abbrev 00000fb7  00000000  00000000  00001ef8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000874  00000000  00000000  00002758  2**0
+  8 .debug_line   000009e3  00000000  00000000  00002eaf  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000001e0  00000000  00000000  00002fcc  2**2
+  9 .debug_frame  00000240  00000000  00000000  00003894  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    0000079f  00000000  00000000  000031ac  2**0
+ 10 .debug_str    000008d6  00000000  00000000  00003ad4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000054f  00000000  00000000  0000394b  2**0
+ 11 .debug_loc    0000062e  00000000  00000000  000043aa  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000000a0  00000000  00000000  00003e9a  2**0
+ 12 .debug_ranges 000000c0  00000000  00000000  000049d8  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -48,10 +48,10 @@ Disassembly of section .text:
   30:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   34:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   38:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
-  3c:	0c 94 d4 01 	jmp	0x3a8	; 0x3a8 <__vector_15>
+  3c:	0c 94 dd 01 	jmp	0x3ba	; 0x3ba <__vector_15>
   40:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   44:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
-  48:	0c 94 e5 01 	jmp	0x3ca	; 0x3ca <__vector_18>
+  48:	0c 94 ee 01 	jmp	0x3dc	; 0x3dc <__vector_18>
   4c:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   50:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   54:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
@@ -83,11 +83,11 @@ Disassembly of section .text:
   90:	1d 92       	st	X+, r1
 
 00000092 <.do_clear_bss_start>:
-  92:	a2 30       	cpi	r26, 0x02	; 2
+  92:	a2 32       	cpi	r26, 0x22	; 34
   94:	b2 07       	cpc	r27, r18
   96:	e1 f7       	brne	.-8      	; 0x90 <.do_clear_bss_loop>
-  98:	0e 94 6c 01 	call	0x2d8	; 0x2d8 <main>
-  9c:	0c 94 f6 01 	jmp	0x3ec	; 0x3ec <_exit>
+  98:	0e 94 6b 01 	call	0x2d6	; 0x2d6 <main>
+  9c:	0c 94 74 02 	jmp	0x4e8	; 0x4e8 <_exit>
 
 000000a0 <__bad_interrupt>:
   a0:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -101,721 +101,879 @@ void ADCtimerSetup() //Find new name !!
 	ADC_setup();
   a4:	84 ee       	ldi	r24, 0xE4	; 228
   a6:	80 93 7a 00 	sts	0x007A, r24	; 0x80007a <__TEXT_REGION_LENGTH__+0x7e007a>
-	ADC_input1();
-  aa:	82 e6       	ldi	r24, 0x62	; 98
-  ac:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__TEXT_REGION_LENGTH__+0x7e007c>
 	ADC_pin1();
-  b0:	55 98       	cbi	0x0a, 5	; 10
-	//ADC_input2();
-	//ADC_input3();  //Fishy setup. Find out what needs to be in this function 
+  aa:	55 98       	cbi	0x0a, 5	; 10
+	ADC_pin2();
+  ac:	26 98       	cbi	0x04, 6	; 4
+	ADC_pin3();
+  ae:	3c 98       	cbi	0x07, 4	; 7
 	
 	Timer0_CTC1();
-  b2:	82 e0       	ldi	r24, 0x02	; 2
-  b4:	84 bd       	out	0x24, r24	; 36
+  b0:	82 e0       	ldi	r24, 0x02	; 2
+  b2:	84 bd       	out	0x24, r24	; 36
 	Timer0_CTC2();
-  b6:	93 e0       	ldi	r25, 0x03	; 3
-  b8:	95 bd       	out	0x25, r25	; 37
+  b4:	93 e0       	ldi	r25, 0x03	; 3
+  b6:	95 bd       	out	0x25, r25	; 37
 	Timer0_interrupt();
-  ba:	80 93 6e 00 	sts	0x006E, r24	; 0x80006e <__TEXT_REGION_LENGTH__+0x7e006e>
+  b8:	80 93 6e 00 	sts	0x006E, r24	; 0x80006e <__TEXT_REGION_LENGTH__+0x7e006e>
 	Timer0_1ms();
-  be:	8c e7       	ldi	r24, 0x7C	; 124
-  c0:	87 bd       	out	0x27, r24	; 39
-  c2:	08 95       	ret
+  bc:	8c e7       	ldi	r24, 0x7C	; 124
+  be:	87 bd       	out	0x27, r24	; 39
+  c0:	08 95       	ret
 
-000000c4 <can_clear_all_mob>:
+000000c2 <can_clear_all_mob>:
 
     for (data_index = 0; data_index < (Can_get_dlc()); data_index++)
     {
         *(p_can_message_data + data_index) = CANMSG;
     }
 }
-  c4:	cf 93       	push	r28
-  c6:	df 93       	push	r29
-  c8:	80 e0       	ldi	r24, 0x00	; 0
-  ca:	cd ee       	ldi	r28, 0xED	; 237
-  cc:	d0 e0       	ldi	r29, 0x00	; 0
-  ce:	af ee       	ldi	r26, 0xEF	; 239
-  d0:	b0 e0       	ldi	r27, 0x00	; 0
-  d2:	ee ee       	ldi	r30, 0xEE	; 238
-  d4:	f0 e0       	ldi	r31, 0x00	; 0
-  d6:	98 2f       	mov	r25, r24
-  d8:	92 95       	swap	r25
-  da:	90 7f       	andi	r25, 0xF0	; 240
-  dc:	98 83       	st	Y, r25
-  de:	1c 92       	st	X, r1
-  e0:	10 82       	st	Z, r1
-  e2:	8f 5f       	subi	r24, 0xFF	; 255
-  e4:	86 30       	cpi	r24, 0x06	; 6
-  e6:	b9 f7       	brne	.-18     	; 0xd6 <can_clear_all_mob+0x12>
-  e8:	df 91       	pop	r29
-  ea:	cf 91       	pop	r28
-  ec:	08 95       	ret
+  c2:	cf 93       	push	r28
+  c4:	df 93       	push	r29
+  c6:	80 e0       	ldi	r24, 0x00	; 0
+  c8:	cd ee       	ldi	r28, 0xED	; 237
+  ca:	d0 e0       	ldi	r29, 0x00	; 0
+  cc:	af ee       	ldi	r26, 0xEF	; 239
+  ce:	b0 e0       	ldi	r27, 0x00	; 0
+  d0:	ee ee       	ldi	r30, 0xEE	; 238
+  d2:	f0 e0       	ldi	r31, 0x00	; 0
+  d4:	98 2f       	mov	r25, r24
+  d6:	92 95       	swap	r25
+  d8:	90 7f       	andi	r25, 0xF0	; 240
+  da:	98 83       	st	Y, r25
+  dc:	1c 92       	st	X, r1
+  de:	10 82       	st	Z, r1
+  e0:	8f 5f       	subi	r24, 0xFF	; 255
+  e2:	86 30       	cpi	r24, 0x06	; 6
+  e4:	b9 f7       	brne	.-18     	; 0xd4 <can_clear_all_mob+0x12>
+  e6:	df 91       	pop	r29
+  e8:	cf 91       	pop	r28
+  ea:	08 95       	ret
 
-000000ee <can_fixed_baudrate>:
+000000ec <can_fixed_baudrate>:
 //! @return Baudrate Status
 //!         fixed = 1: baudrate performed
 //------------------------------------------------------------------------------
 uint8_t can_fixed_baudrate()
 {
     Can_reset();
-  ee:	81 e0       	ldi	r24, 0x01	; 1
-  f0:	80 93 d8 00 	sts	0x00D8, r24	; 0x8000d8 <__TEXT_REGION_LENGTH__+0x7e00d8>
+  ec:	81 e0       	ldi	r24, 0x01	; 1
+  ee:	80 93 d8 00 	sts	0x00D8, r24	; 0x8000d8 <__TEXT_REGION_LENGTH__+0x7e00d8>
     Can_conf_bt();
-  f4:	82 e0       	ldi	r24, 0x02	; 2
-  f6:	80 93 e2 00 	sts	0x00E2, r24	; 0x8000e2 <__TEXT_REGION_LENGTH__+0x7e00e2>
-  fa:	84 e0       	ldi	r24, 0x04	; 4
-  fc:	80 93 e3 00 	sts	0x00E3, r24	; 0x8000e3 <__TEXT_REGION_LENGTH__+0x7e00e3>
- 100:	83 e1       	ldi	r24, 0x13	; 19
- 102:	80 93 e4 00 	sts	0x00E4, r24	; 0x8000e4 <__TEXT_REGION_LENGTH__+0x7e00e4>
+  f2:	82 e0       	ldi	r24, 0x02	; 2
+  f4:	80 93 e2 00 	sts	0x00E2, r24	; 0x8000e2 <__TEXT_REGION_LENGTH__+0x7e00e2>
+  f8:	84 e0       	ldi	r24, 0x04	; 4
+  fa:	80 93 e3 00 	sts	0x00E3, r24	; 0x8000e3 <__TEXT_REGION_LENGTH__+0x7e00e3>
+  fe:	83 e1       	ldi	r24, 0x13	; 19
+ 100:	80 93 e4 00 	sts	0x00E4, r24	; 0x8000e4 <__TEXT_REGION_LENGTH__+0x7e00e4>
     return 1;
 }
- 106:	81 e0       	ldi	r24, 0x01	; 1
- 108:	08 95       	ret
+ 104:	81 e0       	ldi	r24, 0x01	; 1
+ 106:	08 95       	ret
 
-0000010a <setup_receive_mob>:
+00000108 <setup_receive_mob>:
 
 void setup_receive_mob(st_cmd_t* MObStruct){
- 10a:	fc 01       	movw	r30, r24
+ 108:	fc 01       	movw	r30, r24
 	
 	CANPAGE = ( MObStruct->MObNumber << MOBNB0);			//Set canpage to the current mob
- 10c:	80 85       	ldd	r24, Z+8	; 0x08
- 10e:	82 95       	swap	r24
- 110:	80 7f       	andi	r24, 0xF0	; 240
- 112:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <__TEXT_REGION_LENGTH__+0x7e00ed>
+ 10a:	80 85       	ldd	r24, Z+8	; 0x08
+ 10c:	82 95       	swap	r24
+ 10e:	80 7f       	andi	r24, 0xF0	; 240
+ 110:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <__TEXT_REGION_LENGTH__+0x7e00ed>
 	
 	CANIE2 |= ( 1 << MObStruct->MObNumber);				// Enable interrupts for the current mob
- 116:	ae ed       	ldi	r26, 0xDE	; 222
- 118:	b0 e0       	ldi	r27, 0x00	; 0
- 11a:	8c 91       	ld	r24, X
- 11c:	21 e0       	ldi	r18, 0x01	; 1
- 11e:	30 e0       	ldi	r19, 0x00	; 0
- 120:	00 84       	ldd	r0, Z+8	; 0x08
- 122:	02 c0       	rjmp	.+4      	; 0x128 <setup_receive_mob+0x1e>
- 124:	22 0f       	add	r18, r18
- 126:	33 1f       	adc	r19, r19
- 128:	0a 94       	dec	r0
- 12a:	e2 f7       	brpl	.-8      	; 0x124 <setup_receive_mob+0x1a>
- 12c:	28 2b       	or	r18, r24
- 12e:	2c 93       	st	X, r18
+ 114:	ae ed       	ldi	r26, 0xDE	; 222
+ 116:	b0 e0       	ldi	r27, 0x00	; 0
+ 118:	8c 91       	ld	r24, X
+ 11a:	21 e0       	ldi	r18, 0x01	; 1
+ 11c:	30 e0       	ldi	r19, 0x00	; 0
+ 11e:	00 84       	ldd	r0, Z+8	; 0x08
+ 120:	02 c0       	rjmp	.+4      	; 0x126 <setup_receive_mob+0x1e>
+ 122:	22 0f       	add	r18, r18
+ 124:	33 1f       	adc	r19, r19
+ 126:	0a 94       	dec	r0
+ 128:	e2 f7       	brpl	.-8      	; 0x122 <setup_receive_mob+0x1a>
+ 12a:	28 2b       	or	r18, r24
+ 12c:	2c 93       	st	X, r18
 	
 	CANIDM1 = (MObStruct->mask / 8);   	// Setup mask with the ID's to be received
- 130:	83 81       	ldd	r24, Z+3	; 0x03
- 132:	94 81       	ldd	r25, Z+4	; 0x04
- 134:	96 95       	lsr	r25
- 136:	87 95       	ror	r24
- 138:	96 95       	lsr	r25
- 13a:	87 95       	ror	r24
- 13c:	96 95       	lsr	r25
- 13e:	87 95       	ror	r24
- 140:	80 93 f7 00 	sts	0x00F7, r24	; 0x8000f7 <__TEXT_REGION_LENGTH__+0x7e00f7>
+ 12e:	83 81       	ldd	r24, Z+3	; 0x03
+ 130:	94 81       	ldd	r25, Z+4	; 0x04
+ 132:	96 95       	lsr	r25
+ 134:	87 95       	ror	r24
+ 136:	96 95       	lsr	r25
+ 138:	87 95       	ror	r24
+ 13a:	96 95       	lsr	r25
+ 13c:	87 95       	ror	r24
+ 13e:	80 93 f7 00 	sts	0x00F7, r24	; 0x8000f7 <__TEXT_REGION_LENGTH__+0x7e00f7>
 
 	CANIDM2 = ((MObStruct->mask & 0x07) << 5); 	// ""
- 144:	83 81       	ldd	r24, Z+3	; 0x03
- 146:	82 95       	swap	r24
- 148:	88 0f       	add	r24, r24
- 14a:	80 7e       	andi	r24, 0xE0	; 224
- 14c:	80 93 f6 00 	sts	0x00F6, r24	; 0x8000f6 <__TEXT_REGION_LENGTH__+0x7e00f6>
+ 142:	83 81       	ldd	r24, Z+3	; 0x03
+ 144:	82 95       	swap	r24
+ 146:	88 0f       	add	r24, r24
+ 148:	80 7e       	andi	r24, 0xE0	; 224
+ 14a:	80 93 f6 00 	sts	0x00F6, r24	; 0x8000f6 <__TEXT_REGION_LENGTH__+0x7e00f6>
 
 	CANIDM3 = 0x00; 	// ""
- 150:	10 92 f5 00 	sts	0x00F5, r1	; 0x8000f5 <__TEXT_REGION_LENGTH__+0x7e00f5>
+ 14e:	10 92 f5 00 	sts	0x00F5, r1	; 0x8000f5 <__TEXT_REGION_LENGTH__+0x7e00f5>
 
 	CANIDM4 = 0x00; 	// ""
- 154:	10 92 f4 00 	sts	0x00F4, r1	; 0x8000f4 <__TEXT_REGION_LENGTH__+0x7e00f4>
+ 152:	10 92 f4 00 	sts	0x00F4, r1	; 0x8000f4 <__TEXT_REGION_LENGTH__+0x7e00f4>
 	
 	CANCDMOB = ( 1 << CONMOB1) | ( 8 << DLC0);
- 158:	88 e8       	ldi	r24, 0x88	; 136
- 15a:	80 93 ef 00 	sts	0x00EF, r24	; 0x8000ef <__TEXT_REGION_LENGTH__+0x7e00ef>
- 15e:	08 95       	ret
+ 156:	88 e8       	ldi	r24, 0x88	; 136
+ 158:	80 93 ef 00 	sts	0x00EF, r24	; 0x8000ef <__TEXT_REGION_LENGTH__+0x7e00ef>
+ 15c:	08 95       	ret
 
-00000160 <can_tx>:
+0000015e <can_tx>:
 		}	
 		//return ACCEPTED;
 	
 	}
 
 void can_tx(st_cmd_t* MObStruct) {
- 160:	cf 93       	push	r28
- 162:	df 93       	push	r29
- 164:	dc 01       	movw	r26, r24
+ 15e:	cf 93       	push	r28
+ 160:	df 93       	push	r29
+ 162:	dc 01       	movw	r26, r24
 
 	uint8_t i;   
 	if (MObStruct->MObNumber < 6)
- 166:	18 96       	adiw	r26, 0x08	; 8
- 168:	8c 91       	ld	r24, X
- 16a:	18 97       	sbiw	r26, 0x08	; 8
- 16c:	86 30       	cpi	r24, 0x06	; 6
- 16e:	e8 f5       	brcc	.+122    	; 0x1ea <can_tx+0x8a>
+ 164:	18 96       	adiw	r26, 0x08	; 8
+ 166:	8c 91       	ld	r24, X
+ 168:	18 97       	sbiw	r26, 0x08	; 8
+ 16a:	86 30       	cpi	r24, 0x06	; 6
+ 16c:	e8 f5       	brcc	.+122    	; 0x1e8 <can_tx+0x8a>
 	{
 	CANPAGE = MObStruct->MObNumber << MOBNB0;		// Select MOb0 for transmission
- 170:	82 95       	swap	r24
- 172:	80 7f       	andi	r24, 0xF0	; 240
- 174:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <__TEXT_REGION_LENGTH__+0x7e00ed>
+ 16e:	82 95       	swap	r24
+ 170:	80 7f       	andi	r24, 0xF0	; 240
+ 172:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <__TEXT_REGION_LENGTH__+0x7e00ed>
 	}
 	else return; 
 
 	
 	
 	CANSTMOB = 0x00;    	// Clear mob status register
- 178:	10 92 ee 00 	sts	0x00EE, r1	; 0x8000ee <__TEXT_REGION_LENGTH__+0x7e00ee>
+ 176:	10 92 ee 00 	sts	0x00EE, r1	; 0x8000ee <__TEXT_REGION_LENGTH__+0x7e00ee>
 
 		CANIDT1 = ((MObStruct->id) / 8) ; 	// Set can id to 0
- 17c:	11 96       	adiw	r26, 0x01	; 1
- 17e:	8d 91       	ld	r24, X+
- 180:	9c 91       	ld	r25, X
- 182:	12 97       	sbiw	r26, 0x02	; 2
- 184:	96 95       	lsr	r25
- 186:	87 95       	ror	r24
- 188:	96 95       	lsr	r25
- 18a:	87 95       	ror	r24
- 18c:	96 95       	lsr	r25
- 18e:	87 95       	ror	r24
- 190:	80 93 f3 00 	sts	0x00F3, r24	; 0x8000f3 <__TEXT_REGION_LENGTH__+0x7e00f3>
+ 17a:	11 96       	adiw	r26, 0x01	; 1
+ 17c:	8d 91       	ld	r24, X+
+ 17e:	9c 91       	ld	r25, X
+ 180:	12 97       	sbiw	r26, 0x02	; 2
+ 182:	96 95       	lsr	r25
+ 184:	87 95       	ror	r24
+ 186:	96 95       	lsr	r25
+ 188:	87 95       	ror	r24
+ 18a:	96 95       	lsr	r25
+ 18c:	87 95       	ror	r24
+ 18e:	80 93 f3 00 	sts	0x00F3, r24	; 0x8000f3 <__TEXT_REGION_LENGTH__+0x7e00f3>
 		CANIDT2 = (((MObStruct->id) & 0x07) << 5);
- 194:	11 96       	adiw	r26, 0x01	; 1
- 196:	8c 91       	ld	r24, X
- 198:	11 97       	sbiw	r26, 0x01	; 1
- 19a:	82 95       	swap	r24
- 19c:	88 0f       	add	r24, r24
- 19e:	80 7e       	andi	r24, 0xE0	; 224
- 1a0:	80 93 f2 00 	sts	0x00F2, r24	; 0x8000f2 <__TEXT_REGION_LENGTH__+0x7e00f2>
+ 192:	11 96       	adiw	r26, 0x01	; 1
+ 194:	8c 91       	ld	r24, X
+ 196:	11 97       	sbiw	r26, 0x01	; 1
+ 198:	82 95       	swap	r24
+ 19a:	88 0f       	add	r24, r24
+ 19c:	80 7e       	andi	r24, 0xE0	; 224
+ 19e:	80 93 f2 00 	sts	0x00F2, r24	; 0x8000f2 <__TEXT_REGION_LENGTH__+0x7e00f2>
 		CANIDT3 = 0x00;		// ""
- 1a4:	10 92 f1 00 	sts	0x00F1, r1	; 0x8000f1 <__TEXT_REGION_LENGTH__+0x7e00f1>
+ 1a2:	10 92 f1 00 	sts	0x00F1, r1	; 0x8000f1 <__TEXT_REGION_LENGTH__+0x7e00f1>
 		CANIDT4 = 0x00;		// ""
- 1a8:	10 92 f0 00 	sts	0x00F0, r1	; 0x8000f0 <__TEXT_REGION_LENGTH__+0x7e00f0>
- 1ac:	20 e0       	ldi	r18, 0x00	; 0
- 1ae:	30 e0       	ldi	r19, 0x00	; 0
+ 1a6:	10 92 f0 00 	sts	0x00F0, r1	; 0x8000f0 <__TEXT_REGION_LENGTH__+0x7e00f0>
+ 1aa:	20 e0       	ldi	r18, 0x00	; 0
+ 1ac:	30 e0       	ldi	r19, 0x00	; 0
 	//Set_can_ID(MObStruct->id);
 
 	for (i=0; i < MSG_SIZE; i++)
 	{
 	CANMSG = MObStruct->pt_data[i]; 
- 1b0:	ca ef       	ldi	r28, 0xFA	; 250
- 1b2:	d0 e0       	ldi	r29, 0x00	; 0
- 1b4:	16 96       	adiw	r26, 0x06	; 6
- 1b6:	ed 91       	ld	r30, X+
- 1b8:	fc 91       	ld	r31, X
- 1ba:	17 97       	sbiw	r26, 0x07	; 7
- 1bc:	e2 0f       	add	r30, r18
- 1be:	f3 1f       	adc	r31, r19
- 1c0:	90 81       	ld	r25, Z
- 1c2:	98 83       	st	Y, r25
- 1c4:	2f 5f       	subi	r18, 0xFF	; 255
- 1c6:	3f 4f       	sbci	r19, 0xFF	; 255
+ 1ae:	ca ef       	ldi	r28, 0xFA	; 250
+ 1b0:	d0 e0       	ldi	r29, 0x00	; 0
+ 1b2:	16 96       	adiw	r26, 0x06	; 6
+ 1b4:	ed 91       	ld	r30, X+
+ 1b6:	fc 91       	ld	r31, X
+ 1b8:	17 97       	sbiw	r26, 0x07	; 7
+ 1ba:	e2 0f       	add	r30, r18
+ 1bc:	f3 1f       	adc	r31, r19
+ 1be:	90 81       	ld	r25, Z
+ 1c0:	98 83       	st	Y, r25
+ 1c2:	2f 5f       	subi	r18, 0xFF	; 255
+ 1c4:	3f 4f       	sbci	r19, 0xFF	; 255
 		CANIDT2 = (((MObStruct->id) & 0x07) << 5);
 		CANIDT3 = 0x00;		// ""
 		CANIDT4 = 0x00;		// ""
 	//Set_can_ID(MObStruct->id);
 
 	for (i=0; i < MSG_SIZE; i++)
- 1c8:	28 30       	cpi	r18, 0x08	; 8
- 1ca:	31 05       	cpc	r19, r1
- 1cc:	99 f7       	brne	.-26     	; 0x1b4 <can_tx+0x54>
+ 1c6:	28 30       	cpi	r18, 0x08	; 8
+ 1c8:	31 05       	cpc	r19, r1
+ 1ca:	99 f7       	brne	.-26     	; 0x1b2 <can_tx+0x54>
 	{
 	CANMSG = MObStruct->pt_data[i]; 
 	}
 	
 	CANCDMOB = ( 1 << CONMOB0 ) | ( (MObStruct->dlc) << DLC0 ); 	// Enable transmission, data length=1 (CAN Standard rev 2.0B(29 bit identifiers))
- 1ce:	15 96       	adiw	r26, 0x05	; 5
- 1d0:	8c 91       	ld	r24, X
- 1d2:	80 64       	ori	r24, 0x40	; 64
- 1d4:	80 93 ef 00 	sts	0x00EF, r24	; 0x8000ef <__TEXT_REGION_LENGTH__+0x7e00ef>
+ 1cc:	15 96       	adiw	r26, 0x05	; 5
+ 1ce:	8c 91       	ld	r24, X
+ 1d0:	80 64       	ori	r24, 0x40	; 64
+ 1d2:	80 93 ef 00 	sts	0x00EF, r24	; 0x8000ef <__TEXT_REGION_LENGTH__+0x7e00ef>
 
 	while ( ! ( CANSTMOB & ( 1 << TXOK ) ) );	// wait for TXOK flag set
- 1d8:	ee ee       	ldi	r30, 0xEE	; 238
- 1da:	f0 e0       	ldi	r31, 0x00	; 0
- 1dc:	80 81       	ld	r24, Z
- 1de:	86 ff       	sbrs	r24, 6
- 1e0:	fd cf       	rjmp	.-6      	; 0x1dc <can_tx+0x7c>
+ 1d6:	ee ee       	ldi	r30, 0xEE	; 238
+ 1d8:	f0 e0       	ldi	r31, 0x00	; 0
+ 1da:	80 81       	ld	r24, Z
+ 1dc:	86 ff       	sbrs	r24, 6
+ 1de:	fd cf       	rjmp	.-6      	; 0x1da <can_tx+0x7c>
 	// todo: have this use interrupts
 	CANCDMOB = 0x00;	// Disable Transmission
- 1e2:	10 92 ef 00 	sts	0x00EF, r1	; 0x8000ef <__TEXT_REGION_LENGTH__+0x7e00ef>
+ 1e0:	10 92 ef 00 	sts	0x00EF, r1	; 0x8000ef <__TEXT_REGION_LENGTH__+0x7e00ef>
 
 	CANSTMOB = 0x00;	// Clear TXOK flag
- 1e6:	10 92 ee 00 	sts	0x00EE, r1	; 0x8000ee <__TEXT_REGION_LENGTH__+0x7e00ee>
+ 1e4:	10 92 ee 00 	sts	0x00EE, r1	; 0x8000ee <__TEXT_REGION_LENGTH__+0x7e00ee>
 
 }
- 1ea:	df 91       	pop	r29
- 1ec:	cf 91       	pop	r28
- 1ee:	08 95       	ret
+ 1e8:	df 91       	pop	r29
+ 1ea:	cf 91       	pop	r28
+ 1ec:	08 95       	ret
 
-000001f0 <can_cmd>:
+000001ee <can_cmd>:
  
 
 uint8_t can_cmd(st_cmd_t* MObStruct)
 {
 uint8_t status; 
 switch(MObStruct->cmd)
- 1f0:	fc 01       	movw	r30, r24
- 1f2:	20 81       	ld	r18, Z
- 1f4:	22 23       	and	r18, r18
- 1f6:	19 f0       	breq	.+6      	; 0x1fe <can_cmd+0xe>
- 1f8:	21 30       	cpi	r18, 0x01	; 1
- 1fa:	21 f0       	breq	.+8      	; 0x204 <can_cmd+0x14>
- 1fc:	06 c0       	rjmp	.+12     	; 0x20a <can_cmd+0x1a>
+ 1ee:	fc 01       	movw	r30, r24
+ 1f0:	20 81       	ld	r18, Z
+ 1f2:	22 23       	and	r18, r18
+ 1f4:	19 f0       	breq	.+6      	; 0x1fc <can_cmd+0xe>
+ 1f6:	21 30       	cpi	r18, 0x01	; 1
+ 1f8:	21 f0       	breq	.+8      	; 0x202 <can_cmd+0x14>
+ 1fa:	06 c0       	rjmp	.+12     	; 0x208 <can_cmd+0x1a>
 	{
 	case TX:
 			can_tx(MObStruct); 
- 1fe:	0e 94 b0 00 	call	0x160	; 0x160 <can_tx>
+ 1fc:	0e 94 af 00 	call	0x15e	; 0x15e <can_tx>
 			status = 0; 
 			//MObStruct->status = DONE; 
 			break; 
- 202:	08 c0       	rjmp	.+16     	; 0x214 <can_cmd+0x24>
+ 200:	08 c0       	rjmp	.+16     	; 0x212 <can_cmd+0x24>
 
 	case RX:
 			setup_receive_mob(MObStruct);
- 204:	0e 94 85 00 	call	0x10a	; 0x10a <setup_receive_mob>
+ 202:	0e 94 84 00 	call	0x108	; 0x108 <setup_receive_mob>
 			status = 0; 
 			//MObStruct->status = DONE; 
 			break; 
- 208:	05 c0       	rjmp	.+10     	; 0x214 <can_cmd+0x24>
+ 206:	05 c0       	rjmp	.+10     	; 0x212 <can_cmd+0x24>
 
 	default:
 			//MObStruct->status = NOT_ACCEPTED;
 			bit_flip(PORTD, BIT(7));
- 20a:	8b b1       	in	r24, 0x0b	; 11
- 20c:	80 58       	subi	r24, 0x80	; 128
- 20e:	8b b9       	out	0x0b, r24	; 11
+ 208:	8b b1       	in	r24, 0x0b	; 11
+ 20a:	80 58       	subi	r24, 0x80	; 128
+ 20c:	8b b9       	out	0x0b, r24	; 11
 		{
 		return ACCEPTED;
 		}	
 		else
 		{
 		 return NOT_ACCEPTED;
- 210:	83 e0       	ldi	r24, 0x03	; 3
- 212:	08 95       	ret
+ 20e:	83 e0       	ldi	r24, 0x03	; 3
+ 210:	08 95       	ret
 			status = 0x01;
 			break; 
 	}
 		if (status == 0x00)
 		{
 		return ACCEPTED;
- 214:	82 e0       	ldi	r24, 0x02	; 2
+ 212:	82 e0       	ldi	r24, 0x02	; 2
 		{
 		 return NOT_ACCEPTED;
 		}	
 		//return ACCEPTED;
 	
 	}
- 216:	08 95       	ret
+ 214:	08 95       	ret
 
-00000218 <transfer_data>:
+00000216 <transfer_data>:
 	CANSTMOB = 0x00;	// Clear TXOK flag
 
 }
 
 void transfer_data(st_cmd_t* recieveMOb)
 {
- 218:	cf 93       	push	r28
- 21a:	df 93       	push	r29
- 21c:	dc 01       	movw	r26, r24
+ 216:	cf 93       	push	r28
+ 218:	df 93       	push	r29
+ 21a:	dc 01       	movw	r26, r24
 
 CANPAGE = recieveMOb->MObNumber << 4;
- 21e:	18 96       	adiw	r26, 0x08	; 8
- 220:	8c 91       	ld	r24, X
- 222:	18 97       	sbiw	r26, 0x08	; 8
- 224:	82 95       	swap	r24
- 226:	80 7f       	andi	r24, 0xF0	; 240
- 228:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <__TEXT_REGION_LENGTH__+0x7e00ed>
+ 21c:	18 96       	adiw	r26, 0x08	; 8
+ 21e:	8c 91       	ld	r24, X
+ 220:	18 97       	sbiw	r26, 0x08	; 8
+ 222:	82 95       	swap	r24
+ 224:	80 7f       	andi	r24, 0xF0	; 240
+ 226:	80 93 ed 00 	sts	0x00ED, r24	; 0x8000ed <__TEXT_REGION_LENGTH__+0x7e00ed>
 
  recieveMOb->id = CANIDT1 + (CANIDT2*8);
- 22c:	80 91 f3 00 	lds	r24, 0x00F3	; 0x8000f3 <__TEXT_REGION_LENGTH__+0x7e00f3>
- 230:	20 91 f2 00 	lds	r18, 0x00F2	; 0x8000f2 <__TEXT_REGION_LENGTH__+0x7e00f2>
- 234:	90 e0       	ldi	r25, 0x00	; 0
- 236:	38 e0       	ldi	r19, 0x08	; 8
- 238:	23 9f       	mul	r18, r19
- 23a:	80 0d       	add	r24, r0
- 23c:	91 1d       	adc	r25, r1
- 23e:	11 24       	eor	r1, r1
- 240:	12 96       	adiw	r26, 0x02	; 2
- 242:	9c 93       	st	X, r25
- 244:	8e 93       	st	-X, r24
- 246:	11 97       	sbiw	r26, 0x01	; 1
+ 22a:	80 91 f3 00 	lds	r24, 0x00F3	; 0x8000f3 <__TEXT_REGION_LENGTH__+0x7e00f3>
+ 22e:	20 91 f2 00 	lds	r18, 0x00F2	; 0x8000f2 <__TEXT_REGION_LENGTH__+0x7e00f2>
+ 232:	90 e0       	ldi	r25, 0x00	; 0
+ 234:	38 e0       	ldi	r19, 0x08	; 8
+ 236:	23 9f       	mul	r18, r19
+ 238:	80 0d       	add	r24, r0
+ 23a:	91 1d       	adc	r25, r1
+ 23c:	11 24       	eor	r1, r1
+ 23e:	12 96       	adiw	r26, 0x02	; 2
+ 240:	9c 93       	st	X, r25
+ 242:	8e 93       	st	-X, r24
+ 244:	11 97       	sbiw	r26, 0x01	; 1
  
 
 if ( CANSTMOB & ( 1 << RXOK) ){  	// Interrupt caused by receive finished
- 248:	80 91 ee 00 	lds	r24, 0x00EE	; 0x8000ee <__TEXT_REGION_LENGTH__+0x7e00ee>
- 24c:	85 ff       	sbrs	r24, 5
- 24e:	26 c0       	rjmp	.+76     	; 0x29c <transfer_data+0x84>
+ 246:	80 91 ee 00 	lds	r24, 0x00EE	; 0x8000ee <__TEXT_REGION_LENGTH__+0x7e00ee>
+ 24a:	85 ff       	sbrs	r24, 5
+ 24c:	26 c0       	rjmp	.+76     	; 0x29a <transfer_data+0x84>
 
 	recieveMOb->dlc = ( CANCDMOB & 0x0F );	// Save number of bytes to be recieved
- 250:	80 91 ef 00 	lds	r24, 0x00EF	; 0x8000ef <__TEXT_REGION_LENGTH__+0x7e00ef>
- 254:	8f 70       	andi	r24, 0x0F	; 15
- 256:	15 96       	adiw	r26, 0x05	; 5
- 258:	8c 93       	st	X, r24
- 25a:	15 97       	sbiw	r26, 0x05	; 5
+ 24e:	80 91 ef 00 	lds	r24, 0x00EF	; 0x8000ef <__TEXT_REGION_LENGTH__+0x7e00ef>
+ 252:	8f 70       	andi	r24, 0x0F	; 15
+ 254:	15 96       	adiw	r26, 0x05	; 5
+ 256:	8c 93       	st	X, r24
+ 258:	15 97       	sbiw	r26, 0x05	; 5
 
 
 
 	for (int8_t i = 0; i < recieveMOb->dlc; i++){
- 25c:	88 23       	and	r24, r24
- 25e:	c9 f0       	breq	.+50     	; 0x292 <transfer_data+0x7a>
- 260:	90 e0       	ldi	r25, 0x00	; 0
+ 25a:	88 23       	and	r24, r24
+ 25c:	c9 f0       	breq	.+50     	; 0x290 <transfer_data+0x7a>
+ 25e:	90 e0       	ldi	r25, 0x00	; 0
 
 		recieveMOb->pt_data[i] = CANMSG; 		// Get data, INDX auto increments CANMSG
- 262:	ca ef       	ldi	r28, 0xFA	; 250
- 264:	d0 e0       	ldi	r29, 0x00	; 0
- 266:	88 81       	ld	r24, Y
- 268:	16 96       	adiw	r26, 0x06	; 6
- 26a:	ed 91       	ld	r30, X+
- 26c:	fc 91       	ld	r31, X
- 26e:	17 97       	sbiw	r26, 0x07	; 7
- 270:	e9 0f       	add	r30, r25
- 272:	f1 1d       	adc	r31, r1
- 274:	97 fd       	sbrc	r25, 7
- 276:	fa 95       	dec	r31
- 278:	80 83       	st	Z, r24
- 27a:	9f 5f       	subi	r25, 0xFF	; 255
+ 260:	ca ef       	ldi	r28, 0xFA	; 250
+ 262:	d0 e0       	ldi	r29, 0x00	; 0
+ 264:	88 81       	ld	r24, Y
+ 266:	16 96       	adiw	r26, 0x06	; 6
+ 268:	ed 91       	ld	r30, X+
+ 26a:	fc 91       	ld	r31, X
+ 26c:	17 97       	sbiw	r26, 0x07	; 7
+ 26e:	e9 0f       	add	r30, r25
+ 270:	f1 1d       	adc	r31, r1
+ 272:	97 fd       	sbrc	r25, 7
+ 274:	fa 95       	dec	r31
+ 276:	80 83       	st	Z, r24
+ 278:	9f 5f       	subi	r25, 0xFF	; 255
 
 	recieveMOb->dlc = ( CANCDMOB & 0x0F );	// Save number of bytes to be recieved
 
 
 
 	for (int8_t i = 0; i < recieveMOb->dlc; i++){
- 27c:	49 2f       	mov	r20, r25
- 27e:	09 2e       	mov	r0, r25
- 280:	00 0c       	add	r0, r0
- 282:	55 0b       	sbc	r21, r21
- 284:	15 96       	adiw	r26, 0x05	; 5
- 286:	2c 91       	ld	r18, X
- 288:	15 97       	sbiw	r26, 0x05	; 5
- 28a:	30 e0       	ldi	r19, 0x00	; 0
- 28c:	42 17       	cp	r20, r18
- 28e:	53 07       	cpc	r21, r19
- 290:	54 f3       	brlt	.-44     	; 0x266 <transfer_data+0x4e>
+ 27a:	49 2f       	mov	r20, r25
+ 27c:	09 2e       	mov	r0, r25
+ 27e:	00 0c       	add	r0, r0
+ 280:	55 0b       	sbc	r21, r21
+ 282:	15 96       	adiw	r26, 0x05	; 5
+ 284:	2c 91       	ld	r18, X
+ 286:	15 97       	sbiw	r26, 0x05	; 5
+ 288:	30 e0       	ldi	r19, 0x00	; 0
+ 28a:	42 17       	cp	r20, r18
+ 28c:	53 07       	cpc	r21, r19
+ 28e:	54 f3       	brlt	.-44     	; 0x264 <transfer_data+0x4e>
 
 		recieveMOb->pt_data[i] = CANMSG; 		// Get data, INDX auto increments CANMSG
 	} 
 
 	CANCDMOB = (( 1 << CONMOB1 ) | ( 8 << DLC0));  //Enable transmission, set data length to 8. 
- 292:	88 e8       	ldi	r24, 0x88	; 136
- 294:	80 93 ef 00 	sts	0x00EF, r24	; 0x8000ef <__TEXT_REGION_LENGTH__+0x7e00ef>
+ 290:	88 e8       	ldi	r24, 0x88	; 136
+ 292:	80 93 ef 00 	sts	0x00EF, r24	; 0x8000ef <__TEXT_REGION_LENGTH__+0x7e00ef>
 	
 	CANSTMOB = 0x00; //reset MOb status register
- 298:	10 92 ee 00 	sts	0x00EE, r1	; 0x8000ee <__TEXT_REGION_LENGTH__+0x7e00ee>
+ 296:	10 92 ee 00 	sts	0x00EE, r1	; 0x8000ee <__TEXT_REGION_LENGTH__+0x7e00ee>
 
 	// Note - the DLC field of the CANCDMO register is updated by the received MOb. If the value differs from expected DLC, an error is set
 
 } 
 }
- 29c:	df 91       	pop	r29
- 29e:	cf 91       	pop	r28
- 2a0:	08 95       	ret
+ 29a:	df 91       	pop	r29
+ 29c:	cf 91       	pop	r28
+ 29e:	08 95       	ret
 
-000002a2 <can_init>:
+000002a0 <can_init>:
 
 
 uint8_t can_init()
 {
 	Can_bit_timing(1);
- 2a2:	0e 94 77 00 	call	0xee	; 0xee <can_fixed_baudrate>
+ 2a0:	0e 94 76 00 	call	0xec	; 0xec <can_fixed_baudrate>
 	can_clear_all_mob();                        // c.f. function in "can_drv.c"
- 2a6:	0e 94 62 00 	call	0xc4	; 0xc4 <can_clear_all_mob>
+ 2a4:	0e 94 61 00 	call	0xc2	; 0xc2 <can_clear_all_mob>
 	Can_enable();								// c.f. macro in "can_drv.h"
- 2aa:	e8 ed       	ldi	r30, 0xD8	; 216
- 2ac:	f0 e0       	ldi	r31, 0x00	; 0
- 2ae:	80 81       	ld	r24, Z
- 2b0:	82 60       	ori	r24, 0x02	; 2
- 2b2:	80 83       	st	Z, r24
+ 2a8:	e8 ed       	ldi	r30, 0xD8	; 216
+ 2aa:	f0 e0       	ldi	r31, 0x00	; 0
+ 2ac:	80 81       	ld	r24, Z
+ 2ae:	82 60       	ori	r24, 0x02	; 2
+ 2b0:	80 83       	st	Z, r24
 	Can_enable_chosen_ints();                   // macro in "can_drv.h" - change to enable different general interrupts
- 2b4:	80 ea       	ldi	r24, 0xA0	; 160
- 2b6:	80 93 db 00 	sts	0x00DB, r24	; 0x8000db <__TEXT_REGION_LENGTH__+0x7e00db>
+ 2b2:	80 ea       	ldi	r24, 0xA0	; 160
+ 2b4:	80 93 db 00 	sts	0x00DB, r24	; 0x8000db <__TEXT_REGION_LENGTH__+0x7e00db>
 	return (1);
 }
- 2ba:	81 e0       	ldi	r24, 0x01	; 1
- 2bc:	08 95       	ret
+ 2b8:	81 e0       	ldi	r24, 0x01	; 1
+ 2ba:	08 95       	ret
 
-000002be <chip_init>:
+000002bc <chip_init>:
 
 
 void chip_init(void){
 
 	//***** Chip initialization
 	DDRC = 4; //Set TXCAN as output and RXCAN as input
- 2be:	84 e0       	ldi	r24, 0x04	; 4
- 2c0:	87 b9       	out	0x07, r24	; 7
+ 2bc:	84 e0       	ldi	r24, 0x04	; 4
+ 2be:	87 b9       	out	0x07, r24	; 7
 	
 	bit_set(DDRD, BIT(1));
- 2c2:	51 9a       	sbi	0x0a, 1	; 10
+ 2c0:	51 9a       	sbi	0x0a, 1	; 10
 	bit_set(DDRD, BIT(7));
- 2c4:	57 9a       	sbi	0x0a, 7	; 10
+ 2c2:	57 9a       	sbi	0x0a, 7	; 10
 	
 	bit_set(PORTD, BIT(1));
- 2c6:	59 9a       	sbi	0x0b, 1	; 11
- 2c8:	08 95       	ret
+ 2c4:	59 9a       	sbi	0x0b, 1	; 11
+ 2c6:	08 95       	ret
 
-000002ca <clear_buffer>:
+000002c8 <clear_buffer>:
 	//bit_set(PORTD, BIT(7));
 
 }
 void clear_buffer(uint8_t buffer[MSG_SIZE])
 {
- 2ca:	fc 01       	movw	r30, r24
- 2cc:	08 96       	adiw	r24, 0x08	; 8
+ 2c8:	fc 01       	movw	r30, r24
+ 2ca:	08 96       	adiw	r24, 0x08	; 8
 uint8_t u; 
 
 for(u = 0; u < MSG_SIZE; u++)
 {
 buffer[u] = 0x00;
- 2ce:	11 92       	st	Z+, r1
+ 2cc:	11 92       	st	Z+, r1
 }
 void clear_buffer(uint8_t buffer[MSG_SIZE])
 {
 uint8_t u; 
 
 for(u = 0; u < MSG_SIZE; u++)
- 2d0:	e8 17       	cp	r30, r24
- 2d2:	f9 07       	cpc	r31, r25
- 2d4:	e1 f7       	brne	.-8      	; 0x2ce <clear_buffer+0x4>
+ 2ce:	e8 17       	cp	r30, r24
+ 2d0:	f9 07       	cpc	r31, r25
+ 2d2:	e1 f7       	brne	.-8      	; 0x2cc <clear_buffer+0x4>
 {
 buffer[u] = 0x00;
 }
 
 } //Maybe make it a makro 
- 2d6:	08 95       	ret
+ 2d4:	08 95       	ret
 
-000002d8 <main>:
+000002d6 <main>:
 
 void chip_init (void);
-volatile data[MSG_SIZE];
+volatile uint8_t data[MSG_SIZE];
 
 int main(void)
 {
- 2d8:	cf 93       	push	r28
- 2da:	df 93       	push	r29
- 2dc:	cd b7       	in	r28, 0x3d	; 61
- 2de:	de b7       	in	r29, 0x3e	; 62
- 2e0:	a4 97       	sbiw	r28, 0x24	; 36
- 2e2:	0f b6       	in	r0, 0x3f	; 63
- 2e4:	f8 94       	cli
- 2e6:	de bf       	out	0x3e, r29	; 62
- 2e8:	0f be       	out	0x3f, r0	; 63
- 2ea:	cd bf       	out	0x3d, r28	; 61
+ 2d6:	cf 93       	push	r28
+ 2d8:	df 93       	push	r29
+ 2da:	cd b7       	in	r28, 0x3d	; 61
+ 2dc:	de b7       	in	r29, 0x3e	; 62
+ 2de:	a4 97       	sbiw	r28, 0x24	; 36
+ 2e0:	0f b6       	in	r0, 0x3f	; 63
+ 2e2:	f8 94       	cli
+ 2e4:	de bf       	out	0x3e, r29	; 62
+ 2e6:	0f be       	out	0x3f, r0	; 63
+ 2e8:	cd bf       	out	0x3d, r28	; 61
 
 
 //Setup recieve MOb
 	uint8_t recieve_buffer[MSG_SIZE];
 	st_cmd_t recieveMOb; 
 	recieveMOb.pt_data = &recieve_buffer[0];
- 2ec:	ce 01       	movw	r24, r28
- 2ee:	01 96       	adiw	r24, 0x01	; 1
- 2f0:	98 8b       	std	Y+16, r25	; 0x10
- 2f2:	8f 87       	std	Y+15, r24	; 0x0f
+ 2ea:	ce 01       	movw	r24, r28
+ 2ec:	01 96       	adiw	r24, 0x01	; 1
+ 2ee:	98 8b       	std	Y+16, r25	; 0x10
+ 2f0:	8f 87       	std	Y+15, r24	; 0x0f
 	recieveMOb.MObNumber = 0x01; 
- 2f4:	81 e0       	ldi	r24, 0x01	; 1
- 2f6:	89 8b       	std	Y+17, r24	; 0x11
+ 2f2:	81 e0       	ldi	r24, 0x01	; 1
+ 2f4:	89 8b       	std	Y+17, r24	; 0x11
 	recieveMOb.dlc = MSG_SIZE; 
- 2f8:	98 e0       	ldi	r25, 0x08	; 8
- 2fa:	9e 87       	std	Y+14, r25	; 0x0e
+ 2f6:	98 e0       	ldi	r25, 0x08	; 8
+ 2f8:	9e 87       	std	Y+14, r25	; 0x0e
 	recieveMOb.cmd = RX; 
- 2fc:	89 87       	std	Y+9, r24	; 0x09
+ 2fa:	89 87       	std	Y+9, r24	; 0x09
 	recieveMOb.id = 0x0000;
- 2fe:	1b 86       	std	Y+11, r1	; 0x0b
- 300:	1a 86       	std	Y+10, r1	; 0x0a
+ 2fc:	1b 86       	std	Y+11, r1	; 0x0b
+ 2fe:	1a 86       	std	Y+10, r1	; 0x0a
 	
 //Setup transmit MOb  
 	uint8_t transmit_buffer[MSG_SIZE];
 	st_cmd_t transmitMOb; 
 	transmitMOb.pt_data = &transmit_buffer[0]; 
- 302:	9e 01       	movw	r18, r28
- 304:	2d 5e       	subi	r18, 0xED	; 237
- 306:	3f 4f       	sbci	r19, 0xFF	; 255
- 308:	3a a3       	std	Y+34, r19	; 0x22
- 30a:	29 a3       	std	Y+33, r18	; 0x21
+ 300:	9e 01       	movw	r18, r28
+ 302:	2d 5e       	subi	r18, 0xED	; 237
+ 304:	3f 4f       	sbci	r19, 0xFF	; 255
+ 306:	3a a3       	std	Y+34, r19	; 0x22
+ 308:	29 a3       	std	Y+33, r18	; 0x21
 	transmitMOb.MObNumber = 0x01; 
- 30c:	8b a3       	std	Y+35, r24	; 0x23
+ 30a:	8b a3       	std	Y+35, r24	; 0x23
 	transmitMOb.dlc = MSG_SIZE; 
- 30e:	98 a3       	std	Y+32, r25	; 0x20
+ 30c:	98 a3       	std	Y+32, r25	; 0x20
 	transmitMOb.cmd = TX; 
- 310:	1b 8e       	std	Y+27, r1	; 0x1b
+ 30e:	1b 8e       	std	Y+27, r1	; 0x1b
 	transmitMOb.mask = 0x0001;  
- 312:	81 e0       	ldi	r24, 0x01	; 1
- 314:	90 e0       	ldi	r25, 0x00	; 0
- 316:	9f 8f       	std	Y+31, r25	; 0x1f
- 318:	8e 8f       	std	Y+30, r24	; 0x1e
+ 310:	81 e0       	ldi	r24, 0x01	; 1
+ 312:	90 e0       	ldi	r25, 0x00	; 0
+ 314:	9f 8f       	std	Y+31, r25	; 0x1f
+ 316:	8e 8f       	std	Y+30, r24	; 0x1e
 
 chip_init(); 
- 31a:	0e 94 5f 01 	call	0x2be	; 0x2be <chip_init>
+ 318:	0e 94 5e 01 	call	0x2bc	; 0x2bc <chip_init>
 can_init(); 
- 31e:	0e 94 51 01 	call	0x2a2	; 0x2a2 <can_init>
+ 31c:	0e 94 50 01 	call	0x2a0	; 0x2a0 <can_init>
 ADCtimerSetup();
- 322:	0e 94 52 00 	call	0xa4	; 0xa4 <ADCtimerSetup>
+ 320:	0e 94 52 00 	call	0xa4	; 0xa4 <ADCtimerSetup>
 sei();
- 326:	78 94       	sei
+ 324:	78 94       	sei
 
 can_cmd(&recieveMOb);
- 328:	ce 01       	movw	r24, r28
- 32a:	09 96       	adiw	r24, 0x09	; 9
- 32c:	0e 94 f8 00 	call	0x1f0	; 0x1f0 <can_cmd>
+ 326:	ce 01       	movw	r24, r28
+ 328:	09 96       	adiw	r24, 0x09	; 9
+ 32a:	0e 94 f7 00 	call	0x1ee	; 0x1ee <can_cmd>
+{
 
 //Initialize variable used by main program
+	uint8_t samplingCounter1 = 0;
+	uint8_t samplingCounter2 = 0;
+	uint8_t transmitCounter1 = 0 ;
+ 32e:	e1 2c       	mov	r14, r1
 
-	uint8_t samplingCounter = 0;
-	uint8_t samplingLimit = 100;
-	uint8_t transmitCounter = 0 ;
- 330:	10 e0       	ldi	r17, 0x00	; 0
 int main(void)
 {
 
 //Initialize variable used by main program
-
-	uint8_t samplingCounter = 0;
- 332:	00 e0       	ldi	r16, 0x00	; 0
-			transmitCounter++;
-			//decodeMessage(); // Not yet defined
+	uint8_t samplingCounter1 = 0;
+ 330:	f1 2c       	mov	r15, r1
+			bit_flip(PORTD, BIT(7));
+			}
+			receivedMessages = 0;
+			decodeMessage(&recieveMOb);
 		}
-		if (samplingCounter >= samplingLimit)
+		if (samplingCounter1 >= Sensor1.sampling_frequency )//samplingLimit)
+ 332:	02 e0       	ldi	r16, 0x02	; 2
+ 334:	11 e0       	ldi	r17, 0x01	; 1
 		{
 			bit_flip(PORTD, BIT(1));
- 334:	68 94       	set
- 336:	ff 24       	eor	r15, r15
- 338:	f1 f8       	bld	r15, 1
+ 336:	68 94       	set
+ 338:	dd 24       	eor	r13, r13
+ 33a:	d1 f8       	bld	r13, 1
 
 can_cmd(&recieveMOb);
 
 while(1)
 {
 	if (tick>=1)
- 33a:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
- 33e:	88 23       	and	r24, r24
- 340:	e1 f3       	breq	.-8      	; 0x33a <main+0x62>
+ 33c:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
+ 340:	88 23       	and	r24, r24
+ 342:	e1 f3       	breq	.-8      	; 0x33c <main+0x66>
 	{
 		tick--;
- 342:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
- 346:	81 50       	subi	r24, 0x01	; 1
- 348:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <tick>
-		samplingCounter++;
- 34c:	0f 5f       	subi	r16, 0xFF	; 255
-		//transmitCounter++;
+ 344:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
+ 348:	81 50       	subi	r24, 0x01	; 1
+ 34a:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <tick>
+		samplingCounter1++;
+ 34e:	f3 94       	inc	r15
+		samplingCounter2++;
+		transmitCounter1++;
+ 350:	e3 94       	inc	r14
+		transmitCounter2++;
 
 		
 		while (receivedMessages > 0)
- 34e:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
- 352:	88 23       	and	r24, r24
- 354:	99 f0       	breq	.+38     	; 0x37c <main+0xa4>
+ 352:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 356:	88 23       	and	r24, r24
+ 358:	b1 f0       	breq	.+44     	; 0x386 <main+0xb0>
 		{
 			transfer_data(&recieveMOb);
- 356:	ce 01       	movw	r24, r28
- 358:	09 96       	adiw	r24, 0x09	; 9
- 35a:	0e 94 0c 01 	call	0x218	; 0x218 <transfer_data>
+ 35a:	ce 01       	movw	r24, r28
+ 35c:	09 96       	adiw	r24, 0x09	; 9
+ 35e:	0e 94 0b 01 	call	0x216	; 0x216 <transfer_data>
 			if(recieveMOb.pt_data[0] == 0xFF)
- 35e:	ef 85       	ldd	r30, Y+15	; 0x0f
- 360:	f8 89       	ldd	r31, Y+16	; 0x10
- 362:	80 81       	ld	r24, Z
- 364:	8f 3f       	cpi	r24, 0xFF	; 255
- 366:	19 f4       	brne	.+6      	; 0x36e <main+0x96>
+ 362:	ef 85       	ldd	r30, Y+15	; 0x0f
+ 364:	f8 89       	ldd	r31, Y+16	; 0x10
+ 366:	80 81       	ld	r24, Z
+ 368:	8f 3f       	cpi	r24, 0xFF	; 255
+ 36a:	19 f4       	brne	.+6      	; 0x372 <main+0x9c>
 			{
 			bit_flip(PORTD, BIT(7));
- 368:	8b b1       	in	r24, 0x0b	; 11
- 36a:	80 58       	subi	r24, 0x80	; 128
- 36c:	8b b9       	out	0x0b, r24	; 11
+ 36c:	8b b1       	in	r24, 0x0b	; 11
+ 36e:	80 58       	subi	r24, 0x80	; 128
+ 370:	8b b9       	out	0x0b, r24	; 11
 			}
 			receivedMessages = 0;
- 36e:	10 92 00 01 	sts	0x0100, r1	; 0x800100 <_edata>
-			transmitCounter++;
- 372:	1f 5f       	subi	r17, 0xFF	; 255
-		tick--;
-		samplingCounter++;
-		//transmitCounter++;
+ 372:	10 92 00 01 	sts	0x0100, r1	; 0x800100 <_edata>
+			decodeMessage(&recieveMOb);
+ 376:	ce 01       	movw	r24, r28
+ 378:	09 96       	adiw	r24, 0x09	; 9
+ 37a:	0e 94 31 02 	call	0x462	; 0x462 <decodeMessage>
+		samplingCounter2++;
+		transmitCounter1++;
+		transmitCounter2++;
 
 		
 		while (receivedMessages > 0)
- 374:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
- 378:	81 11       	cpse	r24, r1
- 37a:	ed cf       	rjmp	.-38     	; 0x356 <main+0x7e>
+ 37e:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 382:	81 11       	cpse	r24, r1
+ 384:	ea cf       	rjmp	.-44     	; 0x35a <main+0x84>
+			bit_flip(PORTD, BIT(7));
 			}
 			receivedMessages = 0;
-			transmitCounter++;
-			//decodeMessage(); // Not yet defined
+			decodeMessage(&recieveMOb);
 		}
-		if (samplingCounter >= samplingLimit)
- 37c:	04 36       	cpi	r16, 0x64	; 100
- 37e:	20 f0       	brcs	.+8      	; 0x388 <main+0xb0>
+		if (samplingCounter1 >= Sensor1.sampling_frequency )//samplingLimit)
+ 386:	f8 01       	movw	r30, r16
+ 388:	83 85       	ldd	r24, Z+11	; 0x0b
+ 38a:	f8 16       	cp	r15, r24
+ 38c:	20 f0       	brcs	.+8      	; 0x396 <main+0xc0>
 		{
 			bit_flip(PORTD, BIT(1));
- 380:	8b b1       	in	r24, 0x0b	; 11
- 382:	8f 25       	eor	r24, r15
- 384:	8b b9       	out	0x0b, r24	; 11
-			samplingCounter = 0;
- 386:	00 e0       	ldi	r16, 0x00	; 0
+ 38e:	8b b1       	in	r24, 0x0b	; 11
+ 390:	8d 25       	eor	r24, r13
+ 392:	8b b9       	out	0x0b, r24	; 11
+			samplingCounter1 = 0;
+ 394:	f1 2c       	mov	r15, r1
 			//sensorValue = ADCH;		// here should be a readADC
 			
 		}
 		
 		
-		if (transmitCounter >= transmitLimit)
- 388:	11 23       	and	r17, r17
- 38a:	b9 f2       	breq	.-82     	; 0x33a <main+0x62>
+		if (transmitCounter1 >= Sensor1.transmission_frequency)
+ 396:	f8 01       	movw	r30, r16
+ 398:	80 85       	ldd	r24, Z+8	; 0x08
+ 39a:	e8 16       	cp	r14, r24
+ 39c:	78 f2       	brcs	.-98     	; 0x33c <main+0x66>
 		{
 
 			clear_buffer(&transmit_buffer);
- 38c:	ce 01       	movw	r24, r28
- 38e:	43 96       	adiw	r24, 0x13	; 19
- 390:	0e 94 65 01 	call	0x2ca	; 0x2ca <clear_buffer>
+ 39e:	ce 01       	movw	r24, r28
+ 3a0:	43 96       	adiw	r24, 0x13	; 19
+ 3a2:	0e 94 64 01 	call	0x2c8	; 0x2c8 <clear_buffer>
 
 			transmitMOb.pt_data[0] = recieveMOb.id &0xFF; 
- 394:	e9 a1       	ldd	r30, Y+33	; 0x21
- 396:	fa a1       	ldd	r31, Y+34	; 0x22
- 398:	8a 85       	ldd	r24, Y+10	; 0x0a
- 39a:	80 83       	st	Z, r24
+ 3a6:	e9 a1       	ldd	r30, Y+33	; 0x21
+ 3a8:	fa a1       	ldd	r31, Y+34	; 0x22
+ 3aa:	8a 85       	ldd	r24, Y+10	; 0x0a
+ 3ac:	80 83       	st	Z, r24
 			// Load message into transmitbuffer
 
 			can_cmd(&transmitMOb);
- 39c:	ce 01       	movw	r24, r28
- 39e:	4b 96       	adiw	r24, 0x1b	; 27
- 3a0:	0e 94 f8 00 	call	0x1f0	; 0x1f0 <can_cmd>
-			transmitCounter--; 
- 3a4:	11 50       	subi	r17, 0x01	; 1
- 3a6:	c9 cf       	rjmp	.-110    	; 0x33a <main+0x62>
+ 3ae:	ce 01       	movw	r24, r28
+ 3b0:	4b 96       	adiw	r24, 0x1b	; 27
+ 3b2:	0e 94 f7 00 	call	0x1ee	; 0x1ee <can_cmd>
+			transmitCounter1=0;
+ 3b6:	e1 2c       	mov	r14, r1
+ 3b8:	c1 cf       	rjmp	.-126    	; 0x33c <main+0x66>
 
-000003a8 <__vector_15>:
+000003ba <__vector_15>:
 }
 
 } //Maybe make it a makro 
 
 ISR(TIMER0_COMPA_vect)
 {
- 3a8:	1f 92       	push	r1
- 3aa:	0f 92       	push	r0
- 3ac:	0f b6       	in	r0, 0x3f	; 63
- 3ae:	0f 92       	push	r0
- 3b0:	11 24       	eor	r1, r1
- 3b2:	8f 93       	push	r24
+ 3ba:	1f 92       	push	r1
+ 3bc:	0f 92       	push	r0
+ 3be:	0f b6       	in	r0, 0x3f	; 63
+ 3c0:	0f 92       	push	r0
+ 3c2:	11 24       	eor	r1, r1
+ 3c4:	8f 93       	push	r24
 	tick++;
- 3b4:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
- 3b8:	8f 5f       	subi	r24, 0xFF	; 255
- 3ba:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <tick>
+ 3c6:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
+ 3ca:	8f 5f       	subi	r24, 0xFF	; 255
+ 3cc:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <tick>
 }
- 3be:	8f 91       	pop	r24
- 3c0:	0f 90       	pop	r0
- 3c2:	0f be       	out	0x3f, r0	; 63
- 3c4:	0f 90       	pop	r0
- 3c6:	1f 90       	pop	r1
- 3c8:	18 95       	reti
+ 3d0:	8f 91       	pop	r24
+ 3d2:	0f 90       	pop	r0
+ 3d4:	0f be       	out	0x3f, r0	; 63
+ 3d6:	0f 90       	pop	r0
+ 3d8:	1f 90       	pop	r1
+ 3da:	18 95       	reti
 
-000003ca <__vector_18>:
+000003dc <__vector_18>:
 
 ISR( CAN_INT_vect )
 {
- 3ca:	1f 92       	push	r1
- 3cc:	0f 92       	push	r0
- 3ce:	0f b6       	in	r0, 0x3f	; 63
- 3d0:	0f 92       	push	r0
- 3d2:	11 24       	eor	r1, r1
- 3d4:	8f 93       	push	r24
+ 3dc:	1f 92       	push	r1
+ 3de:	0f 92       	push	r0
+ 3e0:	0f b6       	in	r0, 0x3f	; 63
+ 3e2:	0f 92       	push	r0
+ 3e4:	11 24       	eor	r1, r1
+ 3e6:	8f 93       	push	r24
 	receivedMessages++; 
- 3d6:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
- 3da:	8f 5f       	subi	r24, 0xFF	; 255
- 3dc:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <_edata>
+ 3e8:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 3ec:	8f 5f       	subi	r24, 0xFF	; 255
+ 3ee:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <_edata>
 
- 3e0:	8f 91       	pop	r24
- 3e2:	0f 90       	pop	r0
- 3e4:	0f be       	out	0x3f, r0	; 63
- 3e6:	0f 90       	pop	r0
- 3e8:	1f 90       	pop	r1
- 3ea:	18 95       	reti
+ 3f2:	8f 91       	pop	r24
+ 3f4:	0f 90       	pop	r0
+ 3f6:	0f be       	out	0x3f, r0	; 63
+ 3f8:	0f 90       	pop	r0
+ 3fa:	1f 90       	pop	r1
+ 3fc:	18 95       	reti
 
-000003ec <_exit>:
- 3ec:	f8 94       	cli
+000003fe <decodeHubServiceMessage>:
+	sensor->sampling_frequency = message_array[4] & 0b00001111;
+}
 
-000003ee <__stop_program>:
- 3ee:	ff cf       	rjmp	.-2      	; 0x3ee <__stop_program>
+// sendServiceMessage puts parameters into array, which can be sent
+void sendServiceMessage(sensor_Types type, units unit, uint8_t range_min, uint8_t range_max, uint8_t trans_frq, uint8_t sampl_frq, uint8_t filt_type, uint8_t filt_par)
+{
+ 3fe:	fc 01       	movw	r30, r24
+ 400:	db 01       	movw	r26, r22
+ 402:	81 81       	ldd	r24, Z+1	; 0x01
+ 404:	82 95       	swap	r24
+ 406:	8f 70       	andi	r24, 0x0F	; 15
+ 408:	14 96       	adiw	r26, 0x04	; 4
+ 40a:	8c 93       	st	X, r24
+ 40c:	14 97       	sbiw	r26, 0x04	; 4
+ 40e:	81 81       	ldd	r24, Z+1	; 0x01
+ 410:	8f 70       	andi	r24, 0x0F	; 15
+ 412:	17 96       	adiw	r26, 0x07	; 7
+ 414:	8c 93       	st	X, r24
+ 416:	17 97       	sbiw	r26, 0x07	; 7
+ 418:	82 81       	ldd	r24, Z+2	; 0x02
+ 41a:	15 96       	adiw	r26, 0x05	; 5
+ 41c:	8c 93       	st	X, r24
+ 41e:	15 97       	sbiw	r26, 0x05	; 5
+ 420:	83 81       	ldd	r24, Z+3	; 0x03
+ 422:	16 96       	adiw	r26, 0x06	; 6
+ 424:	8c 93       	st	X, r24
+ 426:	16 97       	sbiw	r26, 0x06	; 6
+ 428:	84 81       	ldd	r24, Z+4	; 0x04
+ 42a:	18 96       	adiw	r26, 0x08	; 8
+ 42c:	8c 93       	st	X, r24
+ 42e:	18 97       	sbiw	r26, 0x08	; 8
+ 430:	84 81       	ldd	r24, Z+4	; 0x04
+ 432:	82 95       	swap	r24
+ 434:	8f 70       	andi	r24, 0x0F	; 15
+ 436:	18 96       	adiw	r26, 0x08	; 8
+ 438:	8c 93       	st	X, r24
+ 43a:	18 97       	sbiw	r26, 0x08	; 8
+ 43c:	85 81       	ldd	r24, Z+5	; 0x05
+ 43e:	90 e0       	ldi	r25, 0x00	; 0
+ 440:	98 2f       	mov	r25, r24
+ 442:	88 27       	eor	r24, r24
+ 444:	26 81       	ldd	r18, Z+6	; 0x06
+ 446:	82 2b       	or	r24, r18
+ 448:	1a 96       	adiw	r26, 0x0a	; 10
+ 44a:	9c 93       	st	X, r25
+ 44c:	8e 93       	st	-X, r24
+ 44e:	19 97       	sbiw	r26, 0x09	; 9
+ 450:	87 81       	ldd	r24, Z+7	; 0x07
+ 452:	1b 96       	adiw	r26, 0x0b	; 11
+ 454:	8c 93       	st	X, r24
+ 456:	1b 97       	sbiw	r26, 0x0b	; 11
+ 458:	84 81       	ldd	r24, Z+4	; 0x04
+ 45a:	8f 70       	andi	r24, 0x0F	; 15
+ 45c:	1b 96       	adiw	r26, 0x0b	; 11
+ 45e:	8c 93       	st	X, r24
+ 460:	08 95       	ret
+
+00000462 <decodeMessage>:
+}
+
+
+//Decoding message from hub and determinds what kind of message type it is.
+void decodeMessage(st_cmd_t* message_struct)
+{
+ 462:	0f 93       	push	r16
+ 464:	1f 93       	push	r17
+ 466:	cf 93       	push	r28
+ 468:	df 93       	push	r29
+ 46a:	cd b7       	in	r28, 0x3d	; 61
+ 46c:	de b7       	in	r29, 0x3e	; 62
+ 46e:	28 97       	sbiw	r28, 0x08	; 8
+ 470:	0f b6       	in	r0, 0x3f	; 63
+ 472:	f8 94       	cli
+ 474:	de bf       	out	0x3e, r29	; 62
+ 476:	0f be       	out	0x3f, r0	; 63
+ 478:	cd bf       	out	0x3d, r28	; 61
+	switch ((message_struct ->pt_data[0]&0b11110000))// only looks a first nibble
+ 47a:	dc 01       	movw	r26, r24
+ 47c:	16 96       	adiw	r26, 0x06	; 6
+ 47e:	ed 91       	ld	r30, X+
+ 480:	fc 91       	ld	r31, X
+ 482:	17 97       	sbiw	r26, 0x07	; 7
+ 484:	20 81       	ld	r18, Z
+ 486:	20 7f       	andi	r18, 0xF0	; 240
+ 488:	20 3c       	cpi	r18, 0xC0	; 192
+ 48a:	19 f5       	brne	.+70     	; 0x4d2 <decodeMessage+0x70>
+ 48c:	8c 01       	movw	r16, r24
+		{
+			message_array[i] = message_struct ->pt_data[i];
+		}
+		case 0b11000000: // CAN ID FOR A SERVICE MESSAGE
+		{
+			if (message_struct->id == Sensor1.CAN_ID) //Sensor1 is a struct of sensor_at_node and needs to be init in main as global and with a can ID;
+ 48e:	fc 01       	movw	r30, r24
+ 490:	21 81       	ldd	r18, Z+1	; 0x01
+ 492:	32 81       	ldd	r19, Z+2	; 0x02
+ 494:	80 91 02 01 	lds	r24, 0x0102	; 0x800102 <Sensor1>
+ 498:	90 91 03 01 	lds	r25, 0x0103	; 0x800103 <Sensor1+0x1>
+ 49c:	28 17       	cp	r18, r24
+ 49e:	39 07       	cpc	r19, r25
+ 4a0:	31 f4       	brne	.+12     	; 0x4ae <decodeMessage+0x4c>
+			{
+				decodeHubServiceMessage(message_array, &Sensor1);
+ 4a2:	62 e0       	ldi	r22, 0x02	; 2
+ 4a4:	71 e0       	ldi	r23, 0x01	; 1
+ 4a6:	ce 01       	movw	r24, r28
+ 4a8:	01 96       	adiw	r24, 0x01	; 1
+ 4aa:	0e 94 ff 01 	call	0x3fe	; 0x3fe <decodeHubServiceMessage>
+			}
+			if (message_struct->id == Sensor2.CAN_ID) //Sensor2 is a struct of sensor_at_node and needs to be init in main as global and with a can ID;
+ 4ae:	d8 01       	movw	r26, r16
+ 4b0:	11 96       	adiw	r26, 0x01	; 1
+ 4b2:	2d 91       	ld	r18, X+
+ 4b4:	3c 91       	ld	r19, X
+ 4b6:	12 97       	sbiw	r26, 0x02	; 2
+ 4b8:	80 91 16 01 	lds	r24, 0x0116	; 0x800116 <Sensor2>
+ 4bc:	90 91 17 01 	lds	r25, 0x0117	; 0x800117 <Sensor2+0x1>
+ 4c0:	28 17       	cp	r18, r24
+ 4c2:	39 07       	cpc	r19, r25
+ 4c4:	31 f4       	brne	.+12     	; 0x4d2 <decodeMessage+0x70>
+			{
+				decodeHubServiceMessage(message_array, &Sensor2);
+ 4c6:	66 e1       	ldi	r22, 0x16	; 22
+ 4c8:	71 e0       	ldi	r23, 0x01	; 1
+ 4ca:	ce 01       	movw	r24, r28
+ 4cc:	01 96       	adiw	r24, 0x01	; 1
+ 4ce:	0e 94 ff 01 	call	0x3fe	; 0x3fe <decodeHubServiceMessage>
+		{
+			//SEND BACK ERROR?
+		}
+		
+	}
+}
+ 4d2:	28 96       	adiw	r28, 0x08	; 8
+ 4d4:	0f b6       	in	r0, 0x3f	; 63
+ 4d6:	f8 94       	cli
+ 4d8:	de bf       	out	0x3e, r29	; 62
+ 4da:	0f be       	out	0x3f, r0	; 63
+ 4dc:	cd bf       	out	0x3d, r28	; 61
+ 4de:	df 91       	pop	r29
+ 4e0:	cf 91       	pop	r28
+ 4e2:	1f 91       	pop	r17
+ 4e4:	0f 91       	pop	r16
+ 4e6:	08 95       	ret
+
+000004e8 <_exit>:
+ 4e8:	f8 94       	cli
+
+000004ea <__stop_program>:
+ 4ea:	ff cf       	rjmp	.-2      	; 0x4ea <__stop_program>
