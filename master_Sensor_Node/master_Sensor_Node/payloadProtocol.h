@@ -27,14 +27,14 @@ typedef enum {
 
 typedef  struct {
 	uint16_t		CAN_ID;
-	uint16_t		sensor_Number;
 	sensor_Types    sensor_Type;
+	units			unit;	//Will be used to determent the translation of the ADC data.
 	int8_t			range_min;
 	int8_t			range_max;
-	units			unit;	//Will be used to determent the translation of the ADC data.
 	uint8_t			transmission_frequency;
-	uint16_t		filter_data;
 	uint8_t			sampling_frequency;
+	uint8_t			filter_type;
+	uint8_t			filter_parameter;
 	
 }sensor_at_node ;
 

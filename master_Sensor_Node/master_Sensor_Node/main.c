@@ -29,6 +29,7 @@ int main(void)
 	uint8_t samplingCounter2 = 0;
 	uint8_t transmitCounter1 = 0 ;
 	uint8_t transmitCounter2 = 0 ;
+	
 
 
 //Setup recieve MOb
@@ -38,7 +39,7 @@ int main(void)
 	recieveMOb.MObNumber = 0x01; 
 	recieveMOb.dlc = MSG_SIZE; 
 	recieveMOb.cmd = RX; 
-	recieveMOb.id = 0x0000;
+	recieveMOb.mask = 0x0000;
 	
 //Setup transmit MOb  
 	uint8_t transmit_buffer[MSG_SIZE];
@@ -55,6 +56,8 @@ ADCtimerSetup();
 sei();
 
 can_cmd(&recieveMOb);
+Sensor1.CAN_ID = 0x12;
+Sensor2.CAN_ID = 0x10;
 
 while(1)
 {
@@ -67,26 +70,31 @@ while(1)
 		transmitCounter2++;
 
 		
-		while (receivedMessages > 0)
+		if (receivedMessages > 0)
 		{
 			transfer_data(&recieveMOb);
-			if(recieveMOb.pt_data[0] == 0xFF)
-			{
-			bit_flip(PORTD, BIT(7));
-			}
-			receivedMessages = 0;
+			
 			decodeMessage(&recieveMOb);
+			
+			receivedMessages = 0;
 		}
-		if (samplingCounter1 >= Sensor1.sampling_frequency )//samplingLimit)
+		
+		if (samplingCounter1 >= Sensor1.sampling_frequency && Sensor1.sampling_frequency !=0 )
 		{
-			bit_flip(PORTD, BIT(1));
+			bit_flip(PORTD, BIT(7));
 			samplingCounter1 = 0;
-			//sensorValue = ADCH;		// here should be a readADC
+			//Filter(ADC value); //Filter the data
 			
 		}
+		if (samplingCounter2 >= Sensor2.sampling_frequency && Sensor2.sampling_frequency !=0  )
+		{
+			bit_flip(PORTD, BIT(1));
+			samplingCounter2 = 0;
+			//Filter(ADC value); //Filter the data
+		}
 		
 		
-		if (transmitCounter1 >= Sensor1.transmission_frequency)
+		/*if (transmitCounter1 >= Sensor1.transmission_frequency)
 		{
 
 			clear_buffer(&transmit_buffer);
@@ -96,7 +104,20 @@ while(1)
 
 			can_cmd(&transmitMOb);
 			transmitCounter1=0;
+		}*/
+		/*
+		if (transmitCounter2 >= Sensor2.transmission_frequency)
+		{
+
+			clear_buffer(&transmit_buffer);
+
+			transmitMOb.pt_data[0] = recieveMOb.id &0xFF;
+			// Load message into transmitbuffer
+
+			can_cmd(&transmitMOb);
+			transmitCounter2=0;
 		}
+		*/
 	}
 }
 }
@@ -111,7 +132,7 @@ void chip_init(void){
 	bit_set(DDRD, BIT(1));
 	bit_set(DDRD, BIT(7));
 	
-	bit_set(PORTD, BIT(1));
+	//bit_set(PORTD, BIT(1));
 	//bit_set(PORTD, BIT(7));
 
 }
