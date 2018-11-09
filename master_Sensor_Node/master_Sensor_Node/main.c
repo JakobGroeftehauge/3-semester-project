@@ -11,25 +11,24 @@
 #include <util/delay.h>
 #include "CAN_lib.h"
 #include "payloadProtocol.h"
-#include "Initialize_node.h"
 #include "ADCTimer_drv.h"
 
 volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
 
+
+
 void chip_init (void);
-volatile data[MSG_SIZE];
+volatile uint8_t data[MSG_SIZE];
 
 int main(void)
 {
 
 //Initialize variable used by main program
-
-	uint8_t samplingCounter = 0;
-	uint8_t samplingLimit = 100;
-	uint8_t transmitCounter = 0 ;
-	uint8_t transmitLimit = 1;  //isn´t initialized
-	uint16_t sensorValue = 0;  //Initialize this value in another file
+	uint8_t samplingCounter1 = 0;
+	uint8_t samplingCounter2 = 0;
+	uint8_t transmitCounter1 = 0 ;
+	uint8_t transmitCounter2 = 0 ;
 
 
 //Setup recieve MOb
@@ -62,8 +61,10 @@ while(1)
 	if (tick>=1)
 	{
 		tick--;
-		samplingCounter++;
-		//transmitCounter++;
+		samplingCounter1++;
+		samplingCounter2++;
+		transmitCounter1++;
+		transmitCounter2++;
 
 		
 		while (receivedMessages > 0)
@@ -74,19 +75,18 @@ while(1)
 			bit_flip(PORTD, BIT(7));
 			}
 			receivedMessages = 0;
-			transmitCounter++;
-			//decodeMessage(); // Not yet defined
+			decodeMessage(&recieveMOb);
 		}
-		if (samplingCounter >= samplingLimit)
+		if (samplingCounter1 >= Sensor1.sampling_frequency )//samplingLimit)
 		{
 			bit_flip(PORTD, BIT(1));
-			samplingCounter = 0;
+			samplingCounter1 = 0;
 			//sensorValue = ADCH;		// here should be a readADC
 			
 		}
 		
 		
-		if (transmitCounter >= transmitLimit)
+		if (transmitCounter1 >= Sensor1.transmission_frequency)
 		{
 
 			clear_buffer(&transmit_buffer);
@@ -95,7 +95,7 @@ while(1)
 			// Load message into transmitbuffer
 
 			can_cmd(&transmitMOb);
-			transmitCounter--; 
+			transmitCounter1=0;
 		}
 	}
 }
