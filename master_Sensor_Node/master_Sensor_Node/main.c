@@ -10,7 +10,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "CAN_lib.h"
-#include "payloadProtocol.h"
+//#include "payloadProtocol.h"
 #include "Initialize_node.h"
 #include "ADCTimer_drv.h"
 

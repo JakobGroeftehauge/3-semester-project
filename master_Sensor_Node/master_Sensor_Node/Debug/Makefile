@@ -40,7 +40,6 @@ C_SRCS +=  \
 ../ADCTimer_drv.c \
 ../CAN_drv.c \
 ../CAN_lib.c \
-../Initialize_node.c \
 ../main.c \
 ../payloadProtocol.c
 
@@ -55,7 +54,6 @@ OBJS +=  \
 ADCTimer_drv.o \
 CAN_drv.o \
 CAN_lib.o \
-Initialize_node.o \
 main.o \
 payloadProtocol.o
 
@@ -63,7 +61,6 @@ OBJS_AS_ARGS +=  \
 ADCTimer_drv.o \
 CAN_drv.o \
 CAN_lib.o \
-Initialize_node.o \
 main.o \
 payloadProtocol.o
 
@@ -71,7 +68,6 @@ C_DEPS +=  \
 ADCTimer_drv.d \
 CAN_drv.d \
 CAN_lib.d \
-Initialize_node.d \
 main.d \
 payloadProtocol.d
 
@@ -79,7 +75,6 @@ C_DEPS_AS_ARGS +=  \
 ADCTimer_drv.d \
 CAN_drv.d \
 CAN_lib.d \
-Initialize_node.d \
 main.d \
 payloadProtocol.d
 
@@ -97,8 +92,6 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
-
-
 
 
 

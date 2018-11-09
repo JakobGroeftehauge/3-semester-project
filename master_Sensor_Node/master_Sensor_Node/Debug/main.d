@@ -16,8 +16,7 @@ main.d main.o: .././main.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\math.h \
  .././CAN_lib.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h \
- .././CAN_drv.h .././config.h .././payloadProtocol.h \
- .././Initialize_node.h .././ADCTimer_drv.h
+ .././CAN_drv.h .././config.h .././Initialize_node.h .././ADCTimer_drv.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdint.h:
 
@@ -56,8 +55,6 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\
 .././CAN_drv.h:
 
 .././config.h:
-
-.././payloadProtocol.h:
 
 .././Initialize_node.h:
 
