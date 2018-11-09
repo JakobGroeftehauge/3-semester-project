@@ -12,15 +12,16 @@
 // and fills out the given sensor struct
 void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node* sensor)
 {
-	sensor->sensor_Type = (message_array[1] & 0b11110000) >> 4; 
+	sensor->sensor_Type = (message_array[1] & 0b11110000)/16; // Shift left nibble to the right with /16
 	sensor->unit = message_array[1] & 0b00001111;
 	sensor->range_min = message_array[2];
 	sensor->range_max = message_array[3];
-	sensor->transmission_frequency = message_array[4];
-	sensor->transmission_frequency = (message_array[4] & 0b11110000) >> 4; 
-	sensor->filter_data =  ((uint16_t)message_array[5] << 8) | message_array[6];
-	sensor->sampling_frequency = message_array[7];
-	sensor->sampling_frequency = message_array[4] & 0b00001111;
+	sensor->transmission_frequency = (message_array[4] & 0b11110000)/16; // Shift left nibble to the right with /16
+	sensor->sampling_frequency = (message_array[4] & 0b00001111);
+	sensor ->filter_type = message_array[5];
+	sensor ->filter_parameter = message_array[6];
+	
+	//ACK_FROM_NODE(sensor); //NEEDS TO BE MADE!. TRANSMIT THE STRUCT BACK
 }
 
 // sendServiceMessage puts parameters into array, which can be sent
@@ -38,13 +39,14 @@ void sendServiceMessage(sensor_Types type, units unit, uint8_t range_min, uint8_
 //Decoding message from hub and determinds what kind of message type it is.
 void decodeMessage(st_cmd_t* message_struct)
 {
-	switch ((message_struct ->pt_data[0]&0b11110000))// only looks a first nibble
+	uint8_t message_array[8];
+	for(uint8_t i = 0; i<8; i++)
 	{
-		uint8_t message_array[8];
-		for(uint8_t i = 0; i>8; i++)
-		{
-			message_array[i] = message_struct ->pt_data[i];
-		}
+		message_array[i] = message_struct -> pt_data[i];
+	}
+	
+	switch ((message_struct->pt_data[0] & 0b11110000))// only looks a first nibble
+	{
 		case 0b11000000: // CAN ID FOR A SERVICE MESSAGE
 		{
 			if (message_struct->id == Sensor1.CAN_ID) //Sensor1 is a struct of sensor_at_node and needs to be init in main as global and with a can ID;
