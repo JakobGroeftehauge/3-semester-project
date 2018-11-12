@@ -15,7 +15,7 @@
 #define NUMBER_OF_SENSOR 2
 volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
-sensor_at_node Sensorlist[NUMBER_OF_SENSOR];
+volatile sensor_at_node Sensorlist[NUMBER_OF_SENSOR];
 void chip_init (void);
 volatile uint8_t data[MSG_SIZE];
 
@@ -53,8 +53,8 @@ chip_init();
 can_init(); 
 ADCtimerSetup();
 can_cmd(&recieveMOb);
-Sensorlist[0].CAN_ID = 0x12;
-Sensorlist[1].CAN_ID = 0x10;
+Sensorlist[0].CAN_ID = 0x1;
+Sensorlist[1].CAN_ID = 0x2;
 sei();
 
 
@@ -75,9 +75,15 @@ while(1)
 			transfer_data(&recieveMOb);
 			
 			decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);
-			//bit_flip(PORTD, BIT(7));
+			
+			transmitMOb.pt_data[0]=Sensorlist[0].CAN_ID;
+			transmitMOb.pt_data[1]=recieveMOb.id;
 			transmitMOb.pt_data[2]=Sensorlist[0].sampling_frequency;
-			transmitMOb.pt_data[7]=Sensorlist[1].sampling_frequency;
+			
+			transmitMOb.pt_data[4]=Sensorlist[1].CAN_ID;
+			transmitMOb.pt_data[5]=recieveMOb.id;
+			transmitMOb.pt_data[6]=Sensorlist[1].sampling_frequency;
+			
 			can_cmd(&transmitMOb);
 			receivedMessages = 0;
 		}

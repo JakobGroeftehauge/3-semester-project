@@ -37,7 +37,7 @@ void sendServiceMessage(sensor_Types type, units unit, uint8_t range_min, uint8_
 
 
 //Decoding message from hub and determinds what kind of message type it is.
-void decodeMessage(st_cmd_t* message_struct,sensor_at_node* list[],uint8_t NUMBER_OF_SENSORS)
+void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t NUMBER_OF_SENSORS)
 {
 	uint8_t message_array[8];
 	for(uint8_t i = 0; i<8; i++)
@@ -47,21 +47,18 @@ void decodeMessage(st_cmd_t* message_struct,sensor_at_node* list[],uint8_t NUMBE
 	
 	switch ((message_struct->pt_data[0] & 0b11110000))// only looks a first nibble
 	{
-		case 0b11000000: // CAN ID FOR A SERVICE MESSAGE
+		case 0b11000000: // ID FOR A SERVICE MESSAGE
 		{
-			
-			for(int i= 0; i<NUMBER_OF_SENSORS;i++)
+			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
 			{
-				if (message_struct->id == list[i]->CAN_ID)
+				if (message_struct->id == SensorList[i].CAN_ID)
 				{
-					
-					decodeHubServiceMessage(message_array, &(list[i]));
+					decodeHubServiceMessage(message_array,&SensorList[i]);
 					break;
 				}
 			}
 			break;
 		}
-		break;
 		default:
 		{
 			//SEND BACK ERROR?
