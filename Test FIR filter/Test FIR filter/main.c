@@ -40,7 +40,7 @@ int main(void)
 	//bit_set(PORTD, BIT(7));
 	result = 0; 
 	bit_set(PORTD, BIT(7)); 
-	buffer[whereToStoreNext] = result; 
+	buffer[whereToStoreNext] = input; 
 	//bit_clear(PORTD, BIT(1));
 	for(i = 0; i < FILTER_LENGTH; i++)
 	{
@@ -54,6 +54,7 @@ int main(void)
 }
 
 }
+
 
 void updatePointer(void)
 {
