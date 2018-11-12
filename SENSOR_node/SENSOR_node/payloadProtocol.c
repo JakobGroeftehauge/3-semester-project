@@ -29,3 +29,16 @@ void sendServiceMessage(sensor_Types type, units unit, uint8_t range_min, uint8_
 	messageTX_array[4] = (trans_frq & 0b11110000) + (sampl_frq & 0b00001111);
 	messageTX_array[5] = (filt_type & 0b11110000) + (filt_par & 0b00001111);
 }
+// change filter parameters - type, output coefficients 'a' and input coefficients 'b'. Filter *parameters is a pointer to the struct with filter parameters
+void setFilterParameters(float aCoef, float bCoef, kaskadeData* parameters) //Filter and variables must be changed to correct filter struct
+{	
+	for (int i=0;i<sizeof(aCoef);i++)
+	{
+		parameters->aCoefficientPointer = aCoef[i]; 
+	}
+		
+	for (int j=0;j<sizeof(bCoef);j++)
+	{
+		parameters->bCoefficientPointer = bCoef[j];
+	}	
+}
