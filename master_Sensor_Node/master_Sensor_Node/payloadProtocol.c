@@ -18,8 +18,8 @@ void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node* sensor)
 	sensor->range_max = message_array[3];
 	sensor->transmission_frequency = (message_array[4] & 0b11110000)/16; // Shift left nibble to the right with /16
 	sensor->sampling_frequency = (message_array[4] & 0b00001111);
-	sensor ->filter_type = message_array[5];
-	sensor ->filter_parameter = message_array[6];
+	sensor->filter_type = message_array[5];
+	sensor->filter_parameter = message_array[6];
 	
 	//ACK_FROM_NODE(sensor); //NEEDS TO BE MADE!. TRANSMIT THE STRUCT BACK
 }
@@ -28,7 +28,7 @@ void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node* sensor)
 void sendServiceMessage(sensor_Types type, units unit, uint8_t range_min, uint8_t range_max, uint8_t trans_frq, uint8_t sampl_frq, uint8_t filt_type, uint8_t filt_par)
 {
 	uint8_t messageTX_array[8];
-	messageTX_array[1] = (type & 0b00001111) << 4+ (unit & 0b00001111);
+	messageTX_array[1] = (type & 0b00001111) << 4 + (unit & 0b00001111);
 	messageTX_array[2] = range_min;
 	messageTX_array[3] = range_max;
 	messageTX_array[4] = (trans_frq & 0b00001111) << 4 + (sampl_frq & 0b00001111); 
@@ -37,7 +37,7 @@ void sendServiceMessage(sensor_Types type, units unit, uint8_t range_min, uint8_
 
 
 //Decoding message from hub and determinds what kind of message type it is.
-void decodeMessage(st_cmd_t* message_struct)
+void decodeMessage(st_cmd_t* message_struct,sensor_at_node* list[],uint8_t NUMBER_OF_SENSORS)
 {
 	uint8_t message_array[8];
 	for(uint8_t i = 0; i<8; i++)
@@ -49,18 +49,23 @@ void decodeMessage(st_cmd_t* message_struct)
 	{
 		case 0b11000000: // CAN ID FOR A SERVICE MESSAGE
 		{
-			if (message_struct->id == Sensor1.CAN_ID) //Sensor1 is a struct of sensor_at_node and needs to be init in main as global and with a can ID;
+			
+			for(int i= 0; i<NUMBER_OF_SENSORS;i++)
 			{
-				decodeHubServiceMessage(message_array, &Sensor1);
+				if (message_struct->id == list[i]->CAN_ID)
+				{
+					
+					decodeHubServiceMessage(message_array, &(list[i]));
+					break;
+				}
 			}
-			if (message_struct->id == Sensor2.CAN_ID) //Sensor2 is a struct of sensor_at_node and needs to be init in main as global and with a can ID;
-			{
-				decodeHubServiceMessage(message_array, &Sensor2);
-			}
+			break;
 		}
+		break;
 		default:
 		{
 			//SEND BACK ERROR?
+			break;
 		}
 		
 	}

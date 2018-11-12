@@ -12,18 +12,17 @@
 #include "CAN_lib.h"
 #include "payloadProtocol.h"
 #include "ADCTimer_drv.h"
-
+#define NUMBER_OF_SENSOR 2
 volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
-
-
-
+sensor_at_node Sensorlist[NUMBER_OF_SENSOR];
 void chip_init (void);
 volatile uint8_t data[MSG_SIZE];
 
 int main(void)
 {
-
+	
+	
 //Initialize variable used by main program
 	uint8_t samplingCounter1 = 0;
 	uint8_t samplingCounter2 = 0;
@@ -36,7 +35,7 @@ int main(void)
 	uint8_t recieve_buffer[MSG_SIZE];
 	st_cmd_t recieveMOb; 
 	recieveMOb.pt_data = &recieve_buffer[0];
-	recieveMOb.MObNumber = 0x01; 
+	recieveMOb.MObNumber = 0x00; 
 	recieveMOb.dlc = MSG_SIZE; 
 	recieveMOb.cmd = RX; 
 	recieveMOb.mask = 0x0000;
@@ -53,11 +52,12 @@ int main(void)
 chip_init(); 
 can_init(); 
 ADCtimerSetup();
+can_cmd(&recieveMOb);
+Sensorlist[0].CAN_ID = 0x12;
+Sensorlist[1].CAN_ID = 0x10;
 sei();
 
-can_cmd(&recieveMOb);
-Sensor1.CAN_ID = 0x12;
-Sensor2.CAN_ID = 0x10;
+
 
 while(1)
 {
@@ -74,19 +74,22 @@ while(1)
 		{
 			transfer_data(&recieveMOb);
 			
-			decodeMessage(&recieveMOb);
-			
+			decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);
+			//bit_flip(PORTD, BIT(7));
+			transmitMOb.pt_data[2]=Sensorlist[0].sampling_frequency;
+			transmitMOb.pt_data[7]=Sensorlist[1].sampling_frequency;
+			can_cmd(&transmitMOb);
 			receivedMessages = 0;
 		}
 		
-		if (samplingCounter1 >= Sensor1.sampling_frequency && Sensor1.sampling_frequency !=0 )
+		if (samplingCounter1 >= Sensorlist[0].sampling_frequency && Sensorlist[0].sampling_frequency !=0 )
 		{
 			bit_flip(PORTD, BIT(7));
 			samplingCounter1 = 0;
 			//Filter(ADC value); //Filter the data
 			
 		}
-		if (samplingCounter2 >= Sensor2.sampling_frequency && Sensor2.sampling_frequency !=0  )
+		if (samplingCounter2 >= Sensorlist[1].sampling_frequency && Sensorlist[1].sampling_frequency !=0  )
 		{
 			bit_flip(PORTD, BIT(1));
 			samplingCounter2 = 0;
@@ -155,5 +158,5 @@ ISR(TIMER0_COMPA_vect)
 ISR( CAN_INT_vect )
 {
 	receivedMessages++; 
-
 }
+
