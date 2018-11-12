@@ -7,6 +7,18 @@
 #include "payloadProtocol.h"
 
 
+extern void sendFilteretData(sensor_at_node* Sensor)
+{
+	Sensor->transmissionMOb->pt_data[0] = 0b00110000; // Data message
+	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type<<4)||Sensor->unit;
+	uint8_t *vp = (uint8_t *)&Sensor->filterValue;
+	Sensor->transmissionMOb->pt_data[2] = vp[3];
+	Sensor->transmissionMOb->pt_data[3] = vp[2];
+	Sensor->transmissionMOb->pt_data[4] = vp[1];
+	Sensor->transmissionMOb->pt_data[5] = vp[0];
+	Sensor->transmissionMOb->dlc = 6;
+	can_cmd(Sensor->transmissionMOb);
+}
 
 // decodeHubServiceMessage(uint8_t message_array[8],sensor_at_node* sensor) takes the array of message bytes
 // and fills out the given sensor struct

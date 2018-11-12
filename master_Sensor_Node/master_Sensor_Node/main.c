@@ -44,17 +44,37 @@ int main(void)
 	uint8_t transmit_buffer[MSG_SIZE];
 	st_cmd_t transmitMOb; 
 	transmitMOb.pt_data = &transmit_buffer[0]; 
-	transmitMOb.MObNumber = 0x01; 
+	transmitMOb.MObNumber = 0x03; 
 	transmitMOb.dlc = MSG_SIZE; 
 	transmitMOb.cmd = TX; 
-	transmitMOb.mask = 0x0001;  
+	transmitMOb.id = 0x00010;  
+	
+	//Setup transmit MOb
+	uint8_t transmit0_buffer[MSG_SIZE];
+	st_cmd_t transmitMOb0;
+	transmitMOb0.pt_data = &transmit_buffer[0];
+	transmitMOb0.MObNumber = 0x01;
+	transmitMOb0.dlc = MSG_SIZE;
+	transmitMOb0.cmd = TX;
+	transmitMOb0.id = 0x0001;
+	
+	//Setup transmit MOb
+	uint8_t transmit1_buffer[MSG_SIZE];
+	st_cmd_t transmitMOb1;
+	transmitMOb1.pt_data = &transmit_buffer[0];
+	transmitMOb1.MObNumber = 0x02;
+	transmitMOb1.dlc = MSG_SIZE;
+	transmitMOb1.cmd = TX;
+	transmitMOb1.id = 0x0002;
 
 chip_init(); 
 can_init(); 
 ADCtimerSetup();
 can_cmd(&recieveMOb);
 Sensorlist[0].CAN_ID = 0x1;
+Sensorlist[0].transmissionMOb = &transmitMOb0;
 Sensorlist[1].CAN_ID = 0x2;
+Sensorlist[1].transmissionMOb = &transmitMOb1;
 sei();
 
 
@@ -72,19 +92,11 @@ while(1)
 		
 		if (receivedMessages > 0)
 		{
+			Sensorlist[0].filterValue = 0xAABBCCDD;
+			Sensorlist[1].filterValue = 0xEEFFAABB;
 			transfer_data(&recieveMOb);
 			
-			decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);
-			
-			transmitMOb.pt_data[0]=Sensorlist[0].CAN_ID;
-			transmitMOb.pt_data[1]=recieveMOb.id;
-			transmitMOb.pt_data[2]=Sensorlist[0].sampling_frequency;
-			
-			transmitMOb.pt_data[4]=Sensorlist[1].CAN_ID;
-			transmitMOb.pt_data[5]=recieveMOb.id;
-			transmitMOb.pt_data[6]=Sensorlist[1].sampling_frequency;
-			
-			can_cmd(&transmitMOb);
+			decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);			
 			receivedMessages = 0;
 		}
 		
@@ -103,30 +115,23 @@ while(1)
 		}
 		
 		
-		/*if (transmitCounter1 >= Sensor1.transmission_frequency)
+		if (transmitCounter1/2 >= Sensorlist[0].transmission_frequency && Sensorlist[0].transmission_frequency != 0)
 		{
 
-			clear_buffer(&transmit_buffer);
-
-			transmitMOb.pt_data[0] = recieveMOb.id &0xFF; 
-			// Load message into transmitbuffer
-
-			can_cmd(&transmitMOb);
+// 			clear_buffer(&transmit_buffer);
+			sendFilteretData(&Sensorlist[0]);
 			transmitCounter1=0;
-		}*/
-		/*
-		if (transmitCounter2 >= Sensor2.transmission_frequency)
+		}
+		
+		if (transmitCounter2/2 >= Sensorlist[1].transmission_frequency && Sensorlist[1].transmission_frequency != 0)
 		{
 
-			clear_buffer(&transmit_buffer);
-
-			transmitMOb.pt_data[0] = recieveMOb.id &0xFF;
-			// Load message into transmitbuffer
-
-			can_cmd(&transmitMOb);
+ 			//clear_buffer(Sensorlist[1].transmissionMOb->pt_data);
+			 
+			sendFilteretData(&Sensorlist[1]);
 			transmitCounter2=0;
 		}
-		*/
+		
 	}
 }
 }

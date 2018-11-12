@@ -35,8 +35,8 @@ typedef  struct {
 	uint8_t			sampling_frequency;
 	uint8_t			filter_type;
 	uint8_t			filter_parameter;
-	uint8_t			SensorValue;
-	st_cmd_t*		TransmissionMOb;
+	uint32_t		filterValue;
+	st_cmd_t*		transmissionMOb;
 	
 }sensor_at_node ;
 
@@ -46,4 +46,5 @@ extern void sendServiceMessage(uint8_t type, uint8_t unit, uint8_t range_min, ui
 
 extern void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList,uint8_t);
 
+extern void sendFilteretData(sensor_at_node* Sensor);
 #endif /* PAYLOADPROTOCOL_H_ */
