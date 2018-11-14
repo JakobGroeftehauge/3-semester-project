@@ -37,7 +37,8 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../ADCTimer_drv.c \
+../ADC_drv.c \
+../Timer_drv.c \
 ../CAN_drv.c \
 ../CAN_lib.c \
 ../main.c \
@@ -51,28 +52,32 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-ADCTimer_drv.o \
+ADC_drv.o \
+Timer_drv.o \
 CAN_drv.o \
 CAN_lib.o \
 main.o \
 payloadProtocol.o
 
 OBJS_AS_ARGS +=  \
-ADCTimer_drv.o \
+ADC_drv.o \
+Timer_drv.o \
 CAN_drv.o \
 CAN_lib.o \
 main.o \
 payloadProtocol.o
 
 C_DEPS +=  \
-ADCTimer_drv.d \
+ADC_drv.d \
+Timer_drv.d \
 CAN_drv.d \
 CAN_lib.d \
 main.d \
 payloadProtocol.d
 
 C_DEPS_AS_ARGS +=  \
-ADCTimer_drv.d \
+ADC_drv.d \
+Timer_drv.d \
 CAN_drv.d \
 CAN_lib.d \
 main.d \
@@ -92,7 +97,14 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
-./ADCTimer_drv.o: .././ADCTimer_drv.c
+./ADC_drv.o: .././ADC_drv.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega32m1 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\gcc\dev\atmega32m1" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./Timer_drv.o: .././Timer_drv.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega32m1 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\gcc\dev\atmega32m1" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

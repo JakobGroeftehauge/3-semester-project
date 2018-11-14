@@ -2,7 +2,9 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
-ADCTimer_drv.c
+ADC_drv.c
+
+Timer_drv.c
 
 CAN_drv.c
 

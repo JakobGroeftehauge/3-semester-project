@@ -148,10 +148,16 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ADCTimer_drv.c">
+    <Compile Include="ADC_drv.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="ADCTimer_drv.h">
+    <Compile Include="Timer_drv.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Timer_drv.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ADC_drv.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="CAN_drv.c">
