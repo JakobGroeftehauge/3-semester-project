@@ -34,7 +34,7 @@ extern void sendError(sensor_at_node* Sensor,uint8_t errorType)
 extern void sendFilteretData(sensor_at_node* Sensor)
 {
 	Sensor->transmissionMOb->pt_data[0] = 0b00110000; // Data message
-	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type<<4)||Sensor->unit;
+	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type*16)+Sensor->unit;
 	uint8_t *vp = (uint8_t *)&Sensor->filterValue;
 	Sensor->transmissionMOb->pt_data[2] = vp[3];
 	Sensor->transmissionMOb->pt_data[3] = vp[2];
