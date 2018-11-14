@@ -39,7 +39,9 @@ SUBDIRS :=
 C_SRCS +=  \
 ../CAN_drv.c \
 ../CAN_lib.c \
-../main.c
+../HUB_lib.c \
+../main.c \
+../payloadProtocol.c
 
 
 PREPROCESSING_SRCS += 
@@ -51,22 +53,30 @@ ASM_SRCS +=
 OBJS +=  \
 CAN_drv.o \
 CAN_lib.o \
-main.o
+HUB_lib.o \
+main.o \
+payloadProtocol.o
 
 OBJS_AS_ARGS +=  \
 CAN_drv.o \
 CAN_lib.o \
-main.o
+HUB_lib.o \
+main.o \
+payloadProtocol.o
 
 C_DEPS +=  \
 CAN_drv.d \
 CAN_lib.d \
-main.d
+HUB_lib.d \
+main.d \
+payloadProtocol.d
 
 C_DEPS_AS_ARGS +=  \
 CAN_drv.d \
 CAN_lib.d \
-main.d
+HUB_lib.d \
+main.d \
+payloadProtocol.d
 
 OUTPUT_FILE_PATH +=master_HUB_node.elf
 
@@ -82,6 +92,10 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
 
 
 

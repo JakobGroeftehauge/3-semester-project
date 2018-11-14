@@ -135,10 +135,22 @@
     <Compile Include="config.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="HUB_lib.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="HUB_lib.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Initialize_node.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="payloadProtocol.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="payloadProtocol.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
