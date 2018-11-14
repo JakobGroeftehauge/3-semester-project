@@ -11,7 +11,8 @@
 #include <util/delay.h>
 #include "CAN_lib.h"
 #include "payloadProtocol.h"
-#include "ADCTimer_drv.h"
+#include "Timer_drv.h"
+#include "ADC_drv.h"
 #define NUMBER_OF_SENSOR 2
 volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
@@ -26,8 +27,8 @@ int main(void)
 //Initialize variable used by main program
 	uint8_t samplingCounter1 = 0;
 	uint8_t samplingCounter2 = 0;
-	uint8_t transmitCounter1 = 0 ;
-	uint8_t transmitCounter2 = 0 ;
+	uint8_t transmitCounter1 = 0;
+	uint8_t transmitCounter2 = 0;
 	
 
 
@@ -69,7 +70,8 @@ int main(void)
 
 chip_init(); 
 can_init(); 
-ADCtimerSetup();
+ADCSetup();
+TimerSetup();
 can_cmd(&recieveMOb);
 Sensorlist[0].CAN_ID = 0x1;
 Sensorlist[0].transmissionMOb = &transmitMOb0;
@@ -92,14 +94,11 @@ while(1)
 		
 		if (receivedMessages > 0)
 		{
-			Sensorlist[0].filterValue = 0xAABBCCDD;
-			Sensorlist[1].filterValue = 0xEEFFAABB;
 			transfer_data(&recieveMOb);
-			
-			decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);			
+			decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);		
 			receivedMessages = 0;
 		}
-		
+	/*	
 		if (samplingCounter1 >= Sensorlist[0].sampling_frequency && Sensorlist[0].sampling_frequency !=0 )
 		{
 			bit_flip(PORTD, BIT(7));
@@ -113,25 +112,18 @@ while(1)
 			samplingCounter2 = 0;
 			//Filter(ADC value); //Filter the data
 		}
+		*/
 		
-		
-		if (transmitCounter1/2 >= Sensorlist[0].transmission_frequency && Sensorlist[0].transmission_frequency != 0)
+		if (transmitCounter1 >= Sensorlist[0].period && Sensorlist[0].period != 0)
 		{
-
-// 			clear_buffer(&transmit_buffer);
 			sendFilteretData(&Sensorlist[0]);
 			transmitCounter1=0;
 		}
-		
-		if (transmitCounter2/2 >= Sensorlist[1].transmission_frequency && Sensorlist[1].transmission_frequency != 0)
+		if (transmitCounter2 >= Sensorlist[1].period && Sensorlist[1].period != 0)
 		{
-
- 			//clear_buffer(Sensorlist[1].transmissionMOb->pt_data);
-			 
 			sendFilteretData(&Sensorlist[1]);
 			transmitCounter2=0;
 		}
-		
 	}
 }
 }
@@ -150,16 +142,6 @@ void chip_init(void){
 	//bit_set(PORTD, BIT(7));
 
 }
-void clear_buffer(uint8_t buffer[MSG_SIZE])
-{
-uint8_t u; 
-
-for(u = 0; u < MSG_SIZE; u++)
-{
-buffer[u] = 0x00;
-}
-
-} //Maybe make it a makro 
 
 ISR(TIMER0_COMPA_vect)
 {
@@ -169,5 +151,6 @@ ISR(TIMER0_COMPA_vect)
 ISR( CAN_INT_vect )
 {
 	receivedMessages++; 
+	bit_flip(PORTD,BIT(1));
 }
 
