@@ -14,6 +14,8 @@
 #include "Timer_drv.h"
 #include "ADC_drv.h"
 #define NUMBER_OF_SENSOR 2
+#define Sensor1_ID 0x1;
+#define Sensor2_ID 0x2;
 volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
 volatile sensor_at_node Sensorlist[NUMBER_OF_SENSOR];
@@ -57,7 +59,7 @@ int main(void)
 	transmitMOb0.MObNumber = 0x01;
 	transmitMOb0.dlc = MSG_SIZE;
 	transmitMOb0.cmd = TX;
-	transmitMOb0.id = 0x0001;
+	transmitMOb0.id = Sensor1_ID;
 	
 	//Setup transmit MOb
 	uint8_t transmit1_buffer[MSG_SIZE];
@@ -66,17 +68,18 @@ int main(void)
 	transmitMOb1.MObNumber = 0x02;
 	transmitMOb1.dlc = MSG_SIZE;
 	transmitMOb1.cmd = TX;
-	transmitMOb1.id = 0x0002;
+	transmitMOb1.id = Sensor2_ID;
+	Sensorlist[1].CAN_ID = Sensor2_ID;
+	Sensorlist[1].transmissionMOb = &transmitMOb1;
 
-chip_init(); 
-can_init(); 
-ADCSetup();
-TimerSetup();
-can_cmd(&recieveMOb);
-Sensorlist[0].CAN_ID = 0x1;
-Sensorlist[0].transmissionMOb = &transmitMOb0;
-Sensorlist[1].CAN_ID = 0x2;
-Sensorlist[1].transmissionMOb = &transmitMOb1;
+	chip_init(); 
+	can_init(); 
+	ADCSetup();
+	TimerSetup();
+	can_cmd(&recieveMOb);
+	Sensorlist[0].CAN_ID =	Sensor1_ID;
+	Sensorlist[0].transmissionMOb = &transmitMOb0;
+	
 sei();
 
 

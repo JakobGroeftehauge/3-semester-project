@@ -3,31 +3,31 @@ master_Sensor_Node.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  0000074a  2**0
+  0 .data         00000000  00800100  00800100  0000074e  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000006d6  00000000  00000000  00000074  2**1
+  1 .text         000006da  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000028  00800100  00800100  0000074a  2**0
+  2 .bss          00000028  00800100  00800100  0000074e  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  0000074a  2**0
+  3 .comment      00000030  00000000  00000000  0000074e  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  0000077c  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000780  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000138  00000000  00000000  000007bc  2**0
+  5 .debug_aranges 00000138  00000000  00000000  000007c0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00001923  00000000  00000000  000008f4  2**0
+  6 .debug_info   00001923  00000000  00000000  000008f8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000ff4  00000000  00000000  00002217  2**0
+  7 .debug_abbrev 00000ff4  00000000  00000000  0000221b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000b84  00000000  00000000  0000320b  2**0
+  8 .debug_line   00000b84  00000000  00000000  0000320f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000280  00000000  00000000  00003d90  2**2
+  9 .debug_frame  00000280  00000000  00000000  00003d94  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000922  00000000  00000000  00004010  2**0
+ 10 .debug_str    00000922  00000000  00000000  00004014  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000094a  00000000  00000000  00004932  2**0
+ 11 .debug_loc    0000094a  00000000  00000000  00004936  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000000f0  00000000  00000000  0000527c  2**0
+ 12 .debug_ranges 000000f0  00000000  00000000  00005280  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -48,10 +48,10 @@ Disassembly of section .text:
   30:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   34:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   38:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
-  3c:	0c 94 e9 01 	jmp	0x3d2	; 0x3d2 <__vector_15>
+  3c:	0c 94 eb 01 	jmp	0x3d6	; 0x3d6 <__vector_15>
   40:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   44:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
-  48:	0c 94 fa 01 	jmp	0x3f4	; 0x3f4 <__vector_18>
+  48:	0c 94 fc 01 	jmp	0x3f8	; 0x3f8 <__vector_18>
   4c:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   50:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   54:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
@@ -87,7 +87,7 @@ Disassembly of section .text:
   94:	b2 07       	cpc	r27, r18
   96:	e1 f7       	brne	.-8      	; 0x90 <.do_clear_bss_loop>
   98:	0e 94 6a 01 	call	0x2d4	; 0x2d4 <main>
-  9c:	0c 94 69 03 	jmp	0x6d2	; 0x6d2 <_exit>
+  9c:	0c 94 6b 03 	jmp	0x6d6	; 0x6d6 <_exit>
 
 000000a0 <__bad_interrupt>:
   a0:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -607,668 +607,670 @@ int main(void)
  30a:	88 a3       	std	Y+32, r24	; 0x20
 	transmitMOb0.cmd = TX;
  30c:	1b 8e       	std	Y+27, r1	; 0x1b
-	transmitMOb0.id = 0x0001;
- 30e:	ee 24       	eor	r14, r14
- 310:	e3 94       	inc	r14
- 312:	f1 2c       	mov	r15, r1
- 314:	fd 8e       	std	Y+29, r15	; 0x1d
- 316:	ec 8e       	std	Y+28, r14	; 0x1c
+	transmitMOb0.id = Sensor1_ID;
+ 30e:	0f 2e       	mov	r0, r31
+ 310:	f3 e0       	ldi	r31, 0x03	; 3
+ 312:	ef 2e       	mov	r14, r31
+ 314:	f1 2c       	mov	r15, r1
+ 316:	f0 2d       	mov	r31, r0
+ 318:	fd 8e       	std	Y+29, r15	; 0x1d
+ 31a:	ec 8e       	std	Y+28, r14	; 0x1c
 	
 	//Setup transmit MOb
 	uint8_t transmit1_buffer[MSG_SIZE];
 	st_cmd_t transmitMOb1;
 	transmitMOb1.pt_data = &transmit_buffer[0];
- 318:	3c a7       	std	Y+44, r19	; 0x2c
- 31a:	2b a7       	std	Y+43, r18	; 0x2b
+ 31c:	3c a7       	std	Y+44, r19	; 0x2c
+ 31e:	2b a7       	std	Y+43, r18	; 0x2b
 	transmitMOb1.MObNumber = 0x02;
- 31c:	92 e0       	ldi	r25, 0x02	; 2
- 31e:	9d a7       	std	Y+45, r25	; 0x2d
+ 320:	92 e0       	ldi	r25, 0x02	; 2
+ 322:	9d a7       	std	Y+45, r25	; 0x2d
 	transmitMOb1.dlc = MSG_SIZE;
- 320:	8a a7       	std	Y+42, r24	; 0x2a
+ 324:	8a a7       	std	Y+42, r24	; 0x2a
 	transmitMOb1.cmd = TX;
- 322:	1d a2       	std	Y+37, r1	; 0x25
-	transmitMOb1.id = 0x0002;
- 324:	02 e0       	ldi	r16, 0x02	; 2
- 326:	10 e0       	ldi	r17, 0x00	; 0
- 328:	1f a3       	std	Y+39, r17	; 0x27
- 32a:	0e a3       	std	Y+38, r16	; 0x26
+ 326:	1d a2       	std	Y+37, r1	; 0x25
+	transmitMOb1.id = Sensor2_ID;
+ 328:	04 e0       	ldi	r16, 0x04	; 4
+ 32a:	10 e0       	ldi	r17, 0x00	; 0
+ 32c:	1f a3       	std	Y+39, r17	; 0x27
+ 32e:	0e a3       	std	Y+38, r16	; 0x26
 
 chip_init(); 
- 32c:	0e 94 65 01 	call	0x2ca	; 0x2ca <chip_init>
+ 330:	0e 94 65 01 	call	0x2ca	; 0x2ca <chip_init>
 can_init(); 
- 330:	0e 94 57 01 	call	0x2ae	; 0x2ae <can_init>
+ 334:	0e 94 57 01 	call	0x2ae	; 0x2ae <can_init>
 ADCSetup();
- 334:	0e 94 52 00 	call	0xa4	; 0xa4 <ADCSetup>
+ 338:	0e 94 52 00 	call	0xa4	; 0xa4 <ADCSetup>
 TimerSetup();
- 338:	0e 94 59 00 	call	0xb2	; 0xb2 <TimerSetup>
+ 33c:	0e 94 59 00 	call	0xb2	; 0xb2 <TimerSetup>
 can_cmd(&recieveMOb);
- 33c:	ce 01       	movw	r24, r28
- 33e:	09 96       	adiw	r24, 0x09	; 9
- 340:	0e 94 f8 00 	call	0x1f0	; 0x1f0 <can_cmd>
-Sensorlist[0].CAN_ID = 0x1;
- 344:	e2 e0       	ldi	r30, 0x02	; 2
- 346:	f1 e0       	ldi	r31, 0x01	; 1
- 348:	f1 82       	std	Z+1, r15	; 0x01
- 34a:	e0 82       	st	Z, r14
+ 340:	ce 01       	movw	r24, r28
+ 342:	09 96       	adiw	r24, 0x09	; 9
+ 344:	0e 94 f8 00 	call	0x1f0	; 0x1f0 <can_cmd>
+Sensorlist[0].CAN_ID =	Sensor1_ID;
+ 348:	e2 e0       	ldi	r30, 0x02	; 2
+ 34a:	f1 e0       	ldi	r31, 0x01	; 1
+ 34c:	f1 82       	std	Z+1, r15	; 0x01
+ 34e:	e0 82       	st	Z, r14
 Sensorlist[0].transmissionMOb = &transmitMOb0;
- 34c:	ce 01       	movw	r24, r28
- 34e:	4b 96       	adiw	r24, 0x1b	; 27
- 350:	96 87       	std	Z+14, r25	; 0x0e
- 352:	85 87       	std	Z+13, r24	; 0x0d
-Sensorlist[1].CAN_ID = 0x2;
- 354:	10 8b       	std	Z+16, r17	; 0x10
- 356:	07 87       	std	Z+15, r16	; 0x0f
+ 350:	ce 01       	movw	r24, r28
+ 352:	4b 96       	adiw	r24, 0x1b	; 27
+ 354:	96 87       	std	Z+14, r25	; 0x0e
+ 356:	85 87       	std	Z+13, r24	; 0x0d
+Sensorlist[1].CAN_ID = Sensor2_ID;
+ 358:	10 8b       	std	Z+16, r17	; 0x10
+ 35a:	07 87       	std	Z+15, r16	; 0x0f
 Sensorlist[1].transmissionMOb = &transmitMOb1;
- 358:	0a 96       	adiw	r24, 0x0a	; 10
- 35a:	95 8f       	std	Z+29, r25	; 0x1d
- 35c:	84 8f       	std	Z+28, r24	; 0x1c
+ 35c:	0a 96       	adiw	r24, 0x0a	; 10
+ 35e:	95 8f       	std	Z+29, r25	; 0x1d
+ 360:	84 8f       	std	Z+28, r24	; 0x1c
 sei();
- 35e:	78 94       	sei
+ 362:	78 94       	sei
 	
 //Initialize variable used by main program
 	uint8_t samplingCounter1 = 0;
 	uint8_t samplingCounter2 = 0;
 	uint8_t transmitCounter1 = 0;
 	uint8_t transmitCounter2 = 0;
- 360:	10 e0       	ldi	r17, 0x00	; 0
+ 364:	10 e0       	ldi	r17, 0x00	; 0
 	
 	
 //Initialize variable used by main program
 	uint8_t samplingCounter1 = 0;
 	uint8_t samplingCounter2 = 0;
 	uint8_t transmitCounter1 = 0;
- 362:	00 e0       	ldi	r16, 0x00	; 0
+ 366:	00 e0       	ldi	r16, 0x00	; 0
 
 
 
 while(1)
 {
 	if (tick>=1)
- 364:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
- 368:	88 23       	and	r24, r24
- 36a:	e1 f3       	breq	.-8      	; 0x364 <main+0x90>
+ 368:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
+ 36c:	88 23       	and	r24, r24
+ 36e:	e1 f3       	breq	.-8      	; 0x368 <main+0x94>
 	{
 		tick--;
- 36c:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
- 370:	81 50       	subi	r24, 0x01	; 1
- 372:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <tick>
+ 370:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
+ 374:	81 50       	subi	r24, 0x01	; 1
+ 376:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <tick>
 		samplingCounter1++;
 		samplingCounter2++;
 		transmitCounter1++;
- 376:	0f 5f       	subi	r16, 0xFF	; 255
+ 37a:	0f 5f       	subi	r16, 0xFF	; 255
 		transmitCounter2++;
- 378:	1f 5f       	subi	r17, 0xFF	; 255
+ 37c:	1f 5f       	subi	r17, 0xFF	; 255
 
 		
 		if (receivedMessages > 0)
- 37a:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
- 37e:	88 23       	and	r24, r24
- 380:	69 f0       	breq	.+26     	; 0x39c <main+0xc8>
+ 37e:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 382:	88 23       	and	r24, r24
+ 384:	69 f0       	breq	.+26     	; 0x3a0 <main+0xcc>
 		{
 			transfer_data(&recieveMOb);
- 382:	ce 01       	movw	r24, r28
- 384:	09 96       	adiw	r24, 0x09	; 9
- 386:	0e 94 0c 01 	call	0x218	; 0x218 <transfer_data>
+ 386:	ce 01       	movw	r24, r28
+ 388:	09 96       	adiw	r24, 0x09	; 9
+ 38a:	0e 94 0c 01 	call	0x218	; 0x218 <transfer_data>
 			decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);		
- 38a:	42 e0       	ldi	r20, 0x02	; 2
- 38c:	62 e0       	ldi	r22, 0x02	; 2
- 38e:	71 e0       	ldi	r23, 0x01	; 1
- 390:	ce 01       	movw	r24, r28
- 392:	09 96       	adiw	r24, 0x09	; 9
- 394:	0e 94 db 02 	call	0x5b6	; 0x5b6 <decodeMessage>
+ 38e:	42 e0       	ldi	r20, 0x02	; 2
+ 390:	62 e0       	ldi	r22, 0x02	; 2
+ 392:	71 e0       	ldi	r23, 0x01	; 1
+ 394:	ce 01       	movw	r24, r28
+ 396:	09 96       	adiw	r24, 0x09	; 9
+ 398:	0e 94 dd 02 	call	0x5ba	; 0x5ba <decodeMessage>
 			receivedMessages = 0;
- 398:	10 92 00 01 	sts	0x0100, r1	; 0x800100 <_edata>
+ 39c:	10 92 00 01 	sts	0x0100, r1	; 0x800100 <_edata>
 			samplingCounter2 = 0;
 			//Filter(ADC value); //Filter the data
 		}
 		*/
 		
 		if (transmitCounter1 >= Sensorlist[0].period && Sensorlist[0].period != 0)
- 39c:	80 91 09 01 	lds	r24, 0x0109	; 0x800109 <Sensorlist+0x7>
- 3a0:	08 17       	cp	r16, r24
- 3a2:	48 f0       	brcs	.+18     	; 0x3b6 <main+0xe2>
- 3a4:	80 91 09 01 	lds	r24, 0x0109	; 0x800109 <Sensorlist+0x7>
- 3a8:	88 23       	and	r24, r24
- 3aa:	29 f0       	breq	.+10     	; 0x3b6 <main+0xe2>
+ 3a0:	80 91 09 01 	lds	r24, 0x0109	; 0x800109 <Sensorlist+0x7>
+ 3a4:	08 17       	cp	r16, r24
+ 3a6:	48 f0       	brcs	.+18     	; 0x3ba <main+0xe6>
+ 3a8:	80 91 09 01 	lds	r24, 0x0109	; 0x800109 <Sensorlist+0x7>
+ 3ac:	88 23       	and	r24, r24
+ 3ae:	29 f0       	breq	.+10     	; 0x3ba <main+0xe6>
 		{
 			sendFilteretData(&Sensorlist[0]);
- 3ac:	82 e0       	ldi	r24, 0x02	; 2
- 3ae:	91 e0       	ldi	r25, 0x01	; 1
- 3b0:	0e 94 62 02 	call	0x4c4	; 0x4c4 <sendFilteretData>
+ 3b0:	82 e0       	ldi	r24, 0x02	; 2
+ 3b2:	91 e0       	ldi	r25, 0x01	; 1
+ 3b4:	0e 94 64 02 	call	0x4c8	; 0x4c8 <sendFilteretData>
 			transmitCounter1=0;
- 3b4:	00 e0       	ldi	r16, 0x00	; 0
+ 3b8:	00 e0       	ldi	r16, 0x00	; 0
 		}
 		if (transmitCounter2 >= Sensorlist[1].period && Sensorlist[1].period != 0)
- 3b6:	80 91 18 01 	lds	r24, 0x0118	; 0x800118 <Sensorlist+0x16>
- 3ba:	18 17       	cp	r17, r24
- 3bc:	98 f2       	brcs	.-90     	; 0x364 <main+0x90>
- 3be:	80 91 18 01 	lds	r24, 0x0118	; 0x800118 <Sensorlist+0x16>
- 3c2:	88 23       	and	r24, r24
- 3c4:	79 f2       	breq	.-98     	; 0x364 <main+0x90>
+ 3ba:	80 91 18 01 	lds	r24, 0x0118	; 0x800118 <Sensorlist+0x16>
+ 3be:	18 17       	cp	r17, r24
+ 3c0:	98 f2       	brcs	.-90     	; 0x368 <main+0x94>
+ 3c2:	80 91 18 01 	lds	r24, 0x0118	; 0x800118 <Sensorlist+0x16>
+ 3c6:	88 23       	and	r24, r24
+ 3c8:	79 f2       	breq	.-98     	; 0x368 <main+0x94>
 		{
 			sendFilteretData(&Sensorlist[1]);
- 3c6:	81 e1       	ldi	r24, 0x11	; 17
- 3c8:	91 e0       	ldi	r25, 0x01	; 1
- 3ca:	0e 94 62 02 	call	0x4c4	; 0x4c4 <sendFilteretData>
+ 3ca:	81 e1       	ldi	r24, 0x11	; 17
+ 3cc:	91 e0       	ldi	r25, 0x01	; 1
+ 3ce:	0e 94 64 02 	call	0x4c8	; 0x4c8 <sendFilteretData>
 			transmitCounter2=0;
- 3ce:	10 e0       	ldi	r17, 0x00	; 0
- 3d0:	c9 cf       	rjmp	.-110    	; 0x364 <main+0x90>
+ 3d2:	10 e0       	ldi	r17, 0x00	; 0
+ 3d4:	c9 cf       	rjmp	.-110    	; 0x368 <main+0x94>
 
-000003d2 <__vector_15>:
+000003d6 <__vector_15>:
 	//bit_set(PORTD, BIT(7));
 
 }
 
 ISR(TIMER0_COMPA_vect)
 {
- 3d2:	1f 92       	push	r1
- 3d4:	0f 92       	push	r0
- 3d6:	0f b6       	in	r0, 0x3f	; 63
+ 3d6:	1f 92       	push	r1
  3d8:	0f 92       	push	r0
- 3da:	11 24       	eor	r1, r1
- 3dc:	8f 93       	push	r24
+ 3da:	0f b6       	in	r0, 0x3f	; 63
+ 3dc:	0f 92       	push	r0
+ 3de:	11 24       	eor	r1, r1
+ 3e0:	8f 93       	push	r24
 	tick++;
- 3de:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
- 3e2:	8f 5f       	subi	r24, 0xFF	; 255
- 3e4:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <tick>
+ 3e2:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
+ 3e6:	8f 5f       	subi	r24, 0xFF	; 255
+ 3e8:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <tick>
 }
- 3e8:	8f 91       	pop	r24
- 3ea:	0f 90       	pop	r0
- 3ec:	0f be       	out	0x3f, r0	; 63
+ 3ec:	8f 91       	pop	r24
  3ee:	0f 90       	pop	r0
- 3f0:	1f 90       	pop	r1
- 3f2:	18 95       	reti
+ 3f0:	0f be       	out	0x3f, r0	; 63
+ 3f2:	0f 90       	pop	r0
+ 3f4:	1f 90       	pop	r1
+ 3f6:	18 95       	reti
 
-000003f4 <__vector_18>:
+000003f8 <__vector_18>:
 
 ISR( CAN_INT_vect )
 {
- 3f4:	1f 92       	push	r1
- 3f6:	0f 92       	push	r0
- 3f8:	0f b6       	in	r0, 0x3f	; 63
+ 3f8:	1f 92       	push	r1
  3fa:	0f 92       	push	r0
- 3fc:	11 24       	eor	r1, r1
- 3fe:	8f 93       	push	r24
- 400:	9f 93       	push	r25
+ 3fc:	0f b6       	in	r0, 0x3f	; 63
+ 3fe:	0f 92       	push	r0
+ 400:	11 24       	eor	r1, r1
+ 402:	8f 93       	push	r24
+ 404:	9f 93       	push	r25
 	receivedMessages++; 
- 402:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
- 406:	8f 5f       	subi	r24, 0xFF	; 255
- 408:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <_edata>
+ 406:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 40a:	8f 5f       	subi	r24, 0xFF	; 255
+ 40c:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <_edata>
 	bit_flip(PORTD,BIT(1));
- 40c:	9b b1       	in	r25, 0x0b	; 11
- 40e:	82 e0       	ldi	r24, 0x02	; 2
- 410:	89 27       	eor	r24, r25
- 412:	8b b9       	out	0x0b, r24	; 11
+ 410:	9b b1       	in	r25, 0x0b	; 11
+ 412:	82 e0       	ldi	r24, 0x02	; 2
+ 414:	89 27       	eor	r24, r25
+ 416:	8b b9       	out	0x0b, r24	; 11
 }
- 414:	9f 91       	pop	r25
- 416:	8f 91       	pop	r24
- 418:	0f 90       	pop	r0
- 41a:	0f be       	out	0x3f, r0	; 63
+ 418:	9f 91       	pop	r25
+ 41a:	8f 91       	pop	r24
  41c:	0f 90       	pop	r0
- 41e:	1f 90       	pop	r1
- 420:	18 95       	reti
+ 41e:	0f be       	out	0x3f, r0	; 63
+ 420:	0f 90       	pop	r0
+ 422:	1f 90       	pop	r1
+ 424:	18 95       	reti
 
-00000422 <ACK_TO_Hub>:
+00000426 <ACK_TO_Hub>:
 	Sensor ->transmissionMOb->pt_data[3] = 0;
 	Sensor ->transmissionMOb->pt_data[4] = 0;
 	Sensor ->transmissionMOb->pt_data[5] = 0;
 	Sensor ->transmissionMOb->pt_data[6] = 0;
 	Sensor ->transmissionMOb->pt_data[7] = 0;
 	can_cmd(Sensor->transmissionMOb);
- 422:	fc 01       	movw	r30, r24
- 424:	a5 85       	ldd	r26, Z+13	; 0x0d
- 426:	b6 85       	ldd	r27, Z+14	; 0x0e
- 428:	16 96       	adiw	r26, 0x06	; 6
- 42a:	0d 90       	ld	r0, X+
- 42c:	bc 91       	ld	r27, X
- 42e:	a0 2d       	mov	r26, r0
- 430:	84 ec       	ldi	r24, 0xC4	; 196
- 432:	8c 93       	st	X, r24
- 434:	a5 85       	ldd	r26, Z+13	; 0x0d
- 436:	b6 85       	ldd	r27, Z+14	; 0x0e
- 438:	16 96       	adiw	r26, 0x06	; 6
- 43a:	0d 90       	ld	r0, X+
- 43c:	bc 91       	ld	r27, X
- 43e:	a0 2d       	mov	r26, r0
- 440:	92 81       	ldd	r25, Z+2	; 0x02
- 442:	83 81       	ldd	r24, Z+3	; 0x03
- 444:	20 e1       	ldi	r18, 0x10	; 16
- 446:	92 9f       	mul	r25, r18
- 448:	80 0d       	add	r24, r0
- 44a:	11 24       	eor	r1, r1
- 44c:	11 96       	adiw	r26, 0x01	; 1
- 44e:	8c 93       	st	X, r24
- 450:	a5 85       	ldd	r26, Z+13	; 0x0d
- 452:	b6 85       	ldd	r27, Z+14	; 0x0e
- 454:	16 96       	adiw	r26, 0x06	; 6
- 456:	0d 90       	ld	r0, X+
- 458:	bc 91       	ld	r27, X
- 45a:	a0 2d       	mov	r26, r0
- 45c:	84 81       	ldd	r24, Z+4	; 0x04
- 45e:	12 96       	adiw	r26, 0x02	; 2
- 460:	8c 93       	st	X, r24
- 462:	a5 85       	ldd	r26, Z+13	; 0x0d
- 464:	b6 85       	ldd	r27, Z+14	; 0x0e
- 466:	16 96       	adiw	r26, 0x06	; 6
- 468:	0d 90       	ld	r0, X+
- 46a:	bc 91       	ld	r27, X
- 46c:	a0 2d       	mov	r26, r0
- 46e:	85 81       	ldd	r24, Z+5	; 0x05
- 470:	13 96       	adiw	r26, 0x03	; 3
- 472:	8c 93       	st	X, r24
- 474:	a5 85       	ldd	r26, Z+13	; 0x0d
- 476:	b6 85       	ldd	r27, Z+14	; 0x0e
- 478:	16 96       	adiw	r26, 0x06	; 6
- 47a:	0d 90       	ld	r0, X+
- 47c:	bc 91       	ld	r27, X
- 47e:	a0 2d       	mov	r26, r0
- 480:	86 81       	ldd	r24, Z+6	; 0x06
- 482:	14 96       	adiw	r26, 0x04	; 4
- 484:	8c 93       	st	X, r24
- 486:	a5 85       	ldd	r26, Z+13	; 0x0d
- 488:	b6 85       	ldd	r27, Z+14	; 0x0e
- 48a:	16 96       	adiw	r26, 0x06	; 6
- 48c:	0d 90       	ld	r0, X+
- 48e:	bc 91       	ld	r27, X
- 490:	a0 2d       	mov	r26, r0
- 492:	87 81       	ldd	r24, Z+7	; 0x07
- 494:	15 96       	adiw	r26, 0x05	; 5
- 496:	8c 93       	st	X, r24
- 498:	a5 85       	ldd	r26, Z+13	; 0x0d
- 49a:	b6 85       	ldd	r27, Z+14	; 0x0e
- 49c:	16 96       	adiw	r26, 0x06	; 6
- 49e:	0d 90       	ld	r0, X+
- 4a0:	bc 91       	ld	r27, X
- 4a2:	a0 2d       	mov	r26, r0
- 4a4:	80 85       	ldd	r24, Z+8	; 0x08
- 4a6:	16 96       	adiw	r26, 0x06	; 6
- 4a8:	8c 93       	st	X, r24
- 4aa:	a5 85       	ldd	r26, Z+13	; 0x0d
- 4ac:	b6 85       	ldd	r27, Z+14	; 0x0e
- 4ae:	16 96       	adiw	r26, 0x06	; 6
- 4b0:	0d 90       	ld	r0, X+
- 4b2:	bc 91       	ld	r27, X
- 4b4:	a0 2d       	mov	r26, r0
- 4b6:	17 96       	adiw	r26, 0x07	; 7
- 4b8:	1c 92       	st	X, r1
- 4ba:	85 85       	ldd	r24, Z+13	; 0x0d
- 4bc:	96 85       	ldd	r25, Z+14	; 0x0e
- 4be:	0e 94 f8 00 	call	0x1f0	; 0x1f0 <can_cmd>
- 4c2:	08 95       	ret
+ 426:	fc 01       	movw	r30, r24
+ 428:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 42a:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 42c:	16 96       	adiw	r26, 0x06	; 6
+ 42e:	0d 90       	ld	r0, X+
+ 430:	bc 91       	ld	r27, X
+ 432:	a0 2d       	mov	r26, r0
+ 434:	84 ec       	ldi	r24, 0xC4	; 196
+ 436:	8c 93       	st	X, r24
+ 438:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 43a:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 43c:	16 96       	adiw	r26, 0x06	; 6
+ 43e:	0d 90       	ld	r0, X+
+ 440:	bc 91       	ld	r27, X
+ 442:	a0 2d       	mov	r26, r0
+ 444:	92 81       	ldd	r25, Z+2	; 0x02
+ 446:	83 81       	ldd	r24, Z+3	; 0x03
+ 448:	20 e1       	ldi	r18, 0x10	; 16
+ 44a:	92 9f       	mul	r25, r18
+ 44c:	80 0d       	add	r24, r0
+ 44e:	11 24       	eor	r1, r1
+ 450:	11 96       	adiw	r26, 0x01	; 1
+ 452:	8c 93       	st	X, r24
+ 454:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 456:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 458:	16 96       	adiw	r26, 0x06	; 6
+ 45a:	0d 90       	ld	r0, X+
+ 45c:	bc 91       	ld	r27, X
+ 45e:	a0 2d       	mov	r26, r0
+ 460:	84 81       	ldd	r24, Z+4	; 0x04
+ 462:	12 96       	adiw	r26, 0x02	; 2
+ 464:	8c 93       	st	X, r24
+ 466:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 468:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 46a:	16 96       	adiw	r26, 0x06	; 6
+ 46c:	0d 90       	ld	r0, X+
+ 46e:	bc 91       	ld	r27, X
+ 470:	a0 2d       	mov	r26, r0
+ 472:	85 81       	ldd	r24, Z+5	; 0x05
+ 474:	13 96       	adiw	r26, 0x03	; 3
+ 476:	8c 93       	st	X, r24
+ 478:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 47a:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 47c:	16 96       	adiw	r26, 0x06	; 6
+ 47e:	0d 90       	ld	r0, X+
+ 480:	bc 91       	ld	r27, X
+ 482:	a0 2d       	mov	r26, r0
+ 484:	86 81       	ldd	r24, Z+6	; 0x06
+ 486:	14 96       	adiw	r26, 0x04	; 4
+ 488:	8c 93       	st	X, r24
+ 48a:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 48c:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 48e:	16 96       	adiw	r26, 0x06	; 6
+ 490:	0d 90       	ld	r0, X+
+ 492:	bc 91       	ld	r27, X
+ 494:	a0 2d       	mov	r26, r0
+ 496:	87 81       	ldd	r24, Z+7	; 0x07
+ 498:	15 96       	adiw	r26, 0x05	; 5
+ 49a:	8c 93       	st	X, r24
+ 49c:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 49e:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 4a0:	16 96       	adiw	r26, 0x06	; 6
+ 4a2:	0d 90       	ld	r0, X+
+ 4a4:	bc 91       	ld	r27, X
+ 4a6:	a0 2d       	mov	r26, r0
+ 4a8:	80 85       	ldd	r24, Z+8	; 0x08
+ 4aa:	16 96       	adiw	r26, 0x06	; 6
+ 4ac:	8c 93       	st	X, r24
+ 4ae:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 4b0:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 4b2:	16 96       	adiw	r26, 0x06	; 6
+ 4b4:	0d 90       	ld	r0, X+
+ 4b6:	bc 91       	ld	r27, X
+ 4b8:	a0 2d       	mov	r26, r0
+ 4ba:	17 96       	adiw	r26, 0x07	; 7
+ 4bc:	1c 92       	st	X, r1
+ 4be:	85 85       	ldd	r24, Z+13	; 0x0d
+ 4c0:	96 85       	ldd	r25, Z+14	; 0x0e
+ 4c2:	0e 94 f8 00 	call	0x1f0	; 0x1f0 <can_cmd>
+ 4c6:	08 95       	ret
 
-000004c4 <sendFilteretData>:
+000004c8 <sendFilteretData>:
 }
 extern void sendFilteretData(sensor_at_node* Sensor)
 {
- 4c4:	fc 01       	movw	r30, r24
+ 4c8:	fc 01       	movw	r30, r24
 	Sensor->transmissionMOb->pt_data[0] = 0b00110000; // Data message
- 4c6:	a5 85       	ldd	r26, Z+13	; 0x0d
- 4c8:	b6 85       	ldd	r27, Z+14	; 0x0e
- 4ca:	16 96       	adiw	r26, 0x06	; 6
- 4cc:	0d 90       	ld	r0, X+
- 4ce:	bc 91       	ld	r27, X
- 4d0:	a0 2d       	mov	r26, r0
- 4d2:	80 e3       	ldi	r24, 0x30	; 48
- 4d4:	8c 93       	st	X, r24
+ 4ca:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 4cc:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 4ce:	16 96       	adiw	r26, 0x06	; 6
+ 4d0:	0d 90       	ld	r0, X+
+ 4d2:	bc 91       	ld	r27, X
+ 4d4:	a0 2d       	mov	r26, r0
+ 4d6:	80 e3       	ldi	r24, 0x30	; 48
+ 4d8:	8c 93       	st	X, r24
 	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type*16)+Sensor->unit;
- 4d6:	a5 85       	ldd	r26, Z+13	; 0x0d
- 4d8:	b6 85       	ldd	r27, Z+14	; 0x0e
- 4da:	16 96       	adiw	r26, 0x06	; 6
- 4dc:	0d 90       	ld	r0, X+
- 4de:	bc 91       	ld	r27, X
- 4e0:	a0 2d       	mov	r26, r0
- 4e2:	92 81       	ldd	r25, Z+2	; 0x02
- 4e4:	83 81       	ldd	r24, Z+3	; 0x03
- 4e6:	20 e1       	ldi	r18, 0x10	; 16
- 4e8:	92 9f       	mul	r25, r18
- 4ea:	80 0d       	add	r24, r0
- 4ec:	11 24       	eor	r1, r1
- 4ee:	11 96       	adiw	r26, 0x01	; 1
- 4f0:	8c 93       	st	X, r24
+ 4da:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 4dc:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 4de:	16 96       	adiw	r26, 0x06	; 6
+ 4e0:	0d 90       	ld	r0, X+
+ 4e2:	bc 91       	ld	r27, X
+ 4e4:	a0 2d       	mov	r26, r0
+ 4e6:	92 81       	ldd	r25, Z+2	; 0x02
+ 4e8:	83 81       	ldd	r24, Z+3	; 0x03
+ 4ea:	20 e1       	ldi	r18, 0x10	; 16
+ 4ec:	92 9f       	mul	r25, r18
+ 4ee:	80 0d       	add	r24, r0
+ 4f0:	11 24       	eor	r1, r1
+ 4f2:	11 96       	adiw	r26, 0x01	; 1
+ 4f4:	8c 93       	st	X, r24
 	uint8_t *vp = (uint8_t *)&Sensor->filterValue;
 	Sensor->transmissionMOb->pt_data[2] = vp[3];
- 4f2:	a5 85       	ldd	r26, Z+13	; 0x0d
- 4f4:	b6 85       	ldd	r27, Z+14	; 0x0e
- 4f6:	16 96       	adiw	r26, 0x06	; 6
- 4f8:	0d 90       	ld	r0, X+
- 4fa:	bc 91       	ld	r27, X
- 4fc:	a0 2d       	mov	r26, r0
- 4fe:	84 85       	ldd	r24, Z+12	; 0x0c
- 500:	12 96       	adiw	r26, 0x02	; 2
- 502:	8c 93       	st	X, r24
+ 4f6:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 4f8:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 4fa:	16 96       	adiw	r26, 0x06	; 6
+ 4fc:	0d 90       	ld	r0, X+
+ 4fe:	bc 91       	ld	r27, X
+ 500:	a0 2d       	mov	r26, r0
+ 502:	84 85       	ldd	r24, Z+12	; 0x0c
+ 504:	12 96       	adiw	r26, 0x02	; 2
+ 506:	8c 93       	st	X, r24
 	Sensor->transmissionMOb->pt_data[3] = vp[2];
- 504:	a5 85       	ldd	r26, Z+13	; 0x0d
- 506:	b6 85       	ldd	r27, Z+14	; 0x0e
- 508:	16 96       	adiw	r26, 0x06	; 6
- 50a:	0d 90       	ld	r0, X+
- 50c:	bc 91       	ld	r27, X
- 50e:	a0 2d       	mov	r26, r0
- 510:	83 85       	ldd	r24, Z+11	; 0x0b
- 512:	13 96       	adiw	r26, 0x03	; 3
- 514:	8c 93       	st	X, r24
+ 508:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 50a:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 50c:	16 96       	adiw	r26, 0x06	; 6
+ 50e:	0d 90       	ld	r0, X+
+ 510:	bc 91       	ld	r27, X
+ 512:	a0 2d       	mov	r26, r0
+ 514:	83 85       	ldd	r24, Z+11	; 0x0b
+ 516:	13 96       	adiw	r26, 0x03	; 3
+ 518:	8c 93       	st	X, r24
 	Sensor->transmissionMOb->pt_data[4] = vp[1];
- 516:	a5 85       	ldd	r26, Z+13	; 0x0d
- 518:	b6 85       	ldd	r27, Z+14	; 0x0e
- 51a:	16 96       	adiw	r26, 0x06	; 6
- 51c:	0d 90       	ld	r0, X+
- 51e:	bc 91       	ld	r27, X
- 520:	a0 2d       	mov	r26, r0
- 522:	82 85       	ldd	r24, Z+10	; 0x0a
- 524:	14 96       	adiw	r26, 0x04	; 4
- 526:	8c 93       	st	X, r24
+ 51a:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 51c:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 51e:	16 96       	adiw	r26, 0x06	; 6
+ 520:	0d 90       	ld	r0, X+
+ 522:	bc 91       	ld	r27, X
+ 524:	a0 2d       	mov	r26, r0
+ 526:	82 85       	ldd	r24, Z+10	; 0x0a
+ 528:	14 96       	adiw	r26, 0x04	; 4
+ 52a:	8c 93       	st	X, r24
 	Sensor->transmissionMOb->pt_data[5] = vp[0];
- 528:	a5 85       	ldd	r26, Z+13	; 0x0d
- 52a:	b6 85       	ldd	r27, Z+14	; 0x0e
- 52c:	16 96       	adiw	r26, 0x06	; 6
- 52e:	0d 90       	ld	r0, X+
- 530:	bc 91       	ld	r27, X
- 532:	a0 2d       	mov	r26, r0
- 534:	81 85       	ldd	r24, Z+9	; 0x09
- 536:	15 96       	adiw	r26, 0x05	; 5
- 538:	8c 93       	st	X, r24
+ 52c:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 52e:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 530:	16 96       	adiw	r26, 0x06	; 6
+ 532:	0d 90       	ld	r0, X+
+ 534:	bc 91       	ld	r27, X
+ 536:	a0 2d       	mov	r26, r0
+ 538:	81 85       	ldd	r24, Z+9	; 0x09
+ 53a:	15 96       	adiw	r26, 0x05	; 5
+ 53c:	8c 93       	st	X, r24
 	Sensor ->transmissionMOb->pt_data[6] = 0;
- 53a:	a5 85       	ldd	r26, Z+13	; 0x0d
- 53c:	b6 85       	ldd	r27, Z+14	; 0x0e
- 53e:	16 96       	adiw	r26, 0x06	; 6
- 540:	0d 90       	ld	r0, X+
- 542:	bc 91       	ld	r27, X
- 544:	a0 2d       	mov	r26, r0
- 546:	16 96       	adiw	r26, 0x06	; 6
- 548:	1c 92       	st	X, r1
+ 53e:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 540:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 542:	16 96       	adiw	r26, 0x06	; 6
+ 544:	0d 90       	ld	r0, X+
+ 546:	bc 91       	ld	r27, X
+ 548:	a0 2d       	mov	r26, r0
+ 54a:	16 96       	adiw	r26, 0x06	; 6
+ 54c:	1c 92       	st	X, r1
 	Sensor ->transmissionMOb->pt_data[7] = 0;
- 54a:	a5 85       	ldd	r26, Z+13	; 0x0d
- 54c:	b6 85       	ldd	r27, Z+14	; 0x0e
- 54e:	16 96       	adiw	r26, 0x06	; 6
- 550:	0d 90       	ld	r0, X+
- 552:	bc 91       	ld	r27, X
- 554:	a0 2d       	mov	r26, r0
- 556:	17 96       	adiw	r26, 0x07	; 7
- 558:	1c 92       	st	X, r1
+ 54e:	a5 85       	ldd	r26, Z+13	; 0x0d
+ 550:	b6 85       	ldd	r27, Z+14	; 0x0e
+ 552:	16 96       	adiw	r26, 0x06	; 6
+ 554:	0d 90       	ld	r0, X+
+ 556:	bc 91       	ld	r27, X
+ 558:	a0 2d       	mov	r26, r0
+ 55a:	17 96       	adiw	r26, 0x07	; 7
+ 55c:	1c 92       	st	X, r1
 	can_cmd(Sensor->transmissionMOb);
- 55a:	85 85       	ldd	r24, Z+13	; 0x0d
- 55c:	96 85       	ldd	r25, Z+14	; 0x0e
- 55e:	0e 94 f8 00 	call	0x1f0	; 0x1f0 <can_cmd>
- 562:	08 95       	ret
+ 55e:	85 85       	ldd	r24, Z+13	; 0x0d
+ 560:	96 85       	ldd	r25, Z+14	; 0x0e
+ 562:	0e 94 f8 00 	call	0x1f0	; 0x1f0 <can_cmd>
+ 566:	08 95       	ret
 
-00000564 <decodeHubServiceMessage>:
+00000568 <decodeHubServiceMessage>:
 }
 
 // decodeHubServiceMessage(uint8_t message_array[8],sensor_at_node* sensor) takes the array of message bytes
 // and fills out the given sensor struct
 void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node* sensor)
 {
- 564:	dc 01       	movw	r26, r24
- 566:	fb 01       	movw	r30, r22
+ 568:	dc 01       	movw	r26, r24
+ 56a:	fb 01       	movw	r30, r22
 	sensor->sensor_Type = (message_array[1] & 0b11110000)/16; // Shift left nibble to the right with /16
- 568:	11 96       	adiw	r26, 0x01	; 1
- 56a:	8c 91       	ld	r24, X
- 56c:	11 97       	sbiw	r26, 0x01	; 1
- 56e:	80 7f       	andi	r24, 0xF0	; 240
- 570:	90 e0       	ldi	r25, 0x00	; 0
- 572:	95 95       	asr	r25
- 574:	87 95       	ror	r24
+ 56c:	11 96       	adiw	r26, 0x01	; 1
+ 56e:	8c 91       	ld	r24, X
+ 570:	11 97       	sbiw	r26, 0x01	; 1
+ 572:	80 7f       	andi	r24, 0xF0	; 240
+ 574:	90 e0       	ldi	r25, 0x00	; 0
  576:	95 95       	asr	r25
  578:	87 95       	ror	r24
  57a:	95 95       	asr	r25
  57c:	87 95       	ror	r24
  57e:	95 95       	asr	r25
  580:	87 95       	ror	r24
- 582:	82 83       	std	Z+2, r24	; 0x02
+ 582:	95 95       	asr	r25
+ 584:	87 95       	ror	r24
+ 586:	82 83       	std	Z+2, r24	; 0x02
 	sensor->unit = message_array[1] & 0b00001111;
- 584:	11 96       	adiw	r26, 0x01	; 1
- 586:	8c 91       	ld	r24, X
- 588:	11 97       	sbiw	r26, 0x01	; 1
- 58a:	8f 70       	andi	r24, 0x0F	; 15
- 58c:	83 83       	std	Z+3, r24	; 0x03
+ 588:	11 96       	adiw	r26, 0x01	; 1
+ 58a:	8c 91       	ld	r24, X
+ 58c:	11 97       	sbiw	r26, 0x01	; 1
+ 58e:	8f 70       	andi	r24, 0x0F	; 15
+ 590:	83 83       	std	Z+3, r24	; 0x03
 	sensor->coefficient1 = message_array[2];
- 58e:	12 96       	adiw	r26, 0x02	; 2
- 590:	8c 91       	ld	r24, X
- 592:	12 97       	sbiw	r26, 0x02	; 2
- 594:	84 83       	std	Z+4, r24	; 0x04
+ 592:	12 96       	adiw	r26, 0x02	; 2
+ 594:	8c 91       	ld	r24, X
+ 596:	12 97       	sbiw	r26, 0x02	; 2
+ 598:	84 83       	std	Z+4, r24	; 0x04
 	sensor->coefficient2 = message_array[3];
- 596:	13 96       	adiw	r26, 0x03	; 3
- 598:	8c 91       	ld	r24, X
- 59a:	13 97       	sbiw	r26, 0x03	; 3
- 59c:	85 83       	std	Z+5, r24	; 0x05
+ 59a:	13 96       	adiw	r26, 0x03	; 3
+ 59c:	8c 91       	ld	r24, X
+ 59e:	13 97       	sbiw	r26, 0x03	; 3
+ 5a0:	85 83       	std	Z+5, r24	; 0x05
 	sensor->coefficient3 = message_array[4];
- 59e:	14 96       	adiw	r26, 0x04	; 4
- 5a0:	8c 91       	ld	r24, X
- 5a2:	14 97       	sbiw	r26, 0x04	; 4
- 5a4:	86 83       	std	Z+6, r24	; 0x06
+ 5a2:	14 96       	adiw	r26, 0x04	; 4
+ 5a4:	8c 91       	ld	r24, X
+ 5a6:	14 97       	sbiw	r26, 0x04	; 4
+ 5a8:	86 83       	std	Z+6, r24	; 0x06
 	sensor->period = message_array[5];
- 5a6:	15 96       	adiw	r26, 0x05	; 5
- 5a8:	8c 91       	ld	r24, X
- 5aa:	15 97       	sbiw	r26, 0x05	; 5
- 5ac:	87 83       	std	Z+7, r24	; 0x07
+ 5aa:	15 96       	adiw	r26, 0x05	; 5
+ 5ac:	8c 91       	ld	r24, X
+ 5ae:	15 97       	sbiw	r26, 0x05	; 5
+ 5b0:	87 83       	std	Z+7, r24	; 0x07
 	sensor->cutOffFreq = message_array[6];
- 5ae:	16 96       	adiw	r26, 0x06	; 6
- 5b0:	8c 91       	ld	r24, X
- 5b2:	80 87       	std	Z+8, r24	; 0x08
- 5b4:	08 95       	ret
+ 5b2:	16 96       	adiw	r26, 0x06	; 6
+ 5b4:	8c 91       	ld	r24, X
+ 5b6:	80 87       	std	Z+8, r24	; 0x08
+ 5b8:	08 95       	ret
 
-000005b6 <decodeMessage>:
+000005ba <decodeMessage>:
 }*/
 
 
 //Decoding message from hub and determinds what kind of message type it is.
 void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t NUMBER_OF_SENSORS)
 {
- 5b6:	ef 92       	push	r14
- 5b8:	ff 92       	push	r15
- 5ba:	0f 93       	push	r16
- 5bc:	1f 93       	push	r17
- 5be:	cf 93       	push	r28
- 5c0:	df 93       	push	r29
- 5c2:	cd b7       	in	r28, 0x3d	; 61
- 5c4:	de b7       	in	r29, 0x3e	; 62
- 5c6:	28 97       	sbiw	r28, 0x08	; 8
- 5c8:	0f b6       	in	r0, 0x3f	; 63
- 5ca:	f8 94       	cli
- 5cc:	de bf       	out	0x3e, r29	; 62
- 5ce:	0f be       	out	0x3f, r0	; 63
- 5d0:	cd bf       	out	0x3d, r28	; 61
- 5d2:	8c 01       	movw	r16, r24
+ 5ba:	ef 92       	push	r14
+ 5bc:	ff 92       	push	r15
+ 5be:	0f 93       	push	r16
+ 5c0:	1f 93       	push	r17
+ 5c2:	cf 93       	push	r28
+ 5c4:	df 93       	push	r29
+ 5c6:	cd b7       	in	r28, 0x3d	; 61
+ 5c8:	de b7       	in	r29, 0x3e	; 62
+ 5ca:	28 97       	sbiw	r28, 0x08	; 8
+ 5cc:	0f b6       	in	r0, 0x3f	; 63
+ 5ce:	f8 94       	cli
+ 5d0:	de bf       	out	0x3e, r29	; 62
+ 5d2:	0f be       	out	0x3f, r0	; 63
+ 5d4:	cd bf       	out	0x3d, r28	; 61
+ 5d6:	8c 01       	movw	r16, r24
 	uint8_t message_array[8];
 	for(uint8_t i = 0; i<8; i++)
 	{
 		message_array[i] = message_struct -> pt_data[i];
- 5d4:	fc 01       	movw	r30, r24
- 5d6:	e6 80       	ldd	r14, Z+6	; 0x06
- 5d8:	f7 80       	ldd	r15, Z+7	; 0x07
- 5da:	d7 01       	movw	r26, r14
- 5dc:	fe 01       	movw	r30, r28
- 5de:	31 96       	adiw	r30, 0x01	; 1
- 5e0:	9e 01       	movw	r18, r28
- 5e2:	27 5f       	subi	r18, 0xF7	; 247
- 5e4:	3f 4f       	sbci	r19, 0xFF	; 255
- 5e6:	9d 91       	ld	r25, X+
- 5e8:	91 93       	st	Z+, r25
+ 5d8:	fc 01       	movw	r30, r24
+ 5da:	e6 80       	ldd	r14, Z+6	; 0x06
+ 5dc:	f7 80       	ldd	r15, Z+7	; 0x07
+ 5de:	d7 01       	movw	r26, r14
+ 5e0:	fe 01       	movw	r30, r28
+ 5e2:	31 96       	adiw	r30, 0x01	; 1
+ 5e4:	9e 01       	movw	r18, r28
+ 5e6:	27 5f       	subi	r18, 0xF7	; 247
+ 5e8:	3f 4f       	sbci	r19, 0xFF	; 255
+ 5ea:	9d 91       	ld	r25, X+
+ 5ec:	91 93       	st	Z+, r25
 
 //Decoding message from hub and determinds what kind of message type it is.
 void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t NUMBER_OF_SENSORS)
 {
 	uint8_t message_array[8];
 	for(uint8_t i = 0; i<8; i++)
- 5ea:	e2 17       	cp	r30, r18
- 5ec:	f3 07       	cpc	r31, r19
- 5ee:	d9 f7       	brne	.-10     	; 0x5e6 <decodeMessage+0x30>
+ 5ee:	e2 17       	cp	r30, r18
+ 5f0:	f3 07       	cpc	r31, r19
+ 5f2:	d9 f7       	brne	.-10     	; 0x5ea <decodeMessage+0x30>
 	{
 		message_array[i] = message_struct -> pt_data[i];
 	}
 	
 	switch ((message_struct->pt_data[0] & 0b11110000))// only looks a first nibble
- 5f0:	f7 01       	movw	r30, r14
- 5f2:	90 81       	ld	r25, Z
- 5f4:	90 7f       	andi	r25, 0xF0	; 240
- 5f6:	90 3c       	cpi	r25, 0xC0	; 192
- 5f8:	99 f0       	breq	.+38     	; 0x620 <decodeMessage+0x6a>
- 5fa:	90 3e       	cpi	r25, 0xE0	; 224
- 5fc:	09 f0       	breq	.+2      	; 0x600 <decodeMessage+0x4a>
- 5fe:	5c c0       	rjmp	.+184    	; 0x6b8 <decodeMessage+0x102>
+ 5f4:	f7 01       	movw	r30, r14
+ 5f6:	90 81       	ld	r25, Z
+ 5f8:	90 7f       	andi	r25, 0xF0	; 240
+ 5fa:	90 3c       	cpi	r25, 0xC0	; 192
+ 5fc:	99 f0       	breq	.+38     	; 0x624 <decodeMessage+0x6a>
+ 5fe:	90 3e       	cpi	r25, 0xE0	; 224
+ 600:	09 f0       	breq	.+2      	; 0x604 <decodeMessage+0x4a>
+ 602:	5c c0       	rjmp	.+184    	; 0x6bc <decodeMessage+0x102>
 			}
 			break;
 		}
 		case 0b11100000: // ID FOR DATA RETRIEVING MESSAGE, FROM SPECIFIC MESSAGE
 		{
 			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
- 600:	50 e0       	ldi	r21, 0x00	; 0
- 602:	14 16       	cp	r1, r20
- 604:	15 06       	cpc	r1, r21
- 606:	0c f0       	brlt	.+2      	; 0x60a <decodeMessage+0x54>
- 608:	57 c0       	rjmp	.+174    	; 0x6b8 <decodeMessage+0x102>
+ 604:	50 e0       	ldi	r21, 0x00	; 0
+ 606:	14 16       	cp	r1, r20
+ 608:	15 06       	cpc	r1, r21
+ 60a:	0c f0       	brlt	.+2      	; 0x60e <decodeMessage+0x54>
+ 60c:	57 c0       	rjmp	.+174    	; 0x6bc <decodeMessage+0x102>
 			{
 				if (message_struct->id == SensorList[i].CAN_ID)
- 60a:	f8 01       	movw	r30, r16
- 60c:	a1 81       	ldd	r26, Z+1	; 0x01
- 60e:	b2 81       	ldd	r27, Z+2	; 0x02
- 610:	fb 01       	movw	r30, r22
- 612:	80 81       	ld	r24, Z
- 614:	91 81       	ldd	r25, Z+1	; 0x01
- 616:	a8 17       	cp	r26, r24
- 618:	b9 07       	cpc	r27, r25
- 61a:	09 f0       	breq	.+2      	; 0x61e <decodeMessage+0x68>
- 61c:	44 c0       	rjmp	.+136    	; 0x6a6 <decodeMessage+0xf0>
- 61e:	3e c0       	rjmp	.+124    	; 0x69c <decodeMessage+0xe6>
+ 60e:	f8 01       	movw	r30, r16
+ 610:	a1 81       	ldd	r26, Z+1	; 0x01
+ 612:	b2 81       	ldd	r27, Z+2	; 0x02
+ 614:	fb 01       	movw	r30, r22
+ 616:	80 81       	ld	r24, Z
+ 618:	91 81       	ldd	r25, Z+1	; 0x01
+ 61a:	a8 17       	cp	r26, r24
+ 61c:	b9 07       	cpc	r27, r25
+ 61e:	09 f0       	breq	.+2      	; 0x622 <decodeMessage+0x68>
+ 620:	44 c0       	rjmp	.+136    	; 0x6aa <decodeMessage+0xf0>
+ 622:	3e c0       	rjmp	.+124    	; 0x6a0 <decodeMessage+0xe6>
 	
 	switch ((message_struct->pt_data[0] & 0b11110000))// only looks a first nibble
 	{
 		case 0b11000000: // ID FOR A SERVICE MESSAGE
 		{
 			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
- 620:	50 e0       	ldi	r21, 0x00	; 0
- 622:	14 16       	cp	r1, r20
- 624:	15 06       	cpc	r1, r21
- 626:	0c f0       	brlt	.+2      	; 0x62a <decodeMessage+0x74>
- 628:	47 c0       	rjmp	.+142    	; 0x6b8 <decodeMessage+0x102>
+ 624:	50 e0       	ldi	r21, 0x00	; 0
+ 626:	14 16       	cp	r1, r20
+ 628:	15 06       	cpc	r1, r21
+ 62a:	0c f0       	brlt	.+2      	; 0x62e <decodeMessage+0x74>
+ 62c:	47 c0       	rjmp	.+142    	; 0x6bc <decodeMessage+0x102>
 			{
 				if (message_struct->id == SensorList[i].CAN_ID)
- 62a:	f8 01       	movw	r30, r16
- 62c:	a1 81       	ldd	r26, Z+1	; 0x01
- 62e:	b2 81       	ldd	r27, Z+2	; 0x02
- 630:	fb 01       	movw	r30, r22
- 632:	80 81       	ld	r24, Z
- 634:	91 81       	ldd	r25, Z+1	; 0x01
- 636:	a8 17       	cp	r26, r24
- 638:	b9 07       	cpc	r27, r25
- 63a:	d1 f4       	brne	.+52     	; 0x670 <decodeMessage+0xba>
- 63c:	0c c0       	rjmp	.+24     	; 0x656 <decodeMessage+0xa0>
- 63e:	06 2f       	mov	r16, r22
- 640:	17 2f       	mov	r17, r23
- 642:	61 5f       	subi	r22, 0xF1	; 241
- 644:	7f 4f       	sbci	r23, 0xFF	; 255
- 646:	fb 01       	movw	r30, r22
- 648:	3f 97       	sbiw	r30, 0x0f	; 15
- 64a:	20 81       	ld	r18, Z
- 64c:	31 81       	ldd	r19, Z+1	; 0x01
- 64e:	2a 17       	cp	r18, r26
- 650:	3b 07       	cpc	r19, r27
- 652:	91 f4       	brne	.+36     	; 0x678 <decodeMessage+0xc2>
- 654:	02 c0       	rjmp	.+4      	; 0x65a <decodeMessage+0xa4>
- 656:	06 2f       	mov	r16, r22
- 658:	17 2f       	mov	r17, r23
+ 62e:	f8 01       	movw	r30, r16
+ 630:	a1 81       	ldd	r26, Z+1	; 0x01
+ 632:	b2 81       	ldd	r27, Z+2	; 0x02
+ 634:	fb 01       	movw	r30, r22
+ 636:	80 81       	ld	r24, Z
+ 638:	91 81       	ldd	r25, Z+1	; 0x01
+ 63a:	a8 17       	cp	r26, r24
+ 63c:	b9 07       	cpc	r27, r25
+ 63e:	d1 f4       	brne	.+52     	; 0x674 <decodeMessage+0xba>
+ 640:	0c c0       	rjmp	.+24     	; 0x65a <decodeMessage+0xa0>
+ 642:	06 2f       	mov	r16, r22
+ 644:	17 2f       	mov	r17, r23
+ 646:	61 5f       	subi	r22, 0xF1	; 241
+ 648:	7f 4f       	sbci	r23, 0xFF	; 255
+ 64a:	fb 01       	movw	r30, r22
+ 64c:	3f 97       	sbiw	r30, 0x0f	; 15
+ 64e:	20 81       	ld	r18, Z
+ 650:	31 81       	ldd	r19, Z+1	; 0x01
+ 652:	2a 17       	cp	r18, r26
+ 654:	3b 07       	cpc	r19, r27
+ 656:	91 f4       	brne	.+36     	; 0x67c <decodeMessage+0xc2>
+ 658:	02 c0       	rjmp	.+4      	; 0x65e <decodeMessage+0xa4>
+ 65a:	06 2f       	mov	r16, r22
+ 65c:	17 2f       	mov	r17, r23
 				{
 					decodeHubServiceMessage(message_array,&SensorList[i]);
- 65a:	60 2f       	mov	r22, r16
- 65c:	71 2f       	mov	r23, r17
- 65e:	ce 01       	movw	r24, r28
- 660:	01 96       	adiw	r24, 0x01	; 1
- 662:	0e 94 b2 02 	call	0x564	; 0x564 <decodeHubServiceMessage>
+ 65e:	60 2f       	mov	r22, r16
+ 660:	71 2f       	mov	r23, r17
+ 662:	ce 01       	movw	r24, r28
+ 664:	01 96       	adiw	r24, 0x01	; 1
+ 666:	0e 94 b4 02 	call	0x568	; 0x568 <decodeHubServiceMessage>
 					ACK_TO_Hub(&SensorList[i]);
- 666:	80 2f       	mov	r24, r16
- 668:	91 2f       	mov	r25, r17
- 66a:	0e 94 11 02 	call	0x422	; 0x422 <ACK_TO_Hub>
+ 66a:	80 2f       	mov	r24, r16
+ 66c:	91 2f       	mov	r25, r17
+ 66e:	0e 94 13 02 	call	0x426	; 0x426 <ACK_TO_Hub>
 					break;
- 66e:	24 c0       	rjmp	.+72     	; 0x6b8 <decodeMessage+0x102>
- 670:	61 5f       	subi	r22, 0xF1	; 241
- 672:	7f 4f       	sbci	r23, 0xFF	; 255
+ 672:	24 c0       	rjmp	.+72     	; 0x6bc <decodeMessage+0x102>
+ 674:	61 5f       	subi	r22, 0xF1	; 241
+ 676:	7f 4f       	sbci	r23, 0xFF	; 255
 	{
 		case 0b11000000: // ID FOR A SERVICE MESSAGE
 		{
 			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
 			{
 				if (message_struct->id == SensorList[i].CAN_ID)
- 674:	80 e0       	ldi	r24, 0x00	; 0
- 676:	90 e0       	ldi	r25, 0x00	; 0
+ 678:	80 e0       	ldi	r24, 0x00	; 0
+ 67a:	90 e0       	ldi	r25, 0x00	; 0
 	
 	switch ((message_struct->pt_data[0] & 0b11110000))// only looks a first nibble
 	{
 		case 0b11000000: // ID FOR A SERVICE MESSAGE
 		{
 			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
- 678:	01 96       	adiw	r24, 0x01	; 1
- 67a:	84 17       	cp	r24, r20
- 67c:	95 07       	cpc	r25, r21
- 67e:	f9 f6       	brne	.-66     	; 0x63e <decodeMessage+0x88>
- 680:	1b c0       	rjmp	.+54     	; 0x6b8 <decodeMessage+0x102>
+ 67c:	01 96       	adiw	r24, 0x01	; 1
+ 67e:	84 17       	cp	r24, r20
+ 680:	95 07       	cpc	r25, r21
+ 682:	f9 f6       	brne	.-66     	; 0x642 <decodeMessage+0x88>
+ 684:	1b c0       	rjmp	.+54     	; 0x6bc <decodeMessage+0x102>
 		}
 		case 0b11100000: // ID FOR DATA RETRIEVING MESSAGE, FROM SPECIFIC MESSAGE
 		{
 			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
 			{
 				if (message_struct->id == SensorList[i].CAN_ID)
- 682:	86 2f       	mov	r24, r22
- 684:	97 2f       	mov	r25, r23
- 686:	61 5f       	subi	r22, 0xF1	; 241
- 688:	7f 4f       	sbci	r23, 0xFF	; 255
- 68a:	fb 01       	movw	r30, r22
- 68c:	3f 97       	sbiw	r30, 0x0f	; 15
- 68e:	01 90       	ld	r0, Z+
- 690:	f0 81       	ld	r31, Z
- 692:	e0 2d       	mov	r30, r0
- 694:	ea 17       	cp	r30, r26
- 696:	fb 07       	cpc	r31, r27
- 698:	51 f4       	brne	.+20     	; 0x6ae <decodeMessage+0xf8>
- 69a:	02 c0       	rjmp	.+4      	; 0x6a0 <decodeMessage+0xea>
- 69c:	86 2f       	mov	r24, r22
- 69e:	97 2f       	mov	r25, r23
+ 686:	86 2f       	mov	r24, r22
+ 688:	97 2f       	mov	r25, r23
+ 68a:	61 5f       	subi	r22, 0xF1	; 241
+ 68c:	7f 4f       	sbci	r23, 0xFF	; 255
+ 68e:	fb 01       	movw	r30, r22
+ 690:	3f 97       	sbiw	r30, 0x0f	; 15
+ 692:	01 90       	ld	r0, Z+
+ 694:	f0 81       	ld	r31, Z
+ 696:	e0 2d       	mov	r30, r0
+ 698:	ea 17       	cp	r30, r26
+ 69a:	fb 07       	cpc	r31, r27
+ 69c:	51 f4       	brne	.+20     	; 0x6b2 <decodeMessage+0xf8>
+ 69e:	02 c0       	rjmp	.+4      	; 0x6a4 <decodeMessage+0xea>
+ 6a0:	86 2f       	mov	r24, r22
+ 6a2:	97 2f       	mov	r25, r23
 				{
 					sendFilteretData(&SensorList[i]);
- 6a0:	0e 94 62 02 	call	0x4c4	; 0x4c4 <sendFilteretData>
+ 6a4:	0e 94 64 02 	call	0x4c8	; 0x4c8 <sendFilteretData>
 					break;
- 6a4:	09 c0       	rjmp	.+18     	; 0x6b8 <decodeMessage+0x102>
- 6a6:	61 5f       	subi	r22, 0xF1	; 241
- 6a8:	7f 4f       	sbci	r23, 0xFF	; 255
+ 6a8:	09 c0       	rjmp	.+18     	; 0x6bc <decodeMessage+0x102>
+ 6aa:	61 5f       	subi	r22, 0xF1	; 241
+ 6ac:	7f 4f       	sbci	r23, 0xFF	; 255
 		}
 		case 0b11100000: // ID FOR DATA RETRIEVING MESSAGE, FROM SPECIFIC MESSAGE
 		{
 			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
 			{
 				if (message_struct->id == SensorList[i].CAN_ID)
- 6aa:	20 e0       	ldi	r18, 0x00	; 0
- 6ac:	30 e0       	ldi	r19, 0x00	; 0
+ 6ae:	20 e0       	ldi	r18, 0x00	; 0
+ 6b0:	30 e0       	ldi	r19, 0x00	; 0
 			}
 			break;
 		}
 		case 0b11100000: // ID FOR DATA RETRIEVING MESSAGE, FROM SPECIFIC MESSAGE
 		{
 			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
- 6ae:	2f 5f       	subi	r18, 0xFF	; 255
- 6b0:	3f 4f       	sbci	r19, 0xFF	; 255
- 6b2:	24 17       	cp	r18, r20
- 6b4:	35 07       	cpc	r19, r21
- 6b6:	29 f7       	brne	.-54     	; 0x682 <decodeMessage+0xcc>
+ 6b2:	2f 5f       	subi	r18, 0xFF	; 255
+ 6b4:	3f 4f       	sbci	r19, 0xFF	; 255
+ 6b6:	24 17       	cp	r18, r20
+ 6b8:	35 07       	cpc	r19, r21
+ 6ba:	29 f7       	brne	.-54     	; 0x686 <decodeMessage+0xcc>
 			//SEND BACK ERROR?
 			break;
 		}
 		
 	}
 }
- 6b8:	28 96       	adiw	r28, 0x08	; 8
- 6ba:	0f b6       	in	r0, 0x3f	; 63
- 6bc:	f8 94       	cli
- 6be:	de bf       	out	0x3e, r29	; 62
- 6c0:	0f be       	out	0x3f, r0	; 63
- 6c2:	cd bf       	out	0x3d, r28	; 61
- 6c4:	df 91       	pop	r29
- 6c6:	cf 91       	pop	r28
- 6c8:	1f 91       	pop	r17
- 6ca:	0f 91       	pop	r16
- 6cc:	ff 90       	pop	r15
- 6ce:	ef 90       	pop	r14
- 6d0:	08 95       	ret
+ 6bc:	28 96       	adiw	r28, 0x08	; 8
+ 6be:	0f b6       	in	r0, 0x3f	; 63
+ 6c0:	f8 94       	cli
+ 6c2:	de bf       	out	0x3e, r29	; 62
+ 6c4:	0f be       	out	0x3f, r0	; 63
+ 6c6:	cd bf       	out	0x3d, r28	; 61
+ 6c8:	df 91       	pop	r29
+ 6ca:	cf 91       	pop	r28
+ 6cc:	1f 91       	pop	r17
+ 6ce:	0f 91       	pop	r16
+ 6d0:	ff 90       	pop	r15
+ 6d2:	ef 90       	pop	r14
+ 6d4:	08 95       	ret
 
-000006d2 <_exit>:
- 6d2:	f8 94       	cli
+000006d6 <_exit>:
+ 6d6:	f8 94       	cli
 
-000006d4 <__stop_program>:
- 6d4:	ff cf       	rjmp	.-2      	; 0x6d4 <__stop_program>
+000006d8 <__stop_program>:
+ 6d8:	ff cf       	rjmp	.-2      	; 0x6d8 <__stop_program>
