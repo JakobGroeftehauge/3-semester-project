@@ -11,24 +11,24 @@
 #include <util/delay.h>
 #include "CAN_lib.h"
 #include "payloadProtocol.h"
-#include "ADCTimer_drv.h"
-
+#include "Timer_drv.h"
+#include "ADC_drv.h"
+#define NUMBER_OF_SENSOR 2
 volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
-
-
-
+volatile sensor_at_node Sensorlist[NUMBER_OF_SENSOR];
 void chip_init (void);
 volatile uint8_t data[MSG_SIZE];
 
 int main(void)
 {
-
+	
+	
 //Initialize variable used by main program
 	uint8_t samplingCounter1 = 0;
 	uint8_t samplingCounter2 = 0;
-	uint8_t transmitCounter1 = 0 ;
-	uint8_t transmitCounter2 = 0 ;
+	uint8_t transmitCounter1 = 0;
+	uint8_t transmitCounter2 = 0;
 	
 
 
@@ -36,7 +36,7 @@ int main(void)
 	uint8_t recieve_buffer[MSG_SIZE];
 	st_cmd_t recieveMOb; 
 	recieveMOb.pt_data = &recieve_buffer[0];
-	recieveMOb.MObNumber = 0x01; 
+	recieveMOb.MObNumber = 0x00; 
 	recieveMOb.dlc = MSG_SIZE; 
 	recieveMOb.cmd = RX; 
 	recieveMOb.mask = 0x0000;
@@ -45,19 +45,41 @@ int main(void)
 	uint8_t transmit_buffer[MSG_SIZE];
 	st_cmd_t transmitMOb; 
 	transmitMOb.pt_data = &transmit_buffer[0]; 
-	transmitMOb.MObNumber = 0x01; 
+	transmitMOb.MObNumber = 0x03; 
 	transmitMOb.dlc = MSG_SIZE; 
 	transmitMOb.cmd = TX; 
-	transmitMOb.mask = 0x0001;  
+	transmitMOb.id = 0x00010;  
+	
+	//Setup transmit MOb
+	uint8_t transmit0_buffer[MSG_SIZE];
+	st_cmd_t transmitMOb0;
+	transmitMOb0.pt_data = &transmit_buffer[0];
+	transmitMOb0.MObNumber = 0x01;
+	transmitMOb0.dlc = MSG_SIZE;
+	transmitMOb0.cmd = TX;
+	transmitMOb0.id = 0x0001;
+	
+	//Setup transmit MOb
+	uint8_t transmit1_buffer[MSG_SIZE];
+	st_cmd_t transmitMOb1;
+	transmitMOb1.pt_data = &transmit_buffer[0];
+	transmitMOb1.MObNumber = 0x02;
+	transmitMOb1.dlc = MSG_SIZE;
+	transmitMOb1.cmd = TX;
+	transmitMOb1.id = 0x0002;
 
 chip_init(); 
 can_init(); 
-ADCtimerSetup();
+ADCSetup();
+TimerSetup();
+can_cmd(&recieveMOb);
+Sensorlist[0].CAN_ID = 0x1;
+Sensorlist[0].transmissionMOb = &transmitMOb0;
+Sensorlist[1].CAN_ID = 0x2;
+Sensorlist[1].transmissionMOb = &transmitMOb1;
 sei();
 
-can_cmd(&recieveMOb);
-Sensor1.CAN_ID = 0x12;
-Sensor2.CAN_ID = 0x10;
+
 
 while(1)
 {
@@ -73,51 +95,35 @@ while(1)
 		if (receivedMessages > 0)
 		{
 			transfer_data(&recieveMOb);
-			
-			decodeMessage(&recieveMOb);
-			
+			decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);		
 			receivedMessages = 0;
 		}
-		
-		if (samplingCounter1 >= Sensor1.sampling_frequency && Sensor1.sampling_frequency !=0 )
+	/*	
+		if (samplingCounter1 >= Sensorlist[0].sampling_frequency && Sensorlist[0].sampling_frequency !=0 )
 		{
 			bit_flip(PORTD, BIT(7));
 			samplingCounter1 = 0;
 			//Filter(ADC value); //Filter the data
 			
 		}
-		if (samplingCounter2 >= Sensor2.sampling_frequency && Sensor2.sampling_frequency !=0  )
+		if (samplingCounter2 >= Sensorlist[1].sampling_frequency && Sensorlist[1].sampling_frequency !=0  )
 		{
 			bit_flip(PORTD, BIT(1));
 			samplingCounter2 = 0;
 			//Filter(ADC value); //Filter the data
 		}
+		*/
 		
-		
-		/*if (transmitCounter1 >= Sensor1.transmission_frequency)
+		if (transmitCounter1 >= Sensorlist[0].period && Sensorlist[0].period != 0)
 		{
-
-			clear_buffer(&transmit_buffer);
-
-			transmitMOb.pt_data[0] = recieveMOb.id &0xFF; 
-			// Load message into transmitbuffer
-
-			can_cmd(&transmitMOb);
+			sendFilteretData(&Sensorlist[0]);
 			transmitCounter1=0;
-		}*/
-		/*
-		if (transmitCounter2 >= Sensor2.transmission_frequency)
+		}
+		if (transmitCounter2 >= Sensorlist[1].period && Sensorlist[1].period != 0)
 		{
-
-			clear_buffer(&transmit_buffer);
-
-			transmitMOb.pt_data[0] = recieveMOb.id &0xFF;
-			// Load message into transmitbuffer
-
-			can_cmd(&transmitMOb);
+			sendFilteretData(&Sensorlist[1]);
 			transmitCounter2=0;
 		}
-		*/
 	}
 }
 }
@@ -136,16 +142,6 @@ void chip_init(void){
 	//bit_set(PORTD, BIT(7));
 
 }
-void clear_buffer(uint8_t buffer[MSG_SIZE])
-{
-uint8_t u; 
-
-for(u = 0; u < MSG_SIZE; u++)
-{
-buffer[u] = 0x00;
-}
-
-} //Maybe make it a makro 
 
 ISR(TIMER0_COMPA_vect)
 {
@@ -155,5 +151,6 @@ ISR(TIMER0_COMPA_vect)
 ISR( CAN_INT_vect )
 {
 	receivedMessages++; 
-
+	bit_flip(PORTD,BIT(1));
 }
+
