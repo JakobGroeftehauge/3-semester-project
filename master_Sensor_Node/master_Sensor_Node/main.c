@@ -14,14 +14,14 @@
 #include "Timer_drv.h"
 #include "ADC_drv.h"
 #define NUMBER_OF_SENSOR 2
-#define Sensor1_ID 0x1;
-#define Sensor2_ID 0x2;
+#define Sensor1_ID 0x1
+#define Sensor2_ID 0x2
+#define polynomialSize 8
 volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
 volatile sensor_at_node Sensorlist[NUMBER_OF_SENSOR];
-void noid_init (void);
 volatile uint8_t data[MSG_SIZE];
-
+//void noid_init (void);
 int main(void)
 {
 	
@@ -74,6 +74,15 @@ int main(void)
 	Sensorlist[1].CAN_ID = Sensor2_ID;
 	Sensorlist[1].transmissionMOb = &transmitMOb1;
 	
+	//Setup polynomiallist for each sensor;
+	float polynomialListe1[polynomialSize];
+	Sensorlist[0].polynomialList = &polynomialListe1;
+	Sensorlist[0].totalNumberOfpolynomials = polynomialSize;
+	
+	
+	float polynomialListe2[polynomialSize];
+	Sensorlist[1].polynomialList = &polynomialListe2;
+	Sensorlist[1].totalNumberOfpolynomials = polynomialSize;
 	
 	node_init();			//Setup for pins for output
 	can_init(); 
@@ -85,6 +94,16 @@ int main(void)
 
 while(1)
 {
+	if (receivedMessages > 0)		// Received Messages interrupt (A message is received and is ready to be read)
+	{
+		Sensorlist[0].filterValue=10;
+		Sensorlist[1].filterValue=10;
+		transfer_data(&recieveMOb);	// Transfer the received data to rec
+		decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);
+		receivedMessages = 0;
+		bit_set(PORTD,BIT(7));
+	}
+	
 	if (tick>=1)			// Timer interrupt counter (1ms)
 	{
 		tick--;				
@@ -93,13 +112,6 @@ while(1)
 		transmitCounter1++;	// Transmitting counter 1
 		transmitCounter2++;	// Transmitting counter 2
 
-		
-		if (receivedMessages > 0)		// Received Messages interrupt (A message is received and is ready to be read)
-		{
-			transfer_data(&recieveMOb);	// Transfer the received data to rec
-			decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);		
-			receivedMessages = 0;
-		}
 	/*	
 		if (samplingCounter1 >= Sensorlist[0].sampling_frequency && Sensorlist[0].sampling_frequency !=0 )
 		{

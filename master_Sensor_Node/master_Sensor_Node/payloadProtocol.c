@@ -5,17 +5,37 @@
  *  Author: mads-
  */ 
 #include "payloadProtocol.h"
+#include <math.h>
+extern void decodeCoefficient(sensor_at_node* Sensor,uint8_t message_array[8])
+{	
+	uint8_t coeffNumber =(message_array[1]& 0xF0)/16;
+	
+	Sensor->totalNumberOfpolynomials = message_array[1]&0b00001111;
+	
+	union{
+		float floatValue;
+		uint8_t bytes[4];
+		}converter;
+
+	converter.bytes[3] = message_array[2];
+	converter.bytes[2] = message_array[3];
+	converter.bytes[1] = message_array[4];
+	converter.bytes[0] = message_array[5];
+	
+	Sensor->polynomialList[coeffNumber] = converter.floatValue;	
+}
 
 extern void	ACK_TO_Hub(sensor_at_node* Sensor)			// Takes data from the struct and sends it back to the hub. The hub should then be able to checkon it.
 {
 	Sensor->transmissionMOb->pt_data[0] = 0b11000100;
 	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type)*16+ Sensor->unit;
-	Sensor->transmissionMOb->pt_data[2] = Sensor->coefficient1;
-	Sensor->transmissionMOb->pt_data[3] = Sensor->coefficient2;
-	Sensor->transmissionMOb->pt_data[4] = Sensor->coefficient3;
-	Sensor->transmissionMOb->pt_data[5] = Sensor->period;
-	Sensor->transmissionMOb->pt_data[6] = Sensor->cutOffFreq;
+	Sensor->transmissionMOb->pt_data[2] = Sensor->period;
+	Sensor->transmissionMOb->pt_data[3] = Sensor->cutOffFreq;
+	Sensor ->transmissionMOb->pt_data[4] = Sensor->cutOffFreq;
+	Sensor ->transmissionMOb->pt_data[5] = Sensor->samplingfreq;
+	Sensor ->transmissionMOb->pt_data[6] = Sensor->totalNumberOfpolynomials;
 	Sensor ->transmissionMOb->pt_data[7] = 0;
+	
 	can_cmd(Sensor->transmissionMOb);
 }
 
@@ -31,11 +51,27 @@ extern void sendError(sensor_at_node* Sensor,uint8_t errorType) // Sending an er
 	Sensor ->transmissionMOb->pt_data[7] = 0;
 	can_cmd(Sensor->transmissionMOb);
 }
+
+extern float runPolynomial(sensor_at_node* sensor)
+{
+	float result =sensor->polynomialList[0];
+	float filterValue = (sensor->filterValue/1023)*5; // Transform is from being a value between 0 - 1023 to 0v - 5v
+	
+	for (int i=0; i<sensor->totalNumberOfpolynomials-1;i++)
+	{
+		result +=sensor->polynomialList[i+1]*pow(filterValue,i+1);
+	}
+	
+	return result;
+	
+}
+
 extern void sendFilteretData(sensor_at_node* Sensor)		// Sends the filtered data from the sensors given as parameters. Data comes from the struct and will be updated by another function.
 {
+	uint32_t polynomialValue = runPolynomial(&Sensor);
 	Sensor->transmissionMOb->pt_data[0] = 0b00110000; // Data message
 	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type*16)+Sensor->unit;
-	uint8_t *vp = (uint8_t *)&Sensor->filterValue;
+	uint8_t *vp = (uint8_t *)&polynomialValue;//Sensor->filterValue;
 	Sensor->transmissionMOb->pt_data[2] = vp[3];
 	Sensor->transmissionMOb->pt_data[3] = vp[2];
 	Sensor->transmissionMOb->pt_data[4] = vp[1];
@@ -51,11 +87,8 @@ void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node* sensor)
 {
 	sensor->sensor_Type = (message_array[1] & 0b11110000)/16; // Shift left nibble to the right with /16
 	sensor->unit = message_array[1] & 0b00001111;
-	sensor->coefficient1 = message_array[2];
-	sensor->coefficient2 = message_array[3];
-	sensor->coefficient3 = message_array[4];
-	sensor->period = message_array[5];
-	sensor->cutOffFreq = message_array[6];
+	sensor->period = message_array[2];
+	sensor->cutOffFreq = message_array[3];
 }
 
 // sendServiceMessage puts parameters into array, which can be sent
@@ -74,15 +107,29 @@ void sendServiceMessage(sensor_Types type, units unit, uint8_t range_min, uint8_
 //Decoding message from hub and determines what kind of message type it is.
 void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t NUMBER_OF_SENSORS) // 
 {
+	
 	uint8_t message_array[8];
 	for(uint8_t i = 0; i<8; i++)
 	{
 		message_array[i] = message_struct -> pt_data[i];
 	}
 	
-	switch ((message_struct->pt_data[0] & 0b11110000))// only looks a first nibble
+	switch (message_struct->pt_data[0])// only looks a first nibble
 	{
-		case 0b11000000: // ID FOR A SERVICE MESSAGE
+		case 0b11000101: //ID for setup of Coefficients
+		{
+			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
+			{
+				if (message_struct->id == SensorList[i].CAN_ID)
+				{
+					decodeCoefficient(&SensorList[i],message_array);
+					
+				}
+				break;
+			}
+			break;
+		}
+		case 0b11000011: // ID FOR A SERVICE MESSAGE
 		{
 			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
 			{
