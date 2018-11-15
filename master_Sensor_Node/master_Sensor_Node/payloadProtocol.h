@@ -36,8 +36,13 @@ typedef  struct {
 	uint8_t			cutOffFreq;
 	uint32_t		filterValue;
 	st_cmd_t*		transmissionMOb;
-	
+	uint8_t			samplingfreq;
+	uint32_t		polynomial1;
+	uint32_t		polynomial2;
+	uint32_t		polynomial3;
 }sensor_at_node ;
+
+
 extern void	ACK_TO_Hub(sensor_at_node* Sensor);
 
 extern void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node* sensor);

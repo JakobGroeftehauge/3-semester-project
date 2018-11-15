@@ -6,20 +6,20 @@
  */ 
 #include "payloadProtocol.h"
 
-extern void	ACK_TO_Hub(sensor_at_node* Sensor)
+extern void	ACK_TO_Hub(sensor_at_node* Sensor)			// Takes data from the struct and sends it back to the hub. The hub should then be able to checkon it.
 {
 	Sensor->transmissionMOb->pt_data[0] = 0b11000100;
-	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type)*16 + Sensor->unit;
+	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type)*16+ Sensor->unit;
 	Sensor->transmissionMOb->pt_data[2] = Sensor->coefficient1;
 	Sensor->transmissionMOb->pt_data[3] = Sensor->coefficient2;
 	Sensor->transmissionMOb->pt_data[4] = Sensor->coefficient3;
-	Sensor->transmissionMOb->pt_data[5] = Sensor ->period;
-	Sensor->transmissionMOb->pt_data[6] = Sensor ->cutOffFreq;
+	Sensor->transmissionMOb->pt_data[5] = Sensor->period;
+	Sensor->transmissionMOb->pt_data[6] = Sensor->cutOffFreq;
 	Sensor ->transmissionMOb->pt_data[7] = 0;
 	can_cmd(Sensor->transmissionMOb);
 }
 
-extern void sendError(sensor_at_node* Sensor,uint8_t errorType)
+extern void sendError(sensor_at_node* Sensor,uint8_t errorType) // Sending an error message with a specific error type defined elswhere.
 {
 	Sensor->transmissionMOb->pt_data[0] = 0b10100000;
 	Sensor->transmissionMOb->pt_data[1] = errorType;
@@ -31,7 +31,7 @@ extern void sendError(sensor_at_node* Sensor,uint8_t errorType)
 	Sensor ->transmissionMOb->pt_data[7] = 0;
 	can_cmd(Sensor->transmissionMOb);
 }
-extern void sendFilteretData(sensor_at_node* Sensor)
+extern void sendFilteretData(sensor_at_node* Sensor)		// Sends the filtered data from the sensors given as parameters. Data comes from the struct and will be updated by another function.
 {
 	Sensor->transmissionMOb->pt_data[0] = 0b00110000; // Data message
 	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type*16)+Sensor->unit;
@@ -71,8 +71,8 @@ void sendServiceMessage(sensor_Types type, units unit, uint8_t range_min, uint8_
 }*/
 
 
-//Decoding message from hub and determinds what kind of message type it is.
-void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t NUMBER_OF_SENSORS)
+//Decoding message from hub and determines what kind of message type it is.
+void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t NUMBER_OF_SENSORS) // 
 {
 	uint8_t message_array[8];
 	for(uint8_t i = 0; i<8; i++)

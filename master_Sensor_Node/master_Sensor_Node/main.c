@@ -19,7 +19,7 @@
 volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
 volatile sensor_at_node Sensorlist[NUMBER_OF_SENSOR];
-void chip_init (void);
+void noid_init (void);
 volatile uint8_t data[MSG_SIZE];
 
 int main(void)
@@ -34,7 +34,7 @@ int main(void)
 	
 
 
-//Setup recieve MOb
+	//Setup recieve MOb
 	uint8_t recieve_buffer[MSG_SIZE];
 	st_cmd_t recieveMOb; 
 	recieveMOb.pt_data = &recieve_buffer[0];
@@ -43,7 +43,7 @@ int main(void)
 	recieveMOb.cmd = RX; 
 	recieveMOb.mask = 0x0000;
 	
-//Setup transmit MOb  
+	//Setup transmit MOb  
 	uint8_t transmit_buffer[MSG_SIZE];
 	st_cmd_t transmitMOb; 
 	transmitMOb.pt_data = &transmit_buffer[0]; 
@@ -52,7 +52,7 @@ int main(void)
 	transmitMOb.cmd = TX; 
 	transmitMOb.id = 0x00010;  
 	
-	//Setup transmit MOb
+	//Setup transmit MOb for sensor0
 	uint8_t transmit0_buffer[MSG_SIZE];
 	st_cmd_t transmitMOb0;
 	transmitMOb0.pt_data = &transmit_buffer[0];
@@ -60,8 +60,10 @@ int main(void)
 	transmitMOb0.dlc = MSG_SIZE;
 	transmitMOb0.cmd = TX;
 	transmitMOb0.id = Sensor1_ID;
+	Sensorlist[0].CAN_ID =	Sensor1_ID;
+	Sensorlist[0].transmissionMOb = &transmitMOb0;
 	
-	//Setup transmit MOb
+	//Setup transmit MOb for sensor0
 	uint8_t transmit1_buffer[MSG_SIZE];
 	st_cmd_t transmitMOb1;
 	transmitMOb1.pt_data = &transmit_buffer[0];
@@ -71,33 +73,30 @@ int main(void)
 	transmitMOb1.id = Sensor2_ID;
 	Sensorlist[1].CAN_ID = Sensor2_ID;
 	Sensorlist[1].transmissionMOb = &transmitMOb1;
-
-	chip_init(); 
-	can_init(); 
-	ADCSetup();
-	TimerSetup();
-	can_cmd(&recieveMOb);
-	Sensorlist[0].CAN_ID =	Sensor1_ID;
-	Sensorlist[0].transmissionMOb = &transmitMOb0;
 	
-sei();
-
+	
+	node_init();			//Setup for pins for output
+	can_init(); 
+	ADCSetup();				// ADC Drive 
+	TimerSetup();			// Timer Drive
+	can_cmd(&recieveMOb);	// Setting up recieveMOb
+	sei();					// Global interrupt enable
 
 
 while(1)
 {
-	if (tick>=1)
+	if (tick>=1)			// Timer interrupt counter (1ms)
 	{
-		tick--;
-		samplingCounter1++;
-		samplingCounter2++;
-		transmitCounter1++;
-		transmitCounter2++;
+		tick--;				
+		samplingCounter1++;	// Sampling counter 1
+		samplingCounter2++;	// Sampling counter 2
+		transmitCounter1++;	// Transmitting counter 1
+		transmitCounter2++;	// Transmitting counter 2
 
 		
-		if (receivedMessages > 0)
+		if (receivedMessages > 0)		// Received Messages interrupt (A message is received and is ready to be read)
 		{
-			transfer_data(&recieveMOb);
+			transfer_data(&recieveMOb);	// Transfer the received data to rec
 			decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);		
 			receivedMessages = 0;
 		}
@@ -133,17 +132,13 @@ while(1)
 
 
 
-void chip_init(void){
+void node_init(void){
 
 	//***** Chip initialization
 	DDRC = 4; //Set TXCAN as output and RXCAN as input
 	
 	bit_set(DDRD, BIT(1));
 	bit_set(DDRD, BIT(7));
-	
-	//bit_set(PORTD, BIT(1));
-	//bit_set(PORTD, BIT(7));
-
 }
 
 ISR(TIMER0_COMPA_vect)
