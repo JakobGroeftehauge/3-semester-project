@@ -13,7 +13,7 @@
 
 
 #include "payloadProtocol.h"
-#define NUMBER_OF_SENSOR 4
+#define NUMBER_OF_SENSOR 3
 //#include "HUB_lib.c"
 
 typedef struct {

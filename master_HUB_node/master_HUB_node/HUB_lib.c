@@ -10,6 +10,7 @@
  //#include "CAN_lib.h"
  #include "CAN_drv.h"
  #include "HUB_lib.h"
+ #include "Timer_drv.h"
 
 
 
@@ -17,7 +18,7 @@
  {
 	for(uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
 	{
-		sendServiceMessage(&sensorNum[i]->sensorStruct, &transmitMOb);
+		sendServiceMessage(&sensorNum[i]->sensorStruct, transmitMOb);
 	}
 
  }

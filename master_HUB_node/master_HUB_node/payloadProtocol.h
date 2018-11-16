@@ -12,34 +12,39 @@
 #include "ADCTimer_drv.h"
 
 
-typedef enum{
+typedef enum  {
 	thermistor,
 	potentiometer,
 	other_sensor
 }sensor_Types;
 
-typedef enum {
+typedef union {
+uint32_t	binCoef;
+float		floatCoef;
+} polyCoef;
+
+typedef enum uint8_t{
 	celsius,
 	degrees,
 	percentage,
 	other_unit
-}units;
+	}units;
 
 typedef  struct {
 	uint16_t		CAN_ID;
 	sensor_Types    sensor_Type;
 	units			unit;	//Will be used to determent the translation of the ADC data.
-	int8_t			range_min;
-	int8_t			range_max;
-	uint8_t			transmission_frequency;
-	uint8_t			sampling_frequency;
-	uint8_t			filter_type;
-	uint8_t			filter_parameter;
-	
+	uint8_t			period;
+	uint8_t			cutOffFreq;
+	uint32_t		filterValue;
+	st_cmd_t*		transmissionMOb;
+	uint8_t			samplingfreq;
+	polyCoef*		polynomialList;
+	uint8_t			totalNumberOfpolynomials;
 }sensor_at_node ;
 
-sensor_at_node Sensor1;		//Holdes the data of each sensor used in a struct
-sensor_at_node Sensor2;
+//sensor_at_node Sensor1;		//Holdes the data of each sensor used in a struct
+//sensor_at_node Sensor2;
 
 extern void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node* sensor);
 
