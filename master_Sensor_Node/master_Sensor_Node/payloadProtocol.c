@@ -53,7 +53,7 @@ extern void sendError(sensor_at_node* Sensor,uint8_t errorType) // Sending an er
 }
 
 extern float runPolynomial(sensor_at_node* sensor)
-{
+{	
 	float result =sensor->polynomialList[0];
 	float filterValue = (sensor->filterValue/1023)*5; // Transform is from being a value between 0 - 1023 to 0v - 5v
 	
@@ -63,15 +63,14 @@ extern float runPolynomial(sensor_at_node* sensor)
 	}
 	
 	return result;
-	
 }
 
 extern void sendFilteretData(sensor_at_node* Sensor)		// Sends the filtered data from the sensors given as parameters. Data comes from the struct and will be updated by another function.
 {
-	uint32_t polynomialValue = runPolynomial(&Sensor);
+	float polynomialValue = runPolynomial(Sensor);
 	Sensor->transmissionMOb->pt_data[0] = 0b00110000; // Data message
 	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type*16)+Sensor->unit;
-	uint8_t *vp = (uint8_t *)&polynomialValue;//Sensor->filterValue;
+	uint8_t *vp = (uint8_t *)&polynomialValue;
 	Sensor->transmissionMOb->pt_data[2] = vp[3];
 	Sensor->transmissionMOb->pt_data[3] = vp[2];
 	Sensor->transmissionMOb->pt_data[4] = vp[1];
@@ -123,7 +122,6 @@ void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t 
 				if (message_struct->id == SensorList[i].CAN_ID)
 				{
 					decodeCoefficient(&SensorList[i],message_array);
-					
 				}
 				break;
 			}

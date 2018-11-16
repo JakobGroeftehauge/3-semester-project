@@ -21,18 +21,15 @@ volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
 volatile sensor_at_node Sensorlist[NUMBER_OF_SENSOR];
 volatile uint8_t data[MSG_SIZE];
-//void noid_init (void);
 int main(void)
 {
 	
 	
-//Initialize variable used by main program
+	//Initialize variable used by main program
 	uint8_t samplingCounter1 = 0;
 	uint8_t samplingCounter2 = 0;
 	uint8_t transmitCounter1 = 0;
 	uint8_t transmitCounter2 = 0;
-	
-
 
 	//Setup recieve MOb
 	uint8_t recieve_buffer[MSG_SIZE];
@@ -101,7 +98,7 @@ while(1)
 		transfer_data(&recieveMOb);	// Transfer the received data to rec
 		decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);
 		receivedMessages = 0;
-		bit_set(PORTD,BIT(7));
+		bit_flip(PORTD,BIT(7));
 	}
 	
 	if (tick>=1)			// Timer interrupt counter (1ms)
@@ -141,8 +138,6 @@ while(1)
 	}
 }
 }
-
-
 
 void node_init(void){
 
