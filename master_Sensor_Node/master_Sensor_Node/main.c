@@ -13,6 +13,7 @@
 #include "payloadProtocol.h"
 #include "Timer_drv.h"
 #include "ADC_drv.h"
+#include "Sampling_Data.h"
 #define NUMBER_OF_SENSOR 2
 #define Sensor1_ID 0x1
 #define Sensor2_ID 0x2
@@ -81,6 +82,18 @@ int main(void)
 	Sensorlist[1].polynomialList = &polynomialListe2;
 	Sensorlist[1].totalNumberOfpolynomials = polynomialSize;
 	
+	//Setup sensor number (used to sample data)
+	if (Sensorlist[0].CAN_ID>Sensorlist[1].CAN_ID)
+	{
+		Sensorlist[0].sensorNumber = 1;
+		Sensorlist[1].sensorNumber = 2;	
+	}
+	else
+	{
+		Sensorlist[1].sensorNumber = 1;
+		Sensorlist[0].sensorNumber = 2;
+	}
+	
 	node_init();			//Setup for pins for output
 	can_init(); 
 	ADCSetup();				// ADC Drive 
@@ -93,12 +106,9 @@ while(1)
 {
 	if (receivedMessages > 0)		// Received Messages interrupt (A message is received and is ready to be read)
 	{
-		Sensorlist[0].filterValue=10;
-		Sensorlist[1].filterValue=10;
 		transfer_data(&recieveMOb);	// Transfer the received data to rec
 		decodeMessage(&recieveMOb,&Sensorlist,NUMBER_OF_SENSOR);
 		receivedMessages = 0;
-		bit_flip(PORTD,BIT(7));
 	}
 	
 	if (tick>=1)			// Timer interrupt counter (1ms)
@@ -108,22 +118,16 @@ while(1)
 		samplingCounter2++;	// Sampling counter 2
 		transmitCounter1++;	// Transmitting counter 1
 		transmitCounter2++;	// Transmitting counter 2
-
-	/*	
-		if (samplingCounter1 >= Sensorlist[0].sampling_frequency && Sensorlist[0].sampling_frequency !=0 )
+		if (samplingCounter1 >= Sensorlist[0].samplingfreq && Sensorlist[0].samplingfreq !=0 )
 		{
-			bit_flip(PORTD, BIT(7));
+			sampleData(&Sensorlist[0]);
 			samplingCounter1 = 0;
-			//Filter(ADC value); //Filter the data
-			
 		}
-		if (samplingCounter2 >= Sensorlist[1].sampling_frequency && Sensorlist[1].sampling_frequency !=0  )
+		if (samplingCounter2 >= Sensorlist[1].samplingfreq && Sensorlist[1].samplingfreq !=0  )
 		{
-			bit_flip(PORTD, BIT(1));
+			sampleData(&Sensorlist[1]);
 			samplingCounter2 = 0;
-			//Filter(ADC value); //Filter the data
 		}
-		*/
 		
 		if (transmitCounter1 >= Sensorlist[0].period && Sensorlist[0].period != 0)
 		{
@@ -156,6 +160,10 @@ ISR(TIMER0_COMPA_vect)
 ISR( CAN_INT_vect )
 {
 	receivedMessages++; 
-	bit_flip(PORTD,BIT(1));
+}
+
+ISR(ADC_vect)
+{
+	bit_flip(PORTD,BIT(7));
 }
 

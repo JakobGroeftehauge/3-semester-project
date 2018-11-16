@@ -151,6 +151,12 @@
     <Compile Include="ADC_drv.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Sampling_Data.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sampling_Data.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Timer_drv.c">
       <SubType>compile</SubType>
     </Compile>

@@ -36,6 +36,7 @@ typedef  struct {
 	uint8_t			samplingfreq;
 	float*			polynomialList;
 	uint8_t			totalNumberOfpolynomials;
+	uint8_t			sensorNumber;
 }sensor_at_node ;
 
 extern void decodeCoefficient(sensor_at_node* SensorList,uint8_t message_array[8]);
