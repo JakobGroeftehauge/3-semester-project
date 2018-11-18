@@ -89,7 +89,7 @@ void transfer_data(st_cmd_t* recieveMOb)
 
 CANPAGE = recieveMOb->MObNumber << 4;
 
- recieveMOb->id = CANIDT1*8 + (CANIDT2/32);
+ recieveMOb->id = CANIDT1 + (CANIDT2*8);
  
 
 if ( CANSTMOB & ( 1 << RXOK) ){  	// Interrupt caused by receive finished
@@ -121,3 +121,4 @@ uint8_t can_init()
 	Can_enable_chosen_ints();                   // macro in "can_drv.h" - change to enable different general interrupts
 	return (1);
 }
+

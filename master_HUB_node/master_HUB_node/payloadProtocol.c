@@ -26,32 +26,30 @@ void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node* sensor) /
 
 // sendServiceMessage puts parameters into array, which can be sent
 void sendServiceMessage(sensor_at_node* sensorAtNode, st_cmd_t* transmitMOb)//sensor_Types type, units unit, uint8_t range_min, uint8_t range_max, uint8_t trans_frq, uint8_t sampl_frq, uint8_t filt_type, uint8_t filt_par)
-{	
-
-	for (uint8_t i = 0; i < sensorAtNode->totalNumberOfpolynomials; i++)
-	{
-	transmitMOb->pt_data[0] = 0b11000101;
-	transmitMOb->pt_data[1] = ((i) << 4) | sensorAtNode->totalNumberOfpolynomials;
-	transmitMOb->pt_data[5] = sensorAtNode->polynomialList[i].binCoef & 0xFF;
-	transmitMOb->pt_data[4] = sensorAtNode->polynomialList[i].binCoef >> 8 & 0xFF;
-	transmitMOb->pt_data[3] = sensorAtNode->polynomialList[i].binCoef >> 16 & 0xFF;
-	transmitMOb->pt_data[2] = sensorAtNode->polynomialList[i].binCoef >> 24 & 0xFF;
-	transmitMOb->id = sensorAtNode->CAN_ID;
-	can_cmd(transmitMOb);
-	} 
-
+{
 	transmitMOb->pt_data[0] = 0b11000011;
-	transmitMOb->pt_data[1] = sensorAtNode->sensor_Type << 4 | sensorAtNode->unit;
-	transmitMOb->pt_data[2] = sensorAtNode->period;
+	
+	//transmitMOb->pt_data[1] = sensorAtNode->sensor_Type << 4 | sensorAtNode->unit;
+	transmitMOb->pt_data[2] = (sensorAtNode->period);
 	transmitMOb->pt_data[3] = sensorAtNode->cutOffFreq;
 	
 	for (uint8_t i = 4; i < 8; i++)
 	{
-	transmitMOb->pt_data[i] = 0x00; 
+	//transmitMOb->pt_data[i] = sensorAtNode->totalNumberOfpolynomials;
 	} 
 
-	can_cmd(transmitMOb); //send last message
+	can_cmd(transmitMOb); //Send first message
 
+	for (uint8_t i = 0; i < sensorAtNode->totalNumberOfpolynomials; i++)
+	{
+	transmitMOb->pt_data[0] = 0b11000101;
+	transmitMOb->pt_data[1] = ((i+1) << 4) & sensorAtNode->totalNumberOfpolynomials;
+	transmitMOb->pt_data[2] = sensorAtNode->polynomialList[i].binCoef & 0xFF;
+	transmitMOb->pt_data[3] = sensorAtNode->polynomialList[i].binCoef >> 8 & 0xFF;
+	transmitMOb->pt_data[4] = sensorAtNode->polynomialList[i].binCoef >> 16 & 0xFF;
+	transmitMOb->pt_data[5] = sensorAtNode->polynomialList[i].binCoef >> 24 & 0xFF;
+	can_cmd(transmitMOb);
+	}
 
 
 }
