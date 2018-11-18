@@ -25,6 +25,11 @@ typedef enum {
 	other_unit
 }units;
 
+typedef union {
+	uint32_t	binCoef;
+	float		floatCoef;
+} polyCoef;
+
 typedef  struct {
 	uint16_t		CAN_ID;
 	sensor_Types    sensor_Type;
@@ -34,7 +39,7 @@ typedef  struct {
 	float			filterValue;
 	st_cmd_t*		transmissionMOb;
 	uint8_t			samplingfreq;
-	float*			polynomialList;
+	polyCoef*		polynomialList;
 	uint8_t			totalNumberOfpolynomials;
 	uint8_t			sensorNumber;
 }sensor_at_node ;

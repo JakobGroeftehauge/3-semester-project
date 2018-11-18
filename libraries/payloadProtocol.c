@@ -12,17 +12,16 @@ extern void decodeCoefficient(sensor_at_node* Sensor,uint8_t message_array[8])
 	
 	Sensor->totalNumberOfpolynomials = message_array[1]&0b00001111;
 	
-	union{
-		float floatValue;
-		uint8_t bytes[4];
-		}converter;
+	//union{
+		//float floatValue;
+		//uint8_t bytes[4];
+		//}converter;
 
-	converter.bytes[3] = message_array[2];
-	converter.bytes[2] = message_array[3];
-	converter.bytes[1] = message_array[4];
-	converter.bytes[0] = message_array[5];
-	
-	Sensor->polynomialList[coeffNumber] = converter.floatValue;	
+	Sensor->polynomialList[coeffNumber].binCoef = message_array[2];
+	Sensor->polynomialList[coeffNumber].binCoef = (Sensor->polynomialList[coeffNumber].binCoef) <<8 + message_array[3];
+	Sensor->polynomialList[coeffNumber].binCoef = (Sensor->polynomialList[coeffNumber].binCoef) << 16 + message_array[4];
+	Sensor->polynomialList[coeffNumber].binCoef = (Sensor->polynomialList[coeffNumber].binCoef) << 24 + message_array[5];
+
 }
 
 extern void	ACK_TO_Hub(sensor_at_node* Sensor)			// Takes data from the struct and sends it back to the hub. The hub should then be able to checkon it.
@@ -54,12 +53,12 @@ extern void sendError(sensor_at_node* Sensor,uint8_t errorType) // Sending an er
 
 extern float runPolynomial(sensor_at_node* sensor)
 {	
-	float result =sensor->polynomialList[0];
+	float result = sensor-> polynomialList[0].floatCoef;
 	float filterValue = (sensor->filterValue/1023)*5; // Transform is from being a value between 0 - 1023 to 0v - 5v
 	
 	for (int i=0; i<sensor->totalNumberOfpolynomials-1;i++)
 	{
-		result +=sensor->polynomialList[i+1]*pow(filterValue,i+1);
+		result +=sensor->polynomialList[i+1].floatCoef*pow(filterValue,i+1);
 	}
 	
 	return result;
