@@ -3,31 +3,31 @@ master_HUB_node.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  00000a60  2**0
+  0 .data         00000000  00800100  00800100  00000ee8  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000009ec  00000000  00000000  00000074  2**1
+  1 .text         00000e74  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000004  00800100  00800100  00000a60  2**0
+  2 .bss          00000004  00800100  00800100  00000ee8  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000a60  2**0
+  3 .comment      00000030  00000000  00000000  00000ee8  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000a90  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000f18  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000128  00000000  00000000  00000ad0  2**0
+  5 .debug_aranges 00000128  00000000  00000000  00000f58  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   0000193e  00000000  00000000  00000bf8  2**0
+  6 .debug_info   00001985  00000000  00000000  00001080  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000fc3  00000000  00000000  00002536  2**0
+  7 .debug_abbrev 00000fea  00000000  00000000  00002a05  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000c20  00000000  00000000  000034f9  2**0
+  8 .debug_line   00000ce6  00000000  00000000  000039ef  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000002fc  00000000  00000000  0000411c  2**2
+  9 .debug_frame  0000031c  00000000  00000000  000046d8  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000945  00000000  00000000  00004418  2**0
+ 10 .debug_str    0000094c  00000000  00000000  000049f4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000572  00000000  00000000  00004d5d  2**0
+ 11 .debug_loc    000005b3  00000000  00000000  00005340  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000000c8  00000000  00000000  000052cf  2**0
+ 12 .debug_ranges 000000c8  00000000  00000000  000058f3  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -48,10 +48,10 @@ Disassembly of section .text:
   30:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   34:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   38:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
-  3c:	0c 94 ac 03 	jmp	0x758	; 0x758 <__vector_15>
+  3c:	0c 94 ab 05 	jmp	0xb56	; 0xb56 <__vector_15>
   40:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   44:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
-  48:	0c 94 cb 03 	jmp	0x796	; 0x796 <__vector_18>
+  48:	0c 94 c5 05 	jmp	0xb8a	; 0xb8a <__vector_18>
   4c:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   50:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
   54:	0c 94 50 00 	jmp	0xa0	; 0xa0 <__bad_interrupt>
@@ -86,8 +86,8 @@ Disassembly of section .text:
   92:	a4 30       	cpi	r26, 0x04	; 4
   94:	b2 07       	cpc	r27, r18
   96:	e1 f7       	brne	.-8      	; 0x90 <.do_clear_bss_loop>
-  98:	0e 94 39 02 	call	0x472	; 0x472 <main>
-  9c:	0c 94 f4 04 	jmp	0x9e8	; 0x9e8 <_exit>
+  98:	0e 94 d5 02 	call	0x5aa	; 0x5aa <main>
+  9c:	0c 94 38 07 	jmp	0xe70	; 0xe70 <_exit>
 
 000000a0 <__bad_interrupt>:
   a0:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -279,12 +279,12 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  1c8:	08 95       	ret
 
 000001ca <can_cmd>:
-	CANSTMOB = 0x00; //reset MOb status register
+ 
+ void can_tx(st_cmd_t*); 
+ 
 
-	// Note - the DLC field of the CANCDMO register is updated by the received MOb. If the value differs from expected DLC, an error is set
-
-} 
-}
+uint8_t can_cmd(st_cmd_t* MObStruct)
+{
  1ca:	cf 93       	push	r28
  1cc:	df 93       	push	r29
  1ce:	00 d0       	rcall	.+0      	; 0x1d0 <can_cmd+0x6>
@@ -293,6 +293,8 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  1d4:	de b7       	in	r29, 0x3e	; 62
  1d6:	9b 83       	std	Y+3, r25	; 0x03
  1d8:	8a 83       	std	Y+2, r24	; 0x02
+uint8_t status; 
+switch(MObStruct->cmd)
  1da:	8a 81       	ldd	r24, Y+2	; 0x02
  1dc:	9b 81       	ldd	r25, Y+3	; 0x03
  1de:	fc 01       	movw	r30, r24
@@ -304,16 +306,32 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  1ea:	01 97       	sbiw	r24, 0x01	; 1
  1ec:	39 f0       	breq	.+14     	; 0x1fc <can_cmd+0x32>
  1ee:	0c c0       	rjmp	.+24     	; 0x208 <can_cmd+0x3e>
+	{
+	case TX:
+			can_tx(MObStruct); 
  1f0:	8a 81       	ldd	r24, Y+2	; 0x02
  1f2:	9b 81       	ldd	r25, Y+3	; 0x03
  1f4:	0e 94 1d 01 	call	0x23a	; 0x23a <can_tx>
+			status = 0; 
  1f8:	19 82       	std	Y+1, r1	; 0x01
+			//MObStruct->status = DONE; 
+			break; 
  1fa:	13 c0       	rjmp	.+38     	; 0x222 <can_cmd+0x58>
+
+	case RX:
+			setup_receive_mob(MObStruct);
  1fc:	8a 81       	ldd	r24, Y+2	; 0x02
  1fe:	9b 81       	ldd	r25, Y+3	; 0x03
  200:	0e 94 8f 00 	call	0x11e	; 0x11e <setup_receive_mob>
+			status = 0; 
  204:	19 82       	std	Y+1, r1	; 0x01
+			//MObStruct->status = DONE; 
+			break; 
  206:	0d c0       	rjmp	.+26     	; 0x222 <can_cmd+0x58>
+
+	default:
+			//MObStruct->status = NOT_ACCEPTED;
+			bit_flip(PORTD, BIT(7));
  208:	8b e2       	ldi	r24, 0x2B	; 43
  20a:	90 e0       	ldi	r25, 0x00	; 0
  20c:	2b e2       	ldi	r18, 0x2B	; 43
@@ -324,15 +342,29 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  216:	23 27       	eor	r18, r19
  218:	fc 01       	movw	r30, r24
  21a:	20 83       	st	Z, r18
+			status = 0x01;
  21c:	81 e0       	ldi	r24, 0x01	; 1
  21e:	89 83       	std	Y+1, r24	; 0x01
+			break; 
  220:	00 00       	nop
+	}
+		if (status == 0x00)
  222:	89 81       	ldd	r24, Y+1	; 0x01
  224:	88 23       	and	r24, r24
  226:	11 f4       	brne	.+4      	; 0x22c <can_cmd+0x62>
+		{
+		return ACCEPTED;
  228:	82 e0       	ldi	r24, 0x02	; 2
  22a:	01 c0       	rjmp	.+2      	; 0x22e <can_cmd+0x64>
+		}	
+		else
+		{
+		 return NOT_ACCEPTED;
  22c:	83 e0       	ldi	r24, 0x03	; 3
+		}	
+		//return ACCEPTED;
+	
+	}
  22e:	0f 90       	pop	r0
  230:	0f 90       	pop	r0
  232:	0f 90       	pop	r0
@@ -341,6 +373,8 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  238:	08 95       	ret
 
 0000023a <can_tx>:
+
+void can_tx(st_cmd_t* MObStruct) {
  23a:	cf 93       	push	r28
  23c:	df 93       	push	r29
  23e:	00 d0       	rcall	.+0      	; 0x240 <can_tx+0x6>
@@ -349,6 +383,9 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  244:	de b7       	in	r29, 0x3e	; 62
  246:	9b 83       	std	Y+3, r25	; 0x03
  248:	8a 83       	std	Y+2, r24	; 0x02
+
+	uint8_t i;   
+	if (MObStruct->MObNumber < 6)
  24a:	8a 81       	ldd	r24, Y+2	; 0x02
  24c:	9b 81       	ldd	r25, Y+3	; 0x03
  24e:	fc 01       	movw	r30, r24
@@ -356,6 +393,8 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  252:	86 30       	cpi	r24, 0x06	; 6
  254:	08 f0       	brcs	.+2      	; 0x258 <can_tx+0x1e>
  256:	66 c0       	rjmp	.+204    	; 0x324 <can_tx+0xea>
+	{
+	CANPAGE = MObStruct->MObNumber << MOBNB0;		// Select MOb0 for transmission
  258:	8d ee       	ldi	r24, 0xED	; 237
  25a:	90 e0       	ldi	r25, 0x00	; 0
  25c:	2a 81       	ldd	r18, Y+2	; 0x02
@@ -366,10 +405,18 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  266:	20 7f       	andi	r18, 0xF0	; 240
  268:	fc 01       	movw	r30, r24
  26a:	20 83       	st	Z, r18
+	}
+	else return; 
+
+	
+	
+	CANSTMOB = 0x00;    	// Clear mob status register
  26c:	8e ee       	ldi	r24, 0xEE	; 238
  26e:	90 e0       	ldi	r25, 0x00	; 0
  270:	fc 01       	movw	r30, r24
  272:	10 82       	st	Z, r1
+
+		CANIDT1 = ((MObStruct->id) / 8) ; 	// Set can id to 0
  274:	83 ef       	ldi	r24, 0xF3	; 243
  276:	90 e0       	ldi	r25, 0x00	; 0
  278:	2a 81       	ldd	r18, Y+2	; 0x02
@@ -385,6 +432,7 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  28c:	27 95       	ror	r18
  28e:	fc 01       	movw	r30, r24
  290:	20 83       	st	Z, r18
+		CANIDT2 = (((MObStruct->id) & 0x07) << 5);
  292:	82 ef       	ldi	r24, 0xF2	; 242
  294:	90 e0       	ldi	r25, 0x00	; 0
  296:	2a 81       	ldd	r18, Y+2	; 0x02
@@ -397,16 +445,23 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  2a4:	20 7e       	andi	r18, 0xE0	; 224
  2a6:	fc 01       	movw	r30, r24
  2a8:	20 83       	st	Z, r18
+		CANIDT3 = 0x00;		// ""
  2aa:	81 ef       	ldi	r24, 0xF1	; 241
  2ac:	90 e0       	ldi	r25, 0x00	; 0
  2ae:	fc 01       	movw	r30, r24
  2b0:	10 82       	st	Z, r1
+		CANIDT4 = 0x00;		// ""
  2b2:	80 ef       	ldi	r24, 0xF0	; 240
  2b4:	90 e0       	ldi	r25, 0x00	; 0
  2b6:	fc 01       	movw	r30, r24
  2b8:	10 82       	st	Z, r1
+	//Set_can_ID(MObStruct->id);
+
+	for (i=0; i < MSG_SIZE; i++)
  2ba:	19 82       	std	Y+1, r1	; 0x01
  2bc:	13 c0       	rjmp	.+38     	; 0x2e4 <can_tx+0xaa>
+	{
+	CANMSG = MObStruct->pt_data[i]; 
  2be:	8a ef       	ldi	r24, 0xFA	; 250
  2c0:	90 e0       	ldi	r25, 0x00	; 0
  2c2:	2a 81       	ldd	r18, Y+2	; 0x02
@@ -423,12 +478,23 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  2d8:	20 81       	ld	r18, Z
  2da:	fc 01       	movw	r30, r24
  2dc:	20 83       	st	Z, r18
+		CANIDT2 = (((MObStruct->id) & 0x07) << 5);
+		CANIDT3 = 0x00;		// ""
+		CANIDT4 = 0x00;		// ""
+	//Set_can_ID(MObStruct->id);
+
+	for (i=0; i < MSG_SIZE; i++)
  2de:	89 81       	ldd	r24, Y+1	; 0x01
  2e0:	8f 5f       	subi	r24, 0xFF	; 255
  2e2:	89 83       	std	Y+1, r24	; 0x01
  2e4:	89 81       	ldd	r24, Y+1	; 0x01
  2e6:	88 30       	cpi	r24, 0x08	; 8
  2e8:	50 f3       	brcs	.-44     	; 0x2be <can_tx+0x84>
+	{
+	CANMSG = MObStruct->pt_data[i]; 
+	}
+	
+	CANCDMOB = ( 1 << CONMOB0 ) | ( (MObStruct->dlc) << DLC0 ); 	// Enable transmission, data length=1 (CAN Standard rev 2.0B(29 bit identifiers))
  2ea:	8f ee       	ldi	r24, 0xEF	; 239
  2ec:	90 e0       	ldi	r25, 0x00	; 0
  2ee:	2a 81       	ldd	r18, Y+2	; 0x02
@@ -438,6 +504,8 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  2f6:	20 64       	ori	r18, 0x40	; 64
  2f8:	fc 01       	movw	r30, r24
  2fa:	20 83       	st	Z, r18
+
+	while ( ! ( CANSTMOB & ( 1 << TXOK ) ) );	// wait for TXOK flag set
  2fc:	00 00       	nop
  2fe:	8e ee       	ldi	r24, 0xEE	; 238
  300:	90 e0       	ldi	r25, 0x00	; 0
@@ -449,16 +517,32 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  30c:	99 27       	eor	r25, r25
  30e:	89 2b       	or	r24, r25
  310:	b1 f3       	breq	.-20     	; 0x2fe <can_tx+0xc4>
+	// todo: have this use interrupts
+	CANCDMOB = 0x00;	// Disable Transmission
  312:	8f ee       	ldi	r24, 0xEF	; 239
  314:	90 e0       	ldi	r25, 0x00	; 0
  316:	fc 01       	movw	r30, r24
  318:	10 82       	st	Z, r1
+
+	CANSTMOB = 0x00;	// Clear TXOK flag
  31a:	8e ee       	ldi	r24, 0xEE	; 238
  31c:	90 e0       	ldi	r25, 0x00	; 0
  31e:	fc 01       	movw	r30, r24
  320:	10 82       	st	Z, r1
  322:	01 c0       	rjmp	.+2      	; 0x326 <can_tx+0xec>
+	uint8_t i;   
+	if (MObStruct->MObNumber < 6)
+	{
+	CANPAGE = MObStruct->MObNumber << MOBNB0;		// Select MOb0 for transmission
+	}
+	else return; 
  324:	00 00       	nop
+	// todo: have this use interrupts
+	CANCDMOB = 0x00;	// Disable Transmission
+
+	CANSTMOB = 0x00;	// Clear TXOK flag
+
+}
  326:	0f 90       	pop	r0
  328:	0f 90       	pop	r0
  32a:	0f 90       	pop	r0
@@ -466,1107 +550,1766 @@ void setup_receive_mob(st_cmd_t* MObStruct){
  32e:	cf 91       	pop	r28
  330:	08 95       	ret
 
-00000332 <can_init>:
+00000332 <transfer_data>:
+
+void transfer_data(st_cmd_t* recieveMOb)
+{
+ 332:	cf 93       	push	r28
+ 334:	df 93       	push	r29
+ 336:	00 d0       	rcall	.+0      	; 0x338 <transfer_data+0x6>
+ 338:	1f 92       	push	r1
+ 33a:	cd b7       	in	r28, 0x3d	; 61
+ 33c:	de b7       	in	r29, 0x3e	; 62
+ 33e:	9b 83       	std	Y+3, r25	; 0x03
+ 340:	8a 83       	std	Y+2, r24	; 0x02
+
+CANPAGE = recieveMOb->MObNumber << 4;
+ 342:	8d ee       	ldi	r24, 0xED	; 237
+ 344:	90 e0       	ldi	r25, 0x00	; 0
+ 346:	2a 81       	ldd	r18, Y+2	; 0x02
+ 348:	3b 81       	ldd	r19, Y+3	; 0x03
+ 34a:	f9 01       	movw	r30, r18
+ 34c:	20 85       	ldd	r18, Z+8	; 0x08
+ 34e:	22 95       	swap	r18
+ 350:	20 7f       	andi	r18, 0xF0	; 240
+ 352:	fc 01       	movw	r30, r24
+ 354:	20 83       	st	Z, r18
+
+ recieveMOb->id = CANIDT1*8 + (CANIDT2/32);
+ 356:	83 ef       	ldi	r24, 0xF3	; 243
+ 358:	90 e0       	ldi	r25, 0x00	; 0
+ 35a:	fc 01       	movw	r30, r24
+ 35c:	80 81       	ld	r24, Z
+ 35e:	88 2f       	mov	r24, r24
+ 360:	90 e0       	ldi	r25, 0x00	; 0
+ 362:	9c 01       	movw	r18, r24
+ 364:	22 0f       	add	r18, r18
+ 366:	33 1f       	adc	r19, r19
+ 368:	22 0f       	add	r18, r18
+ 36a:	33 1f       	adc	r19, r19
+ 36c:	22 0f       	add	r18, r18
+ 36e:	33 1f       	adc	r19, r19
+ 370:	82 ef       	ldi	r24, 0xF2	; 242
+ 372:	90 e0       	ldi	r25, 0x00	; 0
+ 374:	fc 01       	movw	r30, r24
+ 376:	80 81       	ld	r24, Z
+ 378:	82 95       	swap	r24
+ 37a:	86 95       	lsr	r24
+ 37c:	87 70       	andi	r24, 0x07	; 7
+ 37e:	88 2f       	mov	r24, r24
+ 380:	90 e0       	ldi	r25, 0x00	; 0
+ 382:	82 0f       	add	r24, r18
+ 384:	93 1f       	adc	r25, r19
+ 386:	9c 01       	movw	r18, r24
+ 388:	8a 81       	ldd	r24, Y+2	; 0x02
+ 38a:	9b 81       	ldd	r25, Y+3	; 0x03
+ 38c:	fc 01       	movw	r30, r24
+ 38e:	32 83       	std	Z+2, r19	; 0x02
+ 390:	21 83       	std	Z+1, r18	; 0x01
+ 
+
+if ( CANSTMOB & ( 1 << RXOK) ){  	// Interrupt caused by receive finished
+ 392:	8e ee       	ldi	r24, 0xEE	; 238
+ 394:	90 e0       	ldi	r25, 0x00	; 0
+ 396:	fc 01       	movw	r30, r24
+ 398:	80 81       	ld	r24, Z
+ 39a:	88 2f       	mov	r24, r24
+ 39c:	90 e0       	ldi	r25, 0x00	; 0
+ 39e:	80 72       	andi	r24, 0x20	; 32
+ 3a0:	99 27       	eor	r25, r25
+ 3a2:	89 2b       	or	r24, r25
+ 3a4:	b1 f1       	breq	.+108    	; 0x412 <__LOCK_REGION_LENGTH__+0x12>
+
+	recieveMOb->dlc = ( CANCDMOB & 0x0F );	// Save number of bytes to be recieved
+ 3a6:	8f ee       	ldi	r24, 0xEF	; 239
+ 3a8:	90 e0       	ldi	r25, 0x00	; 0
+ 3aa:	fc 01       	movw	r30, r24
+ 3ac:	80 81       	ld	r24, Z
+ 3ae:	28 2f       	mov	r18, r24
+ 3b0:	2f 70       	andi	r18, 0x0F	; 15
+ 3b2:	8a 81       	ldd	r24, Y+2	; 0x02
+ 3b4:	9b 81       	ldd	r25, Y+3	; 0x03
+ 3b6:	fc 01       	movw	r30, r24
+ 3b8:	25 83       	std	Z+5, r18	; 0x05
+
+
+
+	for (int8_t i = 0; i < recieveMOb->dlc; i++){
+ 3ba:	19 82       	std	Y+1, r1	; 0x01
+ 3bc:	14 c0       	rjmp	.+40     	; 0x3e6 <transfer_data+0xb4>
+
+		recieveMOb->pt_data[i] = CANMSG; 		// Get data, INDX auto increments CANMSG
+ 3be:	8a 81       	ldd	r24, Y+2	; 0x02
+ 3c0:	9b 81       	ldd	r25, Y+3	; 0x03
+ 3c2:	fc 01       	movw	r30, r24
+ 3c4:	26 81       	ldd	r18, Z+6	; 0x06
+ 3c6:	37 81       	ldd	r19, Z+7	; 0x07
+ 3c8:	89 81       	ldd	r24, Y+1	; 0x01
+ 3ca:	08 2e       	mov	r0, r24
+ 3cc:	00 0c       	add	r0, r0
+ 3ce:	99 0b       	sbc	r25, r25
+ 3d0:	82 0f       	add	r24, r18
+ 3d2:	93 1f       	adc	r25, r19
+ 3d4:	2a ef       	ldi	r18, 0xFA	; 250
+ 3d6:	30 e0       	ldi	r19, 0x00	; 0
+ 3d8:	f9 01       	movw	r30, r18
+ 3da:	20 81       	ld	r18, Z
+ 3dc:	fc 01       	movw	r30, r24
+ 3de:	20 83       	st	Z, r18
+
+	recieveMOb->dlc = ( CANCDMOB & 0x0F );	// Save number of bytes to be recieved
+
+
+
+	for (int8_t i = 0; i < recieveMOb->dlc; i++){
+ 3e0:	89 81       	ldd	r24, Y+1	; 0x01
+ 3e2:	8f 5f       	subi	r24, 0xFF	; 255
+ 3e4:	89 83       	std	Y+1, r24	; 0x01
+ 3e6:	89 81       	ldd	r24, Y+1	; 0x01
+ 3e8:	28 2f       	mov	r18, r24
+ 3ea:	88 0f       	add	r24, r24
+ 3ec:	33 0b       	sbc	r19, r19
+ 3ee:	8a 81       	ldd	r24, Y+2	; 0x02
+ 3f0:	9b 81       	ldd	r25, Y+3	; 0x03
+ 3f2:	fc 01       	movw	r30, r24
+ 3f4:	85 81       	ldd	r24, Z+5	; 0x05
+ 3f6:	88 2f       	mov	r24, r24
+ 3f8:	90 e0       	ldi	r25, 0x00	; 0
+ 3fa:	28 17       	cp	r18, r24
+ 3fc:	39 07       	cpc	r19, r25
+ 3fe:	fc f2       	brlt	.-66     	; 0x3be <transfer_data+0x8c>
+
+		recieveMOb->pt_data[i] = CANMSG; 		// Get data, INDX auto increments CANMSG
+	} 
+
+	CANCDMOB = (( 1 << CONMOB1 ) | ( 8 << DLC0));  //Enable transmission, set data length to 8. 
+ 400:	8f ee       	ldi	r24, 0xEF	; 239
+ 402:	90 e0       	ldi	r25, 0x00	; 0
+ 404:	28 e8       	ldi	r18, 0x88	; 136
+ 406:	fc 01       	movw	r30, r24
+ 408:	20 83       	st	Z, r18
+	
+	CANSTMOB = 0x00; //reset MOb status register
+ 40a:	8e ee       	ldi	r24, 0xEE	; 238
+ 40c:	90 e0       	ldi	r25, 0x00	; 0
+ 40e:	fc 01       	movw	r30, r24
+ 410:	10 82       	st	Z, r1
+
+	// Note - the DLC field of the CANCDMO register is updated by the received MOb. If the value differs from expected DLC, an error is set
+
+} 
+}
+ 412:	00 00       	nop
+ 414:	0f 90       	pop	r0
+ 416:	0f 90       	pop	r0
+ 418:	0f 90       	pop	r0
+ 41a:	df 91       	pop	r29
+ 41c:	cf 91       	pop	r28
+ 41e:	08 95       	ret
+
+00000420 <can_init>:
 
 
 uint8_t can_init()
 {
- 332:	cf 93       	push	r28
- 334:	df 93       	push	r29
- 336:	cd b7       	in	r28, 0x3d	; 61
- 338:	de b7       	in	r29, 0x3e	; 62
+ 420:	cf 93       	push	r28
+ 422:	df 93       	push	r29
+ 424:	cd b7       	in	r28, 0x3d	; 61
+ 426:	de b7       	in	r29, 0x3e	; 62
 	Can_bit_timing(1);
- 33a:	0e 94 73 00 	call	0xe6	; 0xe6 <can_fixed_baudrate>
+ 428:	0e 94 73 00 	call	0xe6	; 0xe6 <can_fixed_baudrate>
 	can_clear_all_mob();                        // c.f. function in "can_drv.c"
- 33e:	0e 94 52 00 	call	0xa4	; 0xa4 <can_clear_all_mob>
+ 42c:	0e 94 52 00 	call	0xa4	; 0xa4 <can_clear_all_mob>
 	Can_enable();								// c.f. macro in "can_drv.h"
- 342:	88 ed       	ldi	r24, 0xD8	; 216
- 344:	90 e0       	ldi	r25, 0x00	; 0
- 346:	28 ed       	ldi	r18, 0xD8	; 216
- 348:	30 e0       	ldi	r19, 0x00	; 0
- 34a:	f9 01       	movw	r30, r18
- 34c:	20 81       	ld	r18, Z
- 34e:	22 60       	ori	r18, 0x02	; 2
- 350:	fc 01       	movw	r30, r24
- 352:	20 83       	st	Z, r18
+ 430:	88 ed       	ldi	r24, 0xD8	; 216
+ 432:	90 e0       	ldi	r25, 0x00	; 0
+ 434:	28 ed       	ldi	r18, 0xD8	; 216
+ 436:	30 e0       	ldi	r19, 0x00	; 0
+ 438:	f9 01       	movw	r30, r18
+ 43a:	20 81       	ld	r18, Z
+ 43c:	22 60       	ori	r18, 0x02	; 2
+ 43e:	fc 01       	movw	r30, r24
+ 440:	20 83       	st	Z, r18
 	Can_enable_chosen_ints();                   // macro in "can_drv.h" - change to enable different general interrupts
- 354:	8b ed       	ldi	r24, 0xDB	; 219
- 356:	90 e0       	ldi	r25, 0x00	; 0
- 358:	20 ea       	ldi	r18, 0xA0	; 160
- 35a:	fc 01       	movw	r30, r24
- 35c:	20 83       	st	Z, r18
+ 442:	8b ed       	ldi	r24, 0xDB	; 219
+ 444:	90 e0       	ldi	r25, 0x00	; 0
+ 446:	20 ea       	ldi	r18, 0xA0	; 160
+ 448:	fc 01       	movw	r30, r24
+ 44a:	20 83       	st	Z, r18
 	return (1);
- 35e:	81 e0       	ldi	r24, 0x01	; 1
-}
- 360:	df 91       	pop	r29
- 362:	cf 91       	pop	r28
- 364:	08 95       	ret
+ 44c:	81 e0       	ldi	r24, 0x01	; 1
+ 44e:	df 91       	pop	r29
+ 450:	cf 91       	pop	r28
+ 452:	08 95       	ret
 
-00000366 <initSensors>:
+00000454 <initSensors>:
  #include "Timer_drv.h"
 
 
 
- void initSensors(sensorData* sensorNum[NUMBER_OF_SENSOR], st_cmd_t* transmitMOb)
+ void initSensors(sensorData sensorNum[2], st_cmd_t* transmitMOb)
  {
- 366:	cf 93       	push	r28
- 368:	df 93       	push	r29
- 36a:	00 d0       	rcall	.+0      	; 0x36c <initSensors+0x6>
- 36c:	00 d0       	rcall	.+0      	; 0x36e <initSensors+0x8>
- 36e:	1f 92       	push	r1
- 370:	cd b7       	in	r28, 0x3d	; 61
- 372:	de b7       	in	r29, 0x3e	; 62
- 374:	9b 83       	std	Y+3, r25	; 0x03
- 376:	8a 83       	std	Y+2, r24	; 0x02
- 378:	7d 83       	std	Y+5, r23	; 0x05
- 37a:	6c 83       	std	Y+4, r22	; 0x04
+ 454:	cf 93       	push	r28
+ 456:	df 93       	push	r29
+ 458:	00 d0       	rcall	.+0      	; 0x45a <initSensors+0x6>
+ 45a:	00 d0       	rcall	.+0      	; 0x45c <initSensors+0x8>
+ 45c:	1f 92       	push	r1
+ 45e:	cd b7       	in	r28, 0x3d	; 61
+ 460:	de b7       	in	r29, 0x3e	; 62
+ 462:	9b 83       	std	Y+3, r25	; 0x03
+ 464:	8a 83       	std	Y+2, r24	; 0x02
+ 466:	7d 83       	std	Y+5, r23	; 0x05
+ 468:	6c 83       	std	Y+4, r22	; 0x04
+
 	for(uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
- 37c:	19 82       	std	Y+1, r1	; 0x01
- 37e:	15 c0       	rjmp	.+42     	; 0x3aa <initSensors+0x44>
+ 46a:	19 82       	std	Y+1, r1	; 0x01
+ 46c:	16 c0       	rjmp	.+44     	; 0x49a <initSensors+0x46>
 	{
-		sendServiceMessage(&sensorNum[i]->sensorStruct, transmitMOb);
- 380:	89 81       	ldd	r24, Y+1	; 0x01
- 382:	88 2f       	mov	r24, r24
- 384:	90 e0       	ldi	r25, 0x00	; 0
- 386:	88 0f       	add	r24, r24
- 388:	99 1f       	adc	r25, r25
- 38a:	2a 81       	ldd	r18, Y+2	; 0x02
- 38c:	3b 81       	ldd	r19, Y+3	; 0x03
- 38e:	82 0f       	add	r24, r18
- 390:	93 1f       	adc	r25, r19
- 392:	fc 01       	movw	r30, r24
- 394:	80 81       	ld	r24, Z
- 396:	91 81       	ldd	r25, Z+1	; 0x01
- 398:	03 96       	adiw	r24, 0x03	; 3
- 39a:	2c 81       	ldd	r18, Y+4	; 0x04
- 39c:	3d 81       	ldd	r19, Y+5	; 0x05
- 39e:	b9 01       	movw	r22, r18
- 3a0:	0e 94 e5 03 	call	0x7ca	; 0x7ca <sendServiceMessage>
+		sendServiceMessage(&(sensorNum[i].sensorStruct), transmitMOb);
+ 46e:	89 81       	ldd	r24, Y+1	; 0x01
+ 470:	28 2f       	mov	r18, r24
+ 472:	30 e0       	ldi	r19, 0x00	; 0
+ 474:	43 e1       	ldi	r20, 0x13	; 19
+ 476:	42 9f       	mul	r20, r18
+ 478:	c0 01       	movw	r24, r0
+ 47a:	43 9f       	mul	r20, r19
+ 47c:	90 0d       	add	r25, r0
+ 47e:	11 24       	eor	r1, r1
+ 480:	2a 81       	ldd	r18, Y+2	; 0x02
+ 482:	3b 81       	ldd	r19, Y+3	; 0x03
+ 484:	82 0f       	add	r24, r18
+ 486:	93 1f       	adc	r25, r19
+ 488:	03 96       	adiw	r24, 0x03	; 3
+ 48a:	2c 81       	ldd	r18, Y+4	; 0x04
+ 48c:	3d 81       	ldd	r19, Y+5	; 0x05
+ 48e:	b9 01       	movw	r22, r18
+ 490:	0e 94 fb 05 	call	0xbf6	; 0xbf6 <sendServiceMessage>
 
 
-
- void initSensors(sensorData* sensorNum[NUMBER_OF_SENSOR], st_cmd_t* transmitMOb)
+ void initSensors(sensorData sensorNum[2], st_cmd_t* transmitMOb)
  {
+
 	for(uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
- 3a4:	89 81       	ldd	r24, Y+1	; 0x01
- 3a6:	8f 5f       	subi	r24, 0xFF	; 255
- 3a8:	89 83       	std	Y+1, r24	; 0x01
- 3aa:	89 81       	ldd	r24, Y+1	; 0x01
- 3ac:	83 30       	cpi	r24, 0x03	; 3
- 3ae:	40 f3       	brcs	.-48     	; 0x380 <initSensors+0x1a>
+ 494:	89 81       	ldd	r24, Y+1	; 0x01
+ 496:	8f 5f       	subi	r24, 0xFF	; 255
+ 498:	89 83       	std	Y+1, r24	; 0x01
+ 49a:	89 81       	ldd	r24, Y+1	; 0x01
+ 49c:	83 30       	cpi	r24, 0x03	; 3
+ 49e:	38 f3       	brcs	.-50     	; 0x46e <initSensors+0x1a>
 	{
-		sendServiceMessage(&sensorNum[i]->sensorStruct, transmitMOb);
+		sendServiceMessage(&(sensorNum[i].sensorStruct), transmitMOb);
 	}
 
  }
- 3b0:	00 00       	nop
- 3b2:	0f 90       	pop	r0
- 3b4:	0f 90       	pop	r0
- 3b6:	0f 90       	pop	r0
- 3b8:	0f 90       	pop	r0
- 3ba:	0f 90       	pop	r0
- 3bc:	df 91       	pop	r29
- 3be:	cf 91       	pop	r28
- 3c0:	08 95       	ret
+ 4a0:	00 00       	nop
+ 4a2:	0f 90       	pop	r0
+ 4a4:	0f 90       	pop	r0
+ 4a6:	0f 90       	pop	r0
+ 4a8:	0f 90       	pop	r0
+ 4aa:	0f 90       	pop	r0
+ 4ac:	df 91       	pop	r29
+ 4ae:	cf 91       	pop	r28
+ 4b0:	08 95       	ret
 
-000003c2 <updateData>:
+000004b2 <updateData>:
 
 
 
- void updateData(sensorData* sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb)
+ void updateData(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t receiveMObs[5])
  {
- 3c2:	cf 93       	push	r28
- 3c4:	df 93       	push	r29
- 3c6:	00 d0       	rcall	.+0      	; 0x3c8 <updateData+0x6>
- 3c8:	00 d0       	rcall	.+0      	; 0x3ca <updateData+0x8>
- 3ca:	1f 92       	push	r1
- 3cc:	cd b7       	in	r28, 0x3d	; 61
- 3ce:	de b7       	in	r29, 0x3e	; 62
- 3d0:	9b 83       	std	Y+3, r25	; 0x03
- 3d2:	8a 83       	std	Y+2, r24	; 0x02
- 3d4:	7d 83       	std	Y+5, r23	; 0x05
- 3d6:	6c 83       	std	Y+4, r22	; 0x04
+ 4b2:	cf 93       	push	r28
+ 4b4:	df 93       	push	r29
+ 4b6:	00 d0       	rcall	.+0      	; 0x4b8 <updateData+0x6>
+ 4b8:	00 d0       	rcall	.+0      	; 0x4ba <updateData+0x8>
+ 4ba:	00 d0       	rcall	.+0      	; 0x4bc <updateData+0xa>
+ 4bc:	cd b7       	in	r28, 0x3d	; 61
+ 4be:	de b7       	in	r29, 0x3e	; 62
+ 4c0:	9c 83       	std	Y+4, r25	; 0x04
+ 4c2:	8b 83       	std	Y+3, r24	; 0x03
+ 4c4:	7e 83       	std	Y+6, r23	; 0x06
+ 4c6:	6d 83       	std	Y+5, r22	; 0x05
+	uint8_t HPMOb = (CANHPMOB & 0xF0) >> 4; 
+ 4c8:	8c ee       	ldi	r24, 0xEC	; 236
+ 4ca:	90 e0       	ldi	r25, 0x00	; 0
+ 4cc:	fc 01       	movw	r30, r24
+ 4ce:	80 81       	ld	r24, Z
+ 4d0:	82 95       	swap	r24
+ 4d2:	8f 70       	andi	r24, 0x0F	; 15
+ 4d4:	8a 83       	std	Y+2, r24	; 0x02
+	transfer_data(&receiveMObs[HPMOb]); 
+ 4d6:	8a 81       	ldd	r24, Y+2	; 0x02
+ 4d8:	88 2f       	mov	r24, r24
+ 4da:	90 e0       	ldi	r25, 0x00	; 0
+ 4dc:	88 0f       	add	r24, r24
+ 4de:	99 1f       	adc	r25, r25
+ 4e0:	9c 01       	movw	r18, r24
+ 4e2:	22 0f       	add	r18, r18
+ 4e4:	33 1f       	adc	r19, r19
+ 4e6:	22 0f       	add	r18, r18
+ 4e8:	33 1f       	adc	r19, r19
+ 4ea:	82 0f       	add	r24, r18
+ 4ec:	93 1f       	adc	r25, r19
+ 4ee:	2d 81       	ldd	r18, Y+5	; 0x05
+ 4f0:	3e 81       	ldd	r19, Y+6	; 0x06
+ 4f2:	82 0f       	add	r24, r18
+ 4f4:	93 1f       	adc	r25, r19
+ 4f6:	0e 94 99 01 	call	0x332	; 0x332 <transfer_data>
 	 for(uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
- 3d8:	19 82       	std	Y+1, r1	; 0x01
- 3da:	3f c0       	rjmp	.+126    	; 0x45a <__LOCK_REGION_LENGTH__+0x5a>
+ 4fa:	19 82       	std	Y+1, r1	; 0x01
+ 4fc:	49 c0       	rjmp	.+146    	; 0x590 <updateData+0xde>
 	 {
 
-		 if(sensorNum[i]->sensorStruct.CAN_ID == receiveMOb->id)
- 3dc:	89 81       	ldd	r24, Y+1	; 0x01
- 3de:	88 2f       	mov	r24, r24
- 3e0:	90 e0       	ldi	r25, 0x00	; 0
- 3e2:	88 0f       	add	r24, r24
- 3e4:	99 1f       	adc	r25, r25
- 3e6:	2a 81       	ldd	r18, Y+2	; 0x02
- 3e8:	3b 81       	ldd	r19, Y+3	; 0x03
- 3ea:	82 0f       	add	r24, r18
- 3ec:	93 1f       	adc	r25, r19
- 3ee:	fc 01       	movw	r30, r24
- 3f0:	80 81       	ld	r24, Z
- 3f2:	91 81       	ldd	r25, Z+1	; 0x01
- 3f4:	fc 01       	movw	r30, r24
- 3f6:	23 81       	ldd	r18, Z+3	; 0x03
- 3f8:	34 81       	ldd	r19, Z+4	; 0x04
- 3fa:	8c 81       	ldd	r24, Y+4	; 0x04
- 3fc:	9d 81       	ldd	r25, Y+5	; 0x05
- 3fe:	fc 01       	movw	r30, r24
- 400:	81 81       	ldd	r24, Z+1	; 0x01
- 402:	92 81       	ldd	r25, Z+2	; 0x02
- 404:	28 17       	cp	r18, r24
- 406:	39 07       	cpc	r19, r25
- 408:	29 f5       	brne	.+74     	; 0x454 <__LOCK_REGION_LENGTH__+0x54>
+		 if(sensorNum[i].sensorStruct.CAN_ID == receiveMObs->id)
+ 4fe:	89 81       	ldd	r24, Y+1	; 0x01
+ 500:	28 2f       	mov	r18, r24
+ 502:	30 e0       	ldi	r19, 0x00	; 0
+ 504:	43 e1       	ldi	r20, 0x13	; 19
+ 506:	42 9f       	mul	r20, r18
+ 508:	c0 01       	movw	r24, r0
+ 50a:	43 9f       	mul	r20, r19
+ 50c:	90 0d       	add	r25, r0
+ 50e:	11 24       	eor	r1, r1
+ 510:	2b 81       	ldd	r18, Y+3	; 0x03
+ 512:	3c 81       	ldd	r19, Y+4	; 0x04
+ 514:	82 0f       	add	r24, r18
+ 516:	93 1f       	adc	r25, r19
+ 518:	fc 01       	movw	r30, r24
+ 51a:	23 81       	ldd	r18, Z+3	; 0x03
+ 51c:	34 81       	ldd	r19, Z+4	; 0x04
+ 51e:	8d 81       	ldd	r24, Y+5	; 0x05
+ 520:	9e 81       	ldd	r25, Y+6	; 0x06
+ 522:	fc 01       	movw	r30, r24
+ 524:	81 81       	ldd	r24, Z+1	; 0x01
+ 526:	92 81       	ldd	r25, Z+2	; 0x02
+ 528:	28 17       	cp	r18, r24
+ 52a:	39 07       	cpc	r19, r25
+ 52c:	71 f5       	brne	.+92     	; 0x58a <updateData+0xd8>
 		 {
-			 sensorNum[i]->data = receiveMOb->pt_data;  //Change to support floats
- 40a:	89 81       	ldd	r24, Y+1	; 0x01
- 40c:	88 2f       	mov	r24, r24
- 40e:	90 e0       	ldi	r25, 0x00	; 0
- 410:	88 0f       	add	r24, r24
- 412:	99 1f       	adc	r25, r25
- 414:	2a 81       	ldd	r18, Y+2	; 0x02
- 416:	3b 81       	ldd	r19, Y+3	; 0x03
- 418:	82 0f       	add	r24, r18
- 41a:	93 1f       	adc	r25, r19
- 41c:	fc 01       	movw	r30, r24
- 41e:	80 81       	ld	r24, Z
- 420:	91 81       	ldd	r25, Z+1	; 0x01
- 422:	2c 81       	ldd	r18, Y+4	; 0x04
- 424:	3d 81       	ldd	r19, Y+5	; 0x05
- 426:	f9 01       	movw	r30, r18
- 428:	26 81       	ldd	r18, Z+6	; 0x06
- 42a:	37 81       	ldd	r19, Z+7	; 0x07
- 42c:	fc 01       	movw	r30, r24
- 42e:	20 83       	st	Z, r18
-			 sensorNum[i]->numberOfMessages++;
- 430:	89 81       	ldd	r24, Y+1	; 0x01
- 432:	88 2f       	mov	r24, r24
- 434:	90 e0       	ldi	r25, 0x00	; 0
- 436:	88 0f       	add	r24, r24
- 438:	99 1f       	adc	r25, r25
- 43a:	2a 81       	ldd	r18, Y+2	; 0x02
- 43c:	3b 81       	ldd	r19, Y+3	; 0x03
- 43e:	82 0f       	add	r24, r18
- 440:	93 1f       	adc	r25, r19
- 442:	fc 01       	movw	r30, r24
- 444:	80 81       	ld	r24, Z
- 446:	91 81       	ldd	r25, Z+1	; 0x01
- 448:	fc 01       	movw	r30, r24
- 44a:	21 81       	ldd	r18, Z+1	; 0x01
- 44c:	2f 5f       	subi	r18, 0xFF	; 255
- 44e:	fc 01       	movw	r30, r24
- 450:	21 83       	std	Z+1, r18	; 0x01
-			 return;
- 452:	07 c0       	rjmp	.+14     	; 0x462 <__LOCK_REGION_LENGTH__+0x62>
+			 sensorNum[i].data = receiveMObs->pt_data[i];  //Change to support floats
+ 52e:	89 81       	ldd	r24, Y+1	; 0x01
+ 530:	28 2f       	mov	r18, r24
+ 532:	30 e0       	ldi	r19, 0x00	; 0
+ 534:	43 e1       	ldi	r20, 0x13	; 19
+ 536:	42 9f       	mul	r20, r18
+ 538:	c0 01       	movw	r24, r0
+ 53a:	43 9f       	mul	r20, r19
+ 53c:	90 0d       	add	r25, r0
+ 53e:	11 24       	eor	r1, r1
+ 540:	2b 81       	ldd	r18, Y+3	; 0x03
+ 542:	3c 81       	ldd	r19, Y+4	; 0x04
+ 544:	82 0f       	add	r24, r18
+ 546:	93 1f       	adc	r25, r19
+ 548:	2d 81       	ldd	r18, Y+5	; 0x05
+ 54a:	3e 81       	ldd	r19, Y+6	; 0x06
+ 54c:	f9 01       	movw	r30, r18
+ 54e:	46 81       	ldd	r20, Z+6	; 0x06
+ 550:	57 81       	ldd	r21, Z+7	; 0x07
+ 552:	29 81       	ldd	r18, Y+1	; 0x01
+ 554:	22 2f       	mov	r18, r18
+ 556:	30 e0       	ldi	r19, 0x00	; 0
+ 558:	24 0f       	add	r18, r20
+ 55a:	35 1f       	adc	r19, r21
+ 55c:	f9 01       	movw	r30, r18
+ 55e:	20 81       	ld	r18, Z
+ 560:	fc 01       	movw	r30, r24
+ 562:	20 83       	st	Z, r18
+			 sensorNum[i].numberOfMessages++;
+ 564:	89 81       	ldd	r24, Y+1	; 0x01
+ 566:	28 2f       	mov	r18, r24
+ 568:	30 e0       	ldi	r19, 0x00	; 0
+ 56a:	43 e1       	ldi	r20, 0x13	; 19
+ 56c:	42 9f       	mul	r20, r18
+ 56e:	c0 01       	movw	r24, r0
+ 570:	43 9f       	mul	r20, r19
+ 572:	90 0d       	add	r25, r0
+ 574:	11 24       	eor	r1, r1
+ 576:	2b 81       	ldd	r18, Y+3	; 0x03
+ 578:	3c 81       	ldd	r19, Y+4	; 0x04
+ 57a:	82 0f       	add	r24, r18
+ 57c:	93 1f       	adc	r25, r19
+ 57e:	fc 01       	movw	r30, r24
+ 580:	21 81       	ldd	r18, Z+1	; 0x01
+ 582:	2f 5f       	subi	r18, 0xFF	; 255
+ 584:	fc 01       	movw	r30, r24
+ 586:	21 83       	std	Z+1, r18	; 0x01
+			return; 		
+ 588:	07 c0       	rjmp	.+14     	; 0x598 <updateData+0xe6>
 
-
-
- void updateData(sensorData* sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb)
+ void updateData(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t receiveMObs[5])
  {
+	uint8_t HPMOb = (CANHPMOB & 0xF0) >> 4; 
+	transfer_data(&receiveMObs[HPMOb]); 
 	 for(uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
- 454:	89 81       	ldd	r24, Y+1	; 0x01
- 456:	8f 5f       	subi	r24, 0xFF	; 255
- 458:	89 83       	std	Y+1, r24	; 0x01
- 45a:	89 81       	ldd	r24, Y+1	; 0x01
- 45c:	83 30       	cpi	r24, 0x03	; 3
- 45e:	08 f4       	brcc	.+2      	; 0x462 <__LOCK_REGION_LENGTH__+0x62>
- 460:	bd cf       	rjmp	.-134    	; 0x3dc <updateData+0x1a>
-			 sensorNum[i]->numberOfMessages++;
-			 return;
-		 }
+ 58a:	89 81       	ldd	r24, Y+1	; 0x01
+ 58c:	8f 5f       	subi	r24, 0xFF	; 255
+ 58e:	89 83       	std	Y+1, r24	; 0x01
+ 590:	89 81       	ldd	r24, Y+1	; 0x01
+ 592:	83 30       	cpi	r24, 0x03	; 3
+ 594:	08 f4       	brcc	.+2      	; 0x598 <updateData+0xe6>
+ 596:	b3 cf       	rjmp	.-154    	; 0x4fe <updateData+0x4c>
 	 }
 
- 462:	0f 90       	pop	r0
- 464:	0f 90       	pop	r0
- 466:	0f 90       	pop	r0
- 468:	0f 90       	pop	r0
- 46a:	0f 90       	pop	r0
- 46c:	df 91       	pop	r29
- 46e:	cf 91       	pop	r28
- 470:	08 95       	ret
 
-00000472 <main>:
+	 
+
+ 598:	26 96       	adiw	r28, 0x06	; 6
+ 59a:	0f b6       	in	r0, 0x3f	; 63
+ 59c:	f8 94       	cli
+ 59e:	de bf       	out	0x3e, r29	; 62
+ 5a0:	0f be       	out	0x3f, r0	; 63
+ 5a2:	cd bf       	out	0x3d, r28	; 61
+ 5a4:	df 91       	pop	r29
+ 5a6:	cf 91       	pop	r28
+ 5a8:	08 95       	ret
+
+000005aa <main>:
 volatile uint8_t receivedMessage; 
 volatile uint8_t i; 
 
 
 int main(void)
 {
- 472:	cf 93       	push	r28
- 474:	df 93       	push	r29
- 476:	cd b7       	in	r28, 0x3d	; 61
- 478:	de b7       	in	r29, 0x3e	; 62
- 47a:	c5 57       	subi	r28, 0x75	; 117
- 47c:	d1 09       	sbc	r29, r1
- 47e:	0f b6       	in	r0, 0x3f	; 63
- 480:	f8 94       	cli
- 482:	de bf       	out	0x3e, r29	; 62
- 484:	0f be       	out	0x3f, r0	; 63
- 486:	cd bf       	out	0x3d, r28	; 61
-	chip_init();
- 488:	0e 94 84 03 	call	0x708	; 0x708 <chip_init>
-	can_init();
- 48c:	0e 94 99 01 	call	0x332	; 0x332 <can_init>
-	TimerSetup();
- 490:	0e 94 d8 04 	call	0x9b0	; 0x9b0 <TimerSetup>
-	
-	//bit_flip(PORTD, BIT(7));
-	heartBeat = 0; 
- 494:	10 92 02 01 	sts	0x0102, r1	; 0x800102 <heartBeat>
+ 5aa:	cf 93       	push	r28
+ 5ac:	df 93       	push	r29
+ 5ae:	cd b7       	in	r28, 0x3d	; 61
+ 5b0:	de b7       	in	r29, 0x3e	; 62
+ 5b2:	ce 5b       	subi	r28, 0xBE	; 190
+ 5b4:	d1 09       	sbc	r29, r1
+ 5b6:	0f b6       	in	r0, 0x3f	; 63
+ 5b8:	f8 94       	cli
+ 5ba:	de bf       	out	0x3e, r29	; 62
+ 5bc:	0f be       	out	0x3f, r0	; 63
+ 5be:	cd bf       	out	0x3d, r28	; 61
 
-	uint8_t receive_buffer[MSG_SIZE];
-	st_cmd_t receiveMOb;
-	receiveMOb.pt_data = &receive_buffer[0];
- 498:	ce 01       	movw	r24, r28
- 49a:	01 96       	adiw	r24, 0x01	; 1
- 49c:	98 8b       	std	Y+16, r25	; 0x10
- 49e:	8f 87       	std	Y+15, r24	; 0x0f
-	receiveMOb.MObNumber = 0x01;
- 4a0:	81 e0       	ldi	r24, 0x01	; 1
- 4a2:	89 8b       	std	Y+17, r24	; 0x11
-	receiveMOb.dlc = MSG_SIZE;
- 4a4:	88 e0       	ldi	r24, 0x08	; 8
- 4a6:	8e 87       	std	Y+14, r24	; 0x0e
-	receiveMOb.cmd = RX;
- 4a8:	81 e0       	ldi	r24, 0x01	; 1
- 4aa:	89 87       	std	Y+9, r24	; 0x09
-	receiveMOb.id = 0x0000;
- 4ac:	1b 86       	std	Y+11, r1	; 0x0b
- 4ae:	1a 86       	std	Y+10, r1	; 0x0a
 
+chip_init();
+ 5c0:	0e 94 83 05 	call	0xb06	; 0xb06 <chip_init>
+can_init();
+ 5c4:	0e 94 10 02 	call	0x420	; 0x420 <can_init>
+TimerSetup();
+ 5c8:	0e 94 1c 07 	call	0xe38	; 0xe38 <TimerSetup>
+
+heartBeat = 0; 
+ 5cc:	10 92 02 01 	sts	0x0102, r1	; 0x800102 <heartBeat>
+
+
+	st_cmd_t receiveMObs[NUMBER_OF_RECEIVEMOBS];
+	uint8_t recieveBuffers[NUMBER_OF_RECEIVEMOBS][MSG_SIZE];
+	for (i = 0; i < NUMBER_OF_RECEIVEMOBS; i++)
+ 5d0:	10 92 00 01 	sts	0x0100, r1	; 0x800100 <_edata>
+ 5d4:	ae c0       	rjmp	.+348    	; 0x732 <main+0x188>
+	{
+		receiveMObs[i].cmd = RX;
+ 5d6:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 5da:	88 2f       	mov	r24, r24
+ 5dc:	90 e0       	ldi	r25, 0x00	; 0
+ 5de:	88 0f       	add	r24, r24
+ 5e0:	99 1f       	adc	r25, r25
+ 5e2:	9c 01       	movw	r18, r24
+ 5e4:	22 0f       	add	r18, r18
+ 5e6:	33 1f       	adc	r19, r19
+ 5e8:	22 0f       	add	r18, r18
+ 5ea:	33 1f       	adc	r19, r19
+ 5ec:	82 0f       	add	r24, r18
+ 5ee:	93 1f       	adc	r25, r19
+ 5f0:	9e 01       	movw	r18, r28
+ 5f2:	2f 5f       	subi	r18, 0xFF	; 255
+ 5f4:	3f 4f       	sbci	r19, 0xFF	; 255
+ 5f6:	82 0f       	add	r24, r18
+ 5f8:	93 1f       	adc	r25, r19
+ 5fa:	01 96       	adiw	r24, 0x01	; 1
+ 5fc:	21 e0       	ldi	r18, 0x01	; 1
+ 5fe:	fc 01       	movw	r30, r24
+ 600:	20 83       	st	Z, r18
+		receiveMObs[i].mask = 0x0000;
+ 602:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 606:	88 2f       	mov	r24, r24
+ 608:	90 e0       	ldi	r25, 0x00	; 0
+ 60a:	88 0f       	add	r24, r24
+ 60c:	99 1f       	adc	r25, r25
+ 60e:	9c 01       	movw	r18, r24
+ 610:	22 0f       	add	r18, r18
+ 612:	33 1f       	adc	r19, r19
+ 614:	22 0f       	add	r18, r18
+ 616:	33 1f       	adc	r19, r19
+ 618:	82 0f       	add	r24, r18
+ 61a:	93 1f       	adc	r25, r19
+ 61c:	9e 01       	movw	r18, r28
+ 61e:	2f 5f       	subi	r18, 0xFF	; 255
+ 620:	3f 4f       	sbci	r19, 0xFF	; 255
+ 622:	82 0f       	add	r24, r18
+ 624:	93 1f       	adc	r25, r19
+ 626:	04 96       	adiw	r24, 0x04	; 4
+ 628:	fc 01       	movw	r30, r24
+ 62a:	11 82       	std	Z+1, r1	; 0x01
+ 62c:	10 82       	st	Z, r1
+		receiveMObs[i].MObNumber = i;
+ 62e:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 632:	88 2f       	mov	r24, r24
+ 634:	90 e0       	ldi	r25, 0x00	; 0
+ 636:	40 91 00 01 	lds	r20, 0x0100	; 0x800100 <_edata>
+ 63a:	88 0f       	add	r24, r24
+ 63c:	99 1f       	adc	r25, r25
+ 63e:	9c 01       	movw	r18, r24
+ 640:	22 0f       	add	r18, r18
+ 642:	33 1f       	adc	r19, r19
+ 644:	22 0f       	add	r18, r18
+ 646:	33 1f       	adc	r19, r19
+ 648:	82 0f       	add	r24, r18
+ 64a:	93 1f       	adc	r25, r19
+ 64c:	9e 01       	movw	r18, r28
+ 64e:	2f 5f       	subi	r18, 0xFF	; 255
+ 650:	3f 4f       	sbci	r19, 0xFF	; 255
+ 652:	82 0f       	add	r24, r18
+ 654:	93 1f       	adc	r25, r19
+ 656:	09 96       	adiw	r24, 0x09	; 9
+ 658:	fc 01       	movw	r30, r24
+ 65a:	40 83       	st	Z, r20
+		receiveMObs[i].id = 0x0000; 
+ 65c:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 660:	88 2f       	mov	r24, r24
+ 662:	90 e0       	ldi	r25, 0x00	; 0
+ 664:	88 0f       	add	r24, r24
+ 666:	99 1f       	adc	r25, r25
+ 668:	9c 01       	movw	r18, r24
+ 66a:	22 0f       	add	r18, r18
+ 66c:	33 1f       	adc	r19, r19
+ 66e:	22 0f       	add	r18, r18
+ 670:	33 1f       	adc	r19, r19
+ 672:	82 0f       	add	r24, r18
+ 674:	93 1f       	adc	r25, r19
+ 676:	9e 01       	movw	r18, r28
+ 678:	2f 5f       	subi	r18, 0xFF	; 255
+ 67a:	3f 4f       	sbci	r19, 0xFF	; 255
+ 67c:	82 0f       	add	r24, r18
+ 67e:	93 1f       	adc	r25, r19
+ 680:	02 96       	adiw	r24, 0x02	; 2
+ 682:	fc 01       	movw	r30, r24
+ 684:	11 82       	std	Z+1, r1	; 0x01
+ 686:	10 82       	st	Z, r1
+		receiveMObs[i].dlc = MSG_SIZE; 
+ 688:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 68c:	88 2f       	mov	r24, r24
+ 68e:	90 e0       	ldi	r25, 0x00	; 0
+ 690:	88 0f       	add	r24, r24
+ 692:	99 1f       	adc	r25, r25
+ 694:	9c 01       	movw	r18, r24
+ 696:	22 0f       	add	r18, r18
+ 698:	33 1f       	adc	r19, r19
+ 69a:	22 0f       	add	r18, r18
+ 69c:	33 1f       	adc	r19, r19
+ 69e:	82 0f       	add	r24, r18
+ 6a0:	93 1f       	adc	r25, r19
+ 6a2:	9e 01       	movw	r18, r28
+ 6a4:	2f 5f       	subi	r18, 0xFF	; 255
+ 6a6:	3f 4f       	sbci	r19, 0xFF	; 255
+ 6a8:	82 0f       	add	r24, r18
+ 6aa:	93 1f       	adc	r25, r19
+ 6ac:	06 96       	adiw	r24, 0x06	; 6
+ 6ae:	28 e0       	ldi	r18, 0x08	; 8
+ 6b0:	fc 01       	movw	r30, r24
+ 6b2:	20 83       	st	Z, r18
+		receiveMObs[i].pt_data = &recieveBuffers[i];
+ 6b4:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 6b8:	48 2f       	mov	r20, r24
+ 6ba:	50 e0       	ldi	r21, 0x00	; 0
+ 6bc:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 6c0:	88 2f       	mov	r24, r24
+ 6c2:	90 e0       	ldi	r25, 0x00	; 0
+ 6c4:	9e 01       	movw	r18, r28
+ 6c6:	2c 5c       	subi	r18, 0xCC	; 204
+ 6c8:	3f 4f       	sbci	r19, 0xFF	; 255
+ 6ca:	88 0f       	add	r24, r24
+ 6cc:	99 1f       	adc	r25, r25
+ 6ce:	88 0f       	add	r24, r24
+ 6d0:	99 1f       	adc	r25, r25
+ 6d2:	88 0f       	add	r24, r24
+ 6d4:	99 1f       	adc	r25, r25
+ 6d6:	28 0f       	add	r18, r24
+ 6d8:	39 1f       	adc	r19, r25
+ 6da:	ca 01       	movw	r24, r20
+ 6dc:	88 0f       	add	r24, r24
+ 6de:	99 1f       	adc	r25, r25
+ 6e0:	ac 01       	movw	r20, r24
+ 6e2:	44 0f       	add	r20, r20
+ 6e4:	55 1f       	adc	r21, r21
+ 6e6:	44 0f       	add	r20, r20
+ 6e8:	55 1f       	adc	r21, r21
+ 6ea:	84 0f       	add	r24, r20
+ 6ec:	95 1f       	adc	r25, r21
+ 6ee:	ae 01       	movw	r20, r28
+ 6f0:	4f 5f       	subi	r20, 0xFF	; 255
+ 6f2:	5f 4f       	sbci	r21, 0xFF	; 255
+ 6f4:	84 0f       	add	r24, r20
+ 6f6:	95 1f       	adc	r25, r21
+ 6f8:	07 96       	adiw	r24, 0x07	; 7
+ 6fa:	fc 01       	movw	r30, r24
+ 6fc:	31 83       	std	Z+1, r19	; 0x01
+ 6fe:	20 83       	st	Z, r18
+		can_cmd(&receiveMObs[i]);
+ 700:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 704:	88 2f       	mov	r24, r24
+ 706:	90 e0       	ldi	r25, 0x00	; 0
+ 708:	9e 01       	movw	r18, r28
+ 70a:	2e 5f       	subi	r18, 0xFE	; 254
+ 70c:	3f 4f       	sbci	r19, 0xFF	; 255
+ 70e:	88 0f       	add	r24, r24
+ 710:	99 1f       	adc	r25, r25
+ 712:	ac 01       	movw	r20, r24
+ 714:	44 0f       	add	r20, r20
+ 716:	55 1f       	adc	r21, r21
+ 718:	44 0f       	add	r20, r20
+ 71a:	55 1f       	adc	r21, r21
+ 71c:	84 0f       	add	r24, r20
+ 71e:	95 1f       	adc	r25, r21
+ 720:	82 0f       	add	r24, r18
+ 722:	93 1f       	adc	r25, r19
+ 724:	0e 94 e5 00 	call	0x1ca	; 0x1ca <can_cmd>
+heartBeat = 0; 
+
+
+	st_cmd_t receiveMObs[NUMBER_OF_RECEIVEMOBS];
+	uint8_t recieveBuffers[NUMBER_OF_RECEIVEMOBS][MSG_SIZE];
+	for (i = 0; i < NUMBER_OF_RECEIVEMOBS; i++)
+ 728:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 72c:	8f 5f       	subi	r24, 0xFF	; 255
+ 72e:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <_edata>
+ 732:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ 736:	85 30       	cpi	r24, 0x05	; 5
+ 738:	08 f4       	brcc	.+2      	; 0x73c <main+0x192>
+ 73a:	4d cf       	rjmp	.-358    	; 0x5d6 <main+0x2c>
+//
+	//can_cmd(&recieveMOb);
 
 	uint8_t transmit_buffer[MSG_SIZE];
 	st_cmd_t transmitMOb; 
 	transmitMOb.pt_data = &transmit_buffer[0];
- 4b0:	ce 01       	movw	r24, r28
- 4b2:	43 96       	adiw	r24, 0x13	; 19
- 4b4:	9a a3       	std	Y+34, r25	; 0x22
- 4b6:	89 a3       	std	Y+33, r24	; 0x21
-	transmitMOb.MObNumber = 0x02;
- 4b8:	82 e0       	ldi	r24, 0x02	; 2
- 4ba:	8b a3       	std	Y+35, r24	; 0x23
+ 73c:	ce 01       	movw	r24, r28
+ 73e:	8c 59       	subi	r24, 0x9C	; 156
+ 740:	9f 4f       	sbci	r25, 0xFF	; 255
+ 742:	9e 01       	movw	r18, r28
+ 744:	24 5a       	subi	r18, 0xA4	; 164
+ 746:	3f 4f       	sbci	r19, 0xFF	; 255
+ 748:	fc 01       	movw	r30, r24
+ 74a:	37 83       	std	Z+7, r19	; 0x07
+ 74c:	26 83       	std	Z+6, r18	; 0x06
+	transmitMOb.MObNumber = 0x05;
+ 74e:	ce 01       	movw	r24, r28
+ 750:	8c 59       	subi	r24, 0x9C	; 156
+ 752:	9f 4f       	sbci	r25, 0xFF	; 255
+ 754:	25 e0       	ldi	r18, 0x05	; 5
+ 756:	fc 01       	movw	r30, r24
+ 758:	20 87       	std	Z+8, r18	; 0x08
 	transmitMOb.dlc = MSG_SIZE; 
- 4bc:	88 e0       	ldi	r24, 0x08	; 8
- 4be:	88 a3       	std	Y+32, r24	; 0x20
+ 75a:	ce 01       	movw	r24, r28
+ 75c:	8c 59       	subi	r24, 0x9C	; 156
+ 75e:	9f 4f       	sbci	r25, 0xFF	; 255
+ 760:	28 e0       	ldi	r18, 0x08	; 8
+ 762:	fc 01       	movw	r30, r24
+ 764:	25 83       	std	Z+5, r18	; 0x05
 	transmitMOb.cmd = TX; 
- 4c0:	1b 8e       	std	Y+27, r1	; 0x1b
+ 766:	ce 01       	movw	r24, r28
+ 768:	8c 59       	subi	r24, 0x9C	; 156
+ 76a:	9f 4f       	sbci	r25, 0xFF	; 255
+ 76c:	fc 01       	movw	r30, r24
+ 76e:	10 82       	st	Z, r1
 	transmitMOb.id = 0x0000;  
- 4c2:	1d 8e       	std	Y+29, r1	; 0x1d
- 4c4:	1c 8e       	std	Y+28, r1	; 0x1c
+ 770:	ce 01       	movw	r24, r28
+ 772:	8c 59       	subi	r24, 0x9C	; 156
+ 774:	9f 4f       	sbci	r25, 0xFF	; 255
+ 776:	fc 01       	movw	r30, r24
+ 778:	12 82       	std	Z+2, r1	; 0x02
+ 77a:	11 82       	std	Z+1, r1	; 0x01
 polyCoef coefList1[2]; 
 polyCoef coefList2[2];
 polyCoef coefList3[2];
 
 
 coefList1[0].floatCoef = 23.545; 
- 4c6:	9e 01       	movw	r18, r28
- 4c8:	22 5a       	subi	r18, 0xA2	; 162
- 4ca:	3f 4f       	sbci	r19, 0xFF	; 255
- 4cc:	89 e2       	ldi	r24, 0x29	; 41
- 4ce:	9c e5       	ldi	r25, 0x5C	; 92
- 4d0:	ac eb       	ldi	r26, 0xBC	; 188
- 4d2:	b1 e4       	ldi	r27, 0x41	; 65
- 4d4:	f9 01       	movw	r30, r18
- 4d6:	80 83       	st	Z, r24
- 4d8:	91 83       	std	Z+1, r25	; 0x01
- 4da:	a2 83       	std	Z+2, r26	; 0x02
- 4dc:	b3 83       	std	Z+3, r27	; 0x03
+ 77c:	9e 01       	movw	r18, r28
+ 77e:	29 55       	subi	r18, 0x59	; 89
+ 780:	3f 4f       	sbci	r19, 0xFF	; 255
+ 782:	89 e2       	ldi	r24, 0x29	; 41
+ 784:	9c e5       	ldi	r25, 0x5C	; 92
+ 786:	ac eb       	ldi	r26, 0xBC	; 188
+ 788:	b1 e4       	ldi	r27, 0x41	; 65
+ 78a:	f9 01       	movw	r30, r18
+ 78c:	80 83       	st	Z, r24
+ 78e:	91 83       	std	Z+1, r25	; 0x01
+ 790:	a2 83       	std	Z+2, r26	; 0x02
+ 792:	b3 83       	std	Z+3, r27	; 0x03
 coefList1[1].floatCoef = 343.214; 
- 4de:	9e 01       	movw	r18, r28
- 4e0:	22 5a       	subi	r18, 0xA2	; 162
- 4e2:	3f 4f       	sbci	r19, 0xFF	; 255
- 4e4:	84 e6       	ldi	r24, 0x64	; 100
- 4e6:	9b e9       	ldi	r25, 0x9B	; 155
- 4e8:	ab ea       	ldi	r26, 0xAB	; 171
- 4ea:	b3 e4       	ldi	r27, 0x43	; 67
- 4ec:	f9 01       	movw	r30, r18
- 4ee:	84 83       	std	Z+4, r24	; 0x04
- 4f0:	95 83       	std	Z+5, r25	; 0x05
- 4f2:	a6 83       	std	Z+6, r26	; 0x06
- 4f4:	b7 83       	std	Z+7, r27	; 0x07
+ 794:	9e 01       	movw	r18, r28
+ 796:	29 55       	subi	r18, 0x59	; 89
+ 798:	3f 4f       	sbci	r19, 0xFF	; 255
+ 79a:	84 e6       	ldi	r24, 0x64	; 100
+ 79c:	9b e9       	ldi	r25, 0x9B	; 155
+ 79e:	ab ea       	ldi	r26, 0xAB	; 171
+ 7a0:	b3 e4       	ldi	r27, 0x43	; 67
+ 7a2:	f9 01       	movw	r30, r18
+ 7a4:	84 83       	std	Z+4, r24	; 0x04
+ 7a6:	95 83       	std	Z+5, r25	; 0x05
+ 7a8:	a6 83       	std	Z+6, r26	; 0x06
+ 7aa:	b7 83       	std	Z+7, r27	; 0x07
 
-coefList2[0].floatCoef = 23.545;
- 4f6:	9e 01       	movw	r18, r28
- 4f8:	2a 59       	subi	r18, 0x9A	; 154
- 4fa:	3f 4f       	sbci	r19, 0xFF	; 255
- 4fc:	89 e2       	ldi	r24, 0x29	; 41
- 4fe:	9c e5       	ldi	r25, 0x5C	; 92
- 500:	ac eb       	ldi	r26, 0xBC	; 188
- 502:	b1 e4       	ldi	r27, 0x41	; 65
- 504:	f9 01       	movw	r30, r18
- 506:	80 83       	st	Z, r24
- 508:	91 83       	std	Z+1, r25	; 0x01
- 50a:	a2 83       	std	Z+2, r26	; 0x02
- 50c:	b3 83       	std	Z+3, r27	; 0x03
+coefList2[0].floatCoef = 19.545;
+ 7ac:	9e 01       	movw	r18, r28
+ 7ae:	21 55       	subi	r18, 0x51	; 81
+ 7b0:	3f 4f       	sbci	r19, 0xFF	; 255
+ 7b2:	89 e2       	ldi	r24, 0x29	; 41
+ 7b4:	9c e5       	ldi	r25, 0x5C	; 92
+ 7b6:	ac e9       	ldi	r26, 0x9C	; 156
+ 7b8:	b1 e4       	ldi	r27, 0x41	; 65
+ 7ba:	f9 01       	movw	r30, r18
+ 7bc:	80 83       	st	Z, r24
+ 7be:	91 83       	std	Z+1, r25	; 0x01
+ 7c0:	a2 83       	std	Z+2, r26	; 0x02
+ 7c2:	b3 83       	std	Z+3, r27	; 0x03
 coefList2[1].floatCoef = 343.214;
- 50e:	9e 01       	movw	r18, r28
- 510:	2a 59       	subi	r18, 0x9A	; 154
- 512:	3f 4f       	sbci	r19, 0xFF	; 255
- 514:	84 e6       	ldi	r24, 0x64	; 100
- 516:	9b e9       	ldi	r25, 0x9B	; 155
- 518:	ab ea       	ldi	r26, 0xAB	; 171
- 51a:	b3 e4       	ldi	r27, 0x43	; 67
- 51c:	f9 01       	movw	r30, r18
- 51e:	84 83       	std	Z+4, r24	; 0x04
- 520:	95 83       	std	Z+5, r25	; 0x05
- 522:	a6 83       	std	Z+6, r26	; 0x06
- 524:	b7 83       	std	Z+7, r27	; 0x07
+ 7c4:	9e 01       	movw	r18, r28
+ 7c6:	21 55       	subi	r18, 0x51	; 81
+ 7c8:	3f 4f       	sbci	r19, 0xFF	; 255
+ 7ca:	84 e6       	ldi	r24, 0x64	; 100
+ 7cc:	9b e9       	ldi	r25, 0x9B	; 155
+ 7ce:	ab ea       	ldi	r26, 0xAB	; 171
+ 7d0:	b3 e4       	ldi	r27, 0x43	; 67
+ 7d2:	f9 01       	movw	r30, r18
+ 7d4:	84 83       	std	Z+4, r24	; 0x04
+ 7d6:	95 83       	std	Z+5, r25	; 0x05
+ 7d8:	a6 83       	std	Z+6, r26	; 0x06
+ 7da:	b7 83       	std	Z+7, r27	; 0x07
 
-coefList3[0].floatCoef = 23.545;
- 526:	9e 01       	movw	r18, r28
- 528:	22 59       	subi	r18, 0x92	; 146
- 52a:	3f 4f       	sbci	r19, 0xFF	; 255
- 52c:	89 e2       	ldi	r24, 0x29	; 41
- 52e:	9c e5       	ldi	r25, 0x5C	; 92
- 530:	ac eb       	ldi	r26, 0xBC	; 188
- 532:	b1 e4       	ldi	r27, 0x41	; 65
- 534:	f9 01       	movw	r30, r18
- 536:	80 83       	st	Z, r24
- 538:	91 83       	std	Z+1, r25	; 0x01
- 53a:	a2 83       	std	Z+2, r26	; 0x02
- 53c:	b3 83       	std	Z+3, r27	; 0x03
+coefList3[0].floatCoef = 300.545;
+ 7dc:	9e 01       	movw	r18, r28
+ 7de:	29 54       	subi	r18, 0x49	; 73
+ 7e0:	3f 4f       	sbci	r19, 0xFF	; 255
+ 7e2:	83 ec       	ldi	r24, 0xC3	; 195
+ 7e4:	95 e4       	ldi	r25, 0x45	; 69
+ 7e6:	a6 e9       	ldi	r26, 0x96	; 150
+ 7e8:	b3 e4       	ldi	r27, 0x43	; 67
+ 7ea:	f9 01       	movw	r30, r18
+ 7ec:	80 83       	st	Z, r24
+ 7ee:	91 83       	std	Z+1, r25	; 0x01
+ 7f0:	a2 83       	std	Z+2, r26	; 0x02
+ 7f2:	b3 83       	std	Z+3, r27	; 0x03
 coefList3[1].floatCoef = 343.214;
- 53e:	9e 01       	movw	r18, r28
- 540:	22 59       	subi	r18, 0x92	; 146
- 542:	3f 4f       	sbci	r19, 0xFF	; 255
- 544:	84 e6       	ldi	r24, 0x64	; 100
- 546:	9b e9       	ldi	r25, 0x9B	; 155
- 548:	ab ea       	ldi	r26, 0xAB	; 171
- 54a:	b3 e4       	ldi	r27, 0x43	; 67
- 54c:	f9 01       	movw	r30, r18
- 54e:	84 83       	std	Z+4, r24	; 0x04
- 550:	95 83       	std	Z+5, r25	; 0x05
- 552:	a6 83       	std	Z+6, r26	; 0x06
- 554:	b7 83       	std	Z+7, r27	; 0x07
+ 7f4:	9e 01       	movw	r18, r28
+ 7f6:	29 54       	subi	r18, 0x49	; 73
+ 7f8:	3f 4f       	sbci	r19, 0xFF	; 255
+ 7fa:	84 e6       	ldi	r24, 0x64	; 100
+ 7fc:	9b e9       	ldi	r25, 0x9B	; 155
+ 7fe:	ab ea       	ldi	r26, 0xAB	; 171
+ 800:	b3 e4       	ldi	r27, 0x43	; 67
+ 802:	f9 01       	movw	r30, r18
+ 804:	84 83       	std	Z+4, r24	; 0x04
+ 806:	95 83       	std	Z+5, r25	; 0x05
+ 808:	a6 83       	std	Z+6, r26	; 0x06
+ 80a:	b7 83       	std	Z+7, r27	; 0x07
 //Setup sensorData structs
 
-sensorList[0].sensorStruct.CAN_ID = 0x00FF;
- 556:	8f ef       	ldi	r24, 0xFF	; 255
- 558:	90 e0       	ldi	r25, 0x00	; 0
- 55a:	99 a7       	std	Y+41, r25	; 0x29
- 55c:	88 a7       	std	Y+40, r24	; 0x28
-sensorList[0].sensorStruct.samplingfreq = 0xFF; 
- 55e:	8f ef       	ldi	r24, 0xFF	; 255
- 560:	8c ab       	std	Y+52, r24	; 0x34
+sensorList[0].sensorStruct.CAN_ID = 0x0040;
+ 80c:	ce 01       	movw	r24, r28
+ 80e:	82 59       	subi	r24, 0x92	; 146
+ 810:	9f 4f       	sbci	r25, 0xFF	; 255
+ 812:	20 e4       	ldi	r18, 0x40	; 64
+ 814:	30 e0       	ldi	r19, 0x00	; 0
+ 816:	fc 01       	movw	r30, r24
+ 818:	34 83       	std	Z+4, r19	; 0x04
+ 81a:	23 83       	std	Z+3, r18	; 0x03
+sensorList[0].sensorStruct.samplingfreq = 2; 
+ 81c:	ce 01       	movw	r24, r28
+ 81e:	82 59       	subi	r24, 0x92	; 146
+ 820:	9f 4f       	sbci	r25, 0xFF	; 255
+ 822:	22 e0       	ldi	r18, 0x02	; 2
+ 824:	fc 01       	movw	r30, r24
+ 826:	27 87       	std	Z+15, r18	; 0x0f
 sensorList[0].sensorStruct.period = 2;
- 562:	82 e0       	ldi	r24, 0x02	; 2
- 564:	8c a7       	std	Y+44, r24	; 0x2c
+ 828:	ce 01       	movw	r24, r28
+ 82a:	82 59       	subi	r24, 0x92	; 146
+ 82c:	9f 4f       	sbci	r25, 0xFF	; 255
+ 82e:	22 e0       	ldi	r18, 0x02	; 2
+ 830:	fc 01       	movw	r30, r24
+ 832:	27 83       	std	Z+7, r18	; 0x07
 sensorList[0].sensorStruct.cutOffFreq = 2; 
- 566:	82 e0       	ldi	r24, 0x02	; 2
- 568:	8d a7       	std	Y+45, r24	; 0x2d
+ 834:	ce 01       	movw	r24, r28
+ 836:	82 59       	subi	r24, 0x92	; 146
+ 838:	9f 4f       	sbci	r25, 0xFF	; 255
+ 83a:	22 e0       	ldi	r18, 0x02	; 2
+ 83c:	fc 01       	movw	r30, r24
+ 83e:	20 87       	std	Z+8, r18	; 0x08
 sensorList[0].sensorStruct.unit = celsius; 
- 56a:	1b a6       	std	Y+43, r1	; 0x2b
+ 840:	ce 01       	movw	r24, r28
+ 842:	82 59       	subi	r24, 0x92	; 146
+ 844:	9f 4f       	sbci	r25, 0xFF	; 255
+ 846:	fc 01       	movw	r30, r24
+ 848:	16 82       	std	Z+6, r1	; 0x06
 sensorList[0].sensorStruct.sensor_Type = other_sensor;
- 56c:	82 e0       	ldi	r24, 0x02	; 2
- 56e:	8a a7       	std	Y+42, r24	; 0x2a
+ 84a:	ce 01       	movw	r24, r28
+ 84c:	82 59       	subi	r24, 0x92	; 146
+ 84e:	9f 4f       	sbci	r25, 0xFF	; 255
+ 850:	22 e0       	ldi	r18, 0x02	; 2
+ 852:	fc 01       	movw	r30, r24
+ 854:	25 83       	std	Z+5, r18	; 0x05
 sensorList[0].sensorStruct.totalNumberOfpolynomials = 2;
- 570:	82 e0       	ldi	r24, 0x02	; 2
- 572:	8f ab       	std	Y+55, r24	; 0x37
+ 856:	ce 01       	movw	r24, r28
+ 858:	82 59       	subi	r24, 0x92	; 146
+ 85a:	9f 4f       	sbci	r25, 0xFF	; 255
+ 85c:	22 e0       	ldi	r18, 0x02	; 2
+ 85e:	fc 01       	movw	r30, r24
+ 860:	22 8b       	std	Z+18, r18	; 0x12
 sensorList[0].sensorStruct.polynomialList = &coefList1[0]; 
- 574:	ce 01       	movw	r24, r28
- 576:	82 5a       	subi	r24, 0xA2	; 162
- 578:	9f 4f       	sbci	r25, 0xFF	; 255
- 57a:	9e ab       	std	Y+54, r25	; 0x36
- 57c:	8d ab       	std	Y+53, r24	; 0x35
+ 862:	ce 01       	movw	r24, r28
+ 864:	82 59       	subi	r24, 0x92	; 146
+ 866:	9f 4f       	sbci	r25, 0xFF	; 255
+ 868:	9e 01       	movw	r18, r28
+ 86a:	29 55       	subi	r18, 0x59	; 89
+ 86c:	3f 4f       	sbci	r19, 0xFF	; 255
+ 86e:	fc 01       	movw	r30, r24
+ 870:	31 8b       	std	Z+17, r19	; 0x11
+ 872:	20 8b       	std	Z+16, r18	; 0x10
 sensorList[0].data = 0;
- 57e:	1d a2       	std	Y+37, r1	; 0x25
+ 874:	ce 01       	movw	r24, r28
+ 876:	82 59       	subi	r24, 0x92	; 146
+ 878:	9f 4f       	sbci	r25, 0xFF	; 255
+ 87a:	fc 01       	movw	r30, r24
+ 87c:	10 82       	st	Z, r1
 sensorList[0].isSCS = 1; 
- 580:	81 e0       	ldi	r24, 0x01	; 1
- 582:	8f a3       	std	Y+39, r24	; 0x27
+ 87e:	ce 01       	movw	r24, r28
+ 880:	82 59       	subi	r24, 0x92	; 146
+ 882:	9f 4f       	sbci	r25, 0xFF	; 255
+ 884:	21 e0       	ldi	r18, 0x01	; 1
+ 886:	fc 01       	movw	r30, r24
+ 888:	22 83       	std	Z+2, r18	; 0x02
 
 
 sensorList[1].sensorStruct.CAN_ID = 0x00FF;
- 584:	8f ef       	ldi	r24, 0xFF	; 255
- 586:	90 e0       	ldi	r25, 0x00	; 0
- 588:	9c af       	std	Y+60, r25	; 0x3c
- 58a:	8b af       	std	Y+59, r24	; 0x3b
+ 88a:	ce 01       	movw	r24, r28
+ 88c:	82 59       	subi	r24, 0x92	; 146
+ 88e:	9f 4f       	sbci	r25, 0xFF	; 255
+ 890:	2f ef       	ldi	r18, 0xFF	; 255
+ 892:	30 e0       	ldi	r19, 0x00	; 0
+ 894:	fc 01       	movw	r30, r24
+ 896:	37 8b       	std	Z+23, r19	; 0x17
+ 898:	26 8b       	std	Z+22, r18	; 0x16
 sensorList[1].sensorStruct.samplingfreq = 2;
- 58c:	ce 01       	movw	r24, r28
- 58e:	89 5b       	subi	r24, 0xB9	; 185
- 590:	9f 4f       	sbci	r25, 0xFF	; 255
- 592:	22 e0       	ldi	r18, 0x02	; 2
- 594:	fc 01       	movw	r30, r24
- 596:	20 83       	st	Z, r18
+ 89a:	ce 01       	movw	r24, r28
+ 89c:	82 59       	subi	r24, 0x92	; 146
+ 89e:	9f 4f       	sbci	r25, 0xFF	; 255
+ 8a0:	22 e0       	ldi	r18, 0x02	; 2
+ 8a2:	fc 01       	movw	r30, r24
+ 8a4:	22 a3       	std	Z+34, r18	; 0x22
 sensorList[1].sensorStruct.period = 2; 
- 598:	82 e0       	ldi	r24, 0x02	; 2
- 59a:	8f af       	std	Y+63, r24	; 0x3f
-sensorList[1].sensorStruct.unit = celsius;
- 59c:	1e ae       	std	Y+62, r1	; 0x3e
-sensorList[1].sensorStruct.sensor_Type = other_sensor;
- 59e:	82 e0       	ldi	r24, 0x02	; 2
- 5a0:	8d af       	std	Y+61, r24	; 0x3d
+ 8a6:	ce 01       	movw	r24, r28
+ 8a8:	82 59       	subi	r24, 0x92	; 146
+ 8aa:	9f 4f       	sbci	r25, 0xFF	; 255
+ 8ac:	22 e0       	ldi	r18, 0x02	; 2
+ 8ae:	fc 01       	movw	r30, r24
+ 8b0:	22 8f       	std	Z+26, r18	; 0x1a
+sensorList[1].sensorStruct.cutOffFreq = 2; 
+ 8b2:	ce 01       	movw	r24, r28
+ 8b4:	82 59       	subi	r24, 0x92	; 146
+ 8b6:	9f 4f       	sbci	r25, 0xFF	; 255
+ 8b8:	22 e0       	ldi	r18, 0x02	; 2
+ 8ba:	fc 01       	movw	r30, r24
+ 8bc:	23 8f       	std	Z+27, r18	; 0x1b
+sensorList[1].sensorStruct.unit = degrees;
+ 8be:	ce 01       	movw	r24, r28
+ 8c0:	82 59       	subi	r24, 0x92	; 146
+ 8c2:	9f 4f       	sbci	r25, 0xFF	; 255
+ 8c4:	21 e0       	ldi	r18, 0x01	; 1
+ 8c6:	fc 01       	movw	r30, r24
+ 8c8:	21 8f       	std	Z+25, r18	; 0x19
+sensorList[1].sensorStruct.sensor_Type = thermistor;
+ 8ca:	ce 01       	movw	r24, r28
+ 8cc:	82 59       	subi	r24, 0x92	; 146
+ 8ce:	9f 4f       	sbci	r25, 0xFF	; 255
+ 8d0:	fc 01       	movw	r30, r24
+ 8d2:	10 8e       	std	Z+24, r1	; 0x18
 sensorList[1].sensorStruct.totalNumberOfpolynomials = 2;
- 5a2:	ce 01       	movw	r24, r28
- 5a4:	86 5b       	subi	r24, 0xB6	; 182
- 5a6:	9f 4f       	sbci	r25, 0xFF	; 255
- 5a8:	22 e0       	ldi	r18, 0x02	; 2
- 5aa:	fc 01       	movw	r30, r24
- 5ac:	20 83       	st	Z, r18
-sensorList[0].sensorStruct.polynomialList = &coefList2[0]; 
- 5ae:	ce 01       	movw	r24, r28
- 5b0:	8a 59       	subi	r24, 0x9A	; 154
- 5b2:	9f 4f       	sbci	r25, 0xFF	; 255
- 5b4:	9e ab       	std	Y+54, r25	; 0x36
- 5b6:	8d ab       	std	Y+53, r24	; 0x35
+ 8d4:	ce 01       	movw	r24, r28
+ 8d6:	82 59       	subi	r24, 0x92	; 146
+ 8d8:	9f 4f       	sbci	r25, 0xFF	; 255
+ 8da:	22 e0       	ldi	r18, 0x02	; 2
+ 8dc:	fc 01       	movw	r30, r24
+ 8de:	25 a3       	std	Z+37, r18	; 0x25
+sensorList[1].sensorStruct.polynomialList = &coefList2[0]; 
+ 8e0:	ce 01       	movw	r24, r28
+ 8e2:	82 59       	subi	r24, 0x92	; 146
+ 8e4:	9f 4f       	sbci	r25, 0xFF	; 255
+ 8e6:	9e 01       	movw	r18, r28
+ 8e8:	21 55       	subi	r18, 0x51	; 81
+ 8ea:	3f 4f       	sbci	r19, 0xFF	; 255
+ 8ec:	fc 01       	movw	r30, r24
+ 8ee:	34 a3       	std	Z+36, r19	; 0x24
+ 8f0:	23 a3       	std	Z+35, r18	; 0x23
 sensorList[1].data = 0;
- 5b8:	18 ae       	std	Y+56, r1	; 0x38
+ 8f2:	ce 01       	movw	r24, r28
+ 8f4:	82 59       	subi	r24, 0x92	; 146
+ 8f6:	9f 4f       	sbci	r25, 0xFF	; 255
+ 8f8:	fc 01       	movw	r30, r24
+ 8fa:	13 8a       	std	Z+19, r1	; 0x13
 sensorList[1].isSCS = 1;
- 5ba:	81 e0       	ldi	r24, 0x01	; 1
- 5bc:	8a af       	std	Y+58, r24	; 0x3a
+ 8fc:	ce 01       	movw	r24, r28
+ 8fe:	82 59       	subi	r24, 0x92	; 146
+ 900:	9f 4f       	sbci	r25, 0xFF	; 255
+ 902:	21 e0       	ldi	r18, 0x01	; 1
+ 904:	fc 01       	movw	r30, r24
+ 906:	25 8b       	std	Z+21, r18	; 0x15
 
-sensorList[2].sensorStruct.CAN_ID = 0x00FF;
- 5be:	ce 01       	movw	r24, r28
- 5c0:	82 5b       	subi	r24, 0xB2	; 178
- 5c2:	9f 4f       	sbci	r25, 0xFF	; 255
- 5c4:	2f ef       	ldi	r18, 0xFF	; 255
- 5c6:	30 e0       	ldi	r19, 0x00	; 0
- 5c8:	fc 01       	movw	r30, r24
- 5ca:	31 83       	std	Z+1, r19	; 0x01
- 5cc:	20 83       	st	Z, r18
-sensorList[2].sensorStruct.samplingfreq = 0xFF;
- 5ce:	ce 01       	movw	r24, r28
- 5d0:	86 5a       	subi	r24, 0xA6	; 166
- 5d2:	9f 4f       	sbci	r25, 0xFF	; 255
- 5d4:	2f ef       	ldi	r18, 0xFF	; 255
- 5d6:	fc 01       	movw	r30, r24
- 5d8:	20 83       	st	Z, r18
-sensorList[2].sensorStruct.unit = celsius;
- 5da:	ce 01       	movw	r24, r28
- 5dc:	8f 5a       	subi	r24, 0xAF	; 175
- 5de:	9f 4f       	sbci	r25, 0xFF	; 255
- 5e0:	fc 01       	movw	r30, r24
- 5e2:	10 82       	st	Z, r1
-sensorList[2].sensorStruct.sensor_Type = other_sensor;
- 5e4:	ce 01       	movw	r24, r28
- 5e6:	80 5b       	subi	r24, 0xB0	; 176
- 5e8:	9f 4f       	sbci	r25, 0xFF	; 255
- 5ea:	22 e0       	ldi	r18, 0x02	; 2
- 5ec:	fc 01       	movw	r30, r24
- 5ee:	20 83       	st	Z, r18
+sensorList[2].sensorStruct.CAN_ID = 0x00CC;
+ 908:	ce 01       	movw	r24, r28
+ 90a:	82 59       	subi	r24, 0x92	; 146
+ 90c:	9f 4f       	sbci	r25, 0xFF	; 255
+ 90e:	2c ec       	ldi	r18, 0xCC	; 204
+ 910:	30 e0       	ldi	r19, 0x00	; 0
+ 912:	fc 01       	movw	r30, r24
+ 914:	32 a7       	std	Z+42, r19	; 0x2a
+ 916:	21 a7       	std	Z+41, r18	; 0x29
+sensorList[2].sensorStruct.samplingfreq = 2;
+ 918:	ce 01       	movw	r24, r28
+ 91a:	82 59       	subi	r24, 0x92	; 146
+ 91c:	9f 4f       	sbci	r25, 0xFF	; 255
+ 91e:	22 e0       	ldi	r18, 0x02	; 2
+ 920:	fc 01       	movw	r30, r24
+ 922:	25 ab       	std	Z+53, r18	; 0x35
+sensorList[2].sensorStruct.period = 2; 
+ 924:	ce 01       	movw	r24, r28
+ 926:	82 59       	subi	r24, 0x92	; 146
+ 928:	9f 4f       	sbci	r25, 0xFF	; 255
+ 92a:	22 e0       	ldi	r18, 0x02	; 2
+ 92c:	fc 01       	movw	r30, r24
+ 92e:	25 a7       	std	Z+45, r18	; 0x2d
+sensorList[2].sensorStruct.cutOffFreq = 2; 
+ 930:	ce 01       	movw	r24, r28
+ 932:	82 59       	subi	r24, 0x92	; 146
+ 934:	9f 4f       	sbci	r25, 0xFF	; 255
+ 936:	22 e0       	ldi	r18, 0x02	; 2
+ 938:	fc 01       	movw	r30, r24
+ 93a:	26 a7       	std	Z+46, r18	; 0x2e
+sensorList[2].sensorStruct.unit = percentage;
+ 93c:	ce 01       	movw	r24, r28
+ 93e:	82 59       	subi	r24, 0x92	; 146
+ 940:	9f 4f       	sbci	r25, 0xFF	; 255
+ 942:	22 e0       	ldi	r18, 0x02	; 2
+ 944:	fc 01       	movw	r30, r24
+ 946:	24 a7       	std	Z+44, r18	; 0x2c
+sensorList[2].sensorStruct.sensor_Type = potentiometer;
+ 948:	ce 01       	movw	r24, r28
+ 94a:	82 59       	subi	r24, 0x92	; 146
+ 94c:	9f 4f       	sbci	r25, 0xFF	; 255
+ 94e:	21 e0       	ldi	r18, 0x01	; 1
+ 950:	fc 01       	movw	r30, r24
+ 952:	23 a7       	std	Z+43, r18	; 0x2b
 sensorList[2].sensorStruct.totalNumberOfpolynomials = 2;
- 5f0:	ce 01       	movw	r24, r28
- 5f2:	83 5a       	subi	r24, 0xA3	; 163
- 5f4:	9f 4f       	sbci	r25, 0xFF	; 255
- 5f6:	22 e0       	ldi	r18, 0x02	; 2
- 5f8:	fc 01       	movw	r30, r24
- 5fa:	20 83       	st	Z, r18
-sensorList[0].sensorStruct.polynomialList = &coefList3[0]; 
- 5fc:	ce 01       	movw	r24, r28
- 5fe:	82 59       	subi	r24, 0x92	; 146
- 600:	9f 4f       	sbci	r25, 0xFF	; 255
- 602:	9e ab       	std	Y+54, r25	; 0x36
- 604:	8d ab       	std	Y+53, r24	; 0x35
+ 954:	ce 01       	movw	r24, r28
+ 956:	82 59       	subi	r24, 0x92	; 146
+ 958:	9f 4f       	sbci	r25, 0xFF	; 255
+ 95a:	22 e0       	ldi	r18, 0x02	; 2
+ 95c:	fc 01       	movw	r30, r24
+ 95e:	20 af       	std	Z+56, r18	; 0x38
+sensorList[2].sensorStruct.polynomialList = &coefList3[0]; 
+ 960:	ce 01       	movw	r24, r28
+ 962:	82 59       	subi	r24, 0x92	; 146
+ 964:	9f 4f       	sbci	r25, 0xFF	; 255
+ 966:	9e 01       	movw	r18, r28
+ 968:	29 54       	subi	r18, 0x49	; 73
+ 96a:	3f 4f       	sbci	r19, 0xFF	; 255
+ 96c:	fc 01       	movw	r30, r24
+ 96e:	37 ab       	std	Z+55, r19	; 0x37
+ 970:	26 ab       	std	Z+54, r18	; 0x36
 sensorList[2].data = 0;
- 606:	ce 01       	movw	r24, r28
- 608:	85 5b       	subi	r24, 0xB5	; 181
- 60a:	9f 4f       	sbci	r25, 0xFF	; 255
- 60c:	fc 01       	movw	r30, r24
- 60e:	10 82       	st	Z, r1
+ 972:	ce 01       	movw	r24, r28
+ 974:	82 59       	subi	r24, 0x92	; 146
+ 976:	9f 4f       	sbci	r25, 0xFF	; 255
+ 978:	fc 01       	movw	r30, r24
+ 97a:	16 a2       	std	Z+38, r1	; 0x26
 sensorList[2].isSCS = 1;
- 610:	ce 01       	movw	r24, r28
- 612:	83 5b       	subi	r24, 0xB3	; 179
- 614:	9f 4f       	sbci	r25, 0xFF	; 255
- 616:	21 e0       	ldi	r18, 0x01	; 1
- 618:	fc 01       	movw	r30, r24
- 61a:	20 83       	st	Z, r18
+ 97c:	ce 01       	movw	r24, r28
+ 97e:	82 59       	subi	r24, 0x92	; 146
+ 980:	9f 4f       	sbci	r25, 0xFF	; 255
+ 982:	21 e0       	ldi	r18, 0x01	; 1
+ 984:	fc 01       	movw	r30, r24
+ 986:	20 a7       	std	Z+40, r18	; 0x28
 
+initSensors(sensorList, &transmitMOb);
+ 988:	9e 01       	movw	r18, r28
+ 98a:	2c 59       	subi	r18, 0x9C	; 156
+ 98c:	3f 4f       	sbci	r19, 0xFF	; 255
+ 98e:	ce 01       	movw	r24, r28
+ 990:	82 59       	subi	r24, 0x92	; 146
+ 992:	9f 4f       	sbci	r25, 0xFF	; 255
+ 994:	b9 01       	movw	r22, r18
+ 996:	0e 94 2a 02 	call	0x454	; 0x454 <initSensors>
 
-initSensors(&sensorList, &transmitMOb);
- 61c:	9e 01       	movw	r18, r28
- 61e:	25 5e       	subi	r18, 0xE5	; 229
- 620:	3f 4f       	sbci	r19, 0xFF	; 255
- 622:	ce 01       	movw	r24, r28
- 624:	85 96       	adiw	r24, 0x25	; 37
- 626:	b9 01       	movw	r22, r18
- 628:	0e 94 b3 01 	call	0x366	; 0x366 <initSensors>
+transmitMOb.id = 0x0000; //reset CAN-id
+ 99a:	ce 01       	movw	r24, r28
+ 99c:	8c 59       	subi	r24, 0x9C	; 156
+ 99e:	9f 4f       	sbci	r25, 0xFF	; 255
+ 9a0:	fc 01       	movw	r30, r24
+ 9a2:	12 82       	std	Z+2, r1	; 0x02
+ 9a4:	11 82       	std	Z+1, r1	; 0x01
 
 sei();
- 62c:	78 94       	sei
+ 9a6:	78 94       	sei
 
 while(1)
 {
 
 	if(receivedMessage > 0)
- 62e:	80 91 03 01 	lds	r24, 0x0103	; 0x800103 <receivedMessage>
- 632:	88 23       	and	r24, r24
- 634:	69 f0       	breq	.+26     	; 0x650 <main+0x1de>
+ 9a8:	80 91 03 01 	lds	r24, 0x0103	; 0x800103 <receivedMessage>
+ 9ac:	88 23       	and	r24, r24
+ 9ae:	09 f4       	brne	.+2      	; 0x9b2 <__stack+0xb3>
+ 9b0:	4e c0       	rjmp	.+156    	; 0xa4e <__stack+0x14f>
 	{
-		updateData(&sensorList, &receiveMOb);
- 636:	9e 01       	movw	r18, r28
- 638:	27 5f       	subi	r18, 0xF7	; 247
- 63a:	3f 4f       	sbci	r19, 0xFF	; 255
- 63c:	ce 01       	movw	r24, r28
- 63e:	85 96       	adiw	r24, 0x25	; 37
- 640:	b9 01       	movw	r22, r18
- 642:	0e 94 e1 01 	call	0x3c2	; 0x3c2 <updateData>
-		receivedMessage--; 
- 646:	80 91 03 01 	lds	r24, 0x0103	; 0x800103 <receivedMessage>
- 64a:	81 50       	subi	r24, 0x01	; 1
- 64c:	80 93 03 01 	sts	0x0103, r24	; 0x800103 <receivedMessage>
+		updateData(sensorList, receiveMObs);
+ 9b2:	9e 01       	movw	r18, r28
+ 9b4:	2e 5f       	subi	r18, 0xFE	; 254
+ 9b6:	3f 4f       	sbci	r19, 0xFF	; 255
+ 9b8:	ce 01       	movw	r24, r28
+ 9ba:	82 59       	subi	r24, 0x92	; 146
+ 9bc:	9f 4f       	sbci	r25, 0xFF	; 255
+ 9be:	b9 01       	movw	r22, r18
+ 9c0:	0e 94 59 02 	call	0x4b2	; 0x4b2 <updateData>
+		receivedMessage = 0; 
+ 9c4:	10 92 03 01 	sts	0x0103, r1	; 0x800103 <receivedMessage>
+
+
+		for (uint8_t i = 0; i < 8; i++)
+ 9c8:	19 82       	std	Y+1, r1	; 0x01
+ 9ca:	10 c0       	rjmp	.+32     	; 0x9ec <__stack+0xed>
+		{
+		transmitMOb.pt_data[i] = 0x00; 
+ 9cc:	ce 01       	movw	r24, r28
+ 9ce:	8c 59       	subi	r24, 0x9C	; 156
+ 9d0:	9f 4f       	sbci	r25, 0xFF	; 255
+ 9d2:	fc 01       	movw	r30, r24
+ 9d4:	26 81       	ldd	r18, Z+6	; 0x06
+ 9d6:	37 81       	ldd	r19, Z+7	; 0x07
+ 9d8:	89 81       	ldd	r24, Y+1	; 0x01
+ 9da:	88 2f       	mov	r24, r24
+ 9dc:	90 e0       	ldi	r25, 0x00	; 0
+ 9de:	82 0f       	add	r24, r18
+ 9e0:	93 1f       	adc	r25, r19
+ 9e2:	fc 01       	movw	r30, r24
+ 9e4:	10 82       	st	Z, r1
+	{
+		updateData(sensorList, receiveMObs);
+		receivedMessage = 0; 
+
+
+		for (uint8_t i = 0; i < 8; i++)
+ 9e6:	89 81       	ldd	r24, Y+1	; 0x01
+ 9e8:	8f 5f       	subi	r24, 0xFF	; 255
+ 9ea:	89 83       	std	Y+1, r24	; 0x01
+ 9ec:	89 81       	ldd	r24, Y+1	; 0x01
+ 9ee:	88 30       	cpi	r24, 0x08	; 8
+ 9f0:	68 f3       	brcs	.-38     	; 0x9cc <__stack+0xcd>
+		{
+		transmitMOb.pt_data[i] = 0x00; 
+		}
+		transmitMOb.pt_data[0] = sensorList[0].data & 0xFF;
+ 9f2:	ce 01       	movw	r24, r28
+ 9f4:	8c 59       	subi	r24, 0x9C	; 156
+ 9f6:	9f 4f       	sbci	r25, 0xFF	; 255
+ 9f8:	fc 01       	movw	r30, r24
+ 9fa:	86 81       	ldd	r24, Z+6	; 0x06
+ 9fc:	97 81       	ldd	r25, Z+7	; 0x07
+ 9fe:	9e 01       	movw	r18, r28
+ a00:	22 59       	subi	r18, 0x92	; 146
+ a02:	3f 4f       	sbci	r19, 0xFF	; 255
+ a04:	f9 01       	movw	r30, r18
+ a06:	20 81       	ld	r18, Z
+ a08:	fc 01       	movw	r30, r24
+ a0a:	20 83       	st	Z, r18
+		transmitMOb.pt_data[1] = sensorList[1].data & 0xFF;
+ a0c:	ce 01       	movw	r24, r28
+ a0e:	8c 59       	subi	r24, 0x9C	; 156
+ a10:	9f 4f       	sbci	r25, 0xFF	; 255
+ a12:	fc 01       	movw	r30, r24
+ a14:	86 81       	ldd	r24, Z+6	; 0x06
+ a16:	97 81       	ldd	r25, Z+7	; 0x07
+ a18:	01 96       	adiw	r24, 0x01	; 1
+ a1a:	9e 01       	movw	r18, r28
+ a1c:	22 59       	subi	r18, 0x92	; 146
+ a1e:	3f 4f       	sbci	r19, 0xFF	; 255
+ a20:	f9 01       	movw	r30, r18
+ a22:	23 89       	ldd	r18, Z+19	; 0x13
+ a24:	fc 01       	movw	r30, r24
+ a26:	20 83       	st	Z, r18
+		transmitMOb.pt_data[2] = sensorList[2].data & 0xFF; 
+ a28:	ce 01       	movw	r24, r28
+ a2a:	8c 59       	subi	r24, 0x9C	; 156
+ a2c:	9f 4f       	sbci	r25, 0xFF	; 255
+ a2e:	fc 01       	movw	r30, r24
+ a30:	86 81       	ldd	r24, Z+6	; 0x06
+ a32:	97 81       	ldd	r25, Z+7	; 0x07
+ a34:	02 96       	adiw	r24, 0x02	; 2
+ a36:	9e 01       	movw	r18, r28
+ a38:	22 59       	subi	r18, 0x92	; 146
+ a3a:	3f 4f       	sbci	r19, 0xFF	; 255
+ a3c:	f9 01       	movw	r30, r18
+ a3e:	26 a1       	ldd	r18, Z+38	; 0x26
+ a40:	fc 01       	movw	r30, r24
+ a42:	20 83       	st	Z, r18
+		can_cmd(&transmitMOb);
+ a44:	ce 01       	movw	r24, r28
+ a46:	8c 59       	subi	r24, 0x9C	; 156
+ a48:	9f 4f       	sbci	r25, 0xFF	; 255
+ a4a:	0e 94 e5 00 	call	0x1ca	; 0x1ca <can_cmd>
 	}
 
 	if(tick > 0)
- 650:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
- 654:	88 23       	and	r24, r24
- 656:	09 f4       	brne	.+2      	; 0x65a <main+0x1e8>
- 658:	4c c0       	rjmp	.+152    	; 0x6f2 <main+0x280>
+ a4e:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
+ a52:	88 23       	and	r24, r24
+ a54:	09 f4       	brne	.+2      	; 0xa58 <__stack+0x159>
+ a56:	4c c0       	rjmp	.+152    	; 0xaf0 <__stack+0x1f1>
 	{
     
 		if(heartBeat > 20)
- 65a:	80 91 02 01 	lds	r24, 0x0102	; 0x800102 <heartBeat>
- 65e:	85 31       	cpi	r24, 0x15	; 21
- 660:	08 f4       	brcc	.+2      	; 0x664 <main+0x1f2>
- 662:	47 c0       	rjmp	.+142    	; 0x6f2 <main+0x280>
+ a58:	80 91 02 01 	lds	r24, 0x0102	; 0x800102 <heartBeat>
+ a5c:	85 31       	cpi	r24, 0x15	; 21
+ a5e:	08 f4       	brcc	.+2      	; 0xa62 <__stack+0x163>
+ a60:	47 c0       	rjmp	.+142    	; 0xaf0 <__stack+0x1f1>
 		{
+			
+			//transmitMOb.pt_data[0] = sensorList[0].sensorStruct.totalNumberOfpolynomials; 
+			//can_cmd(&transmitMOb);
+
 			for (i = 0; i < NUMBER_OF_SENSOR; i++)
- 664:	10 92 00 01 	sts	0x0100, r1	; 0x800100 <_edata>
- 668:	3d c0       	rjmp	.+122    	; 0x6e4 <main+0x272>
+ a62:	10 92 00 01 	sts	0x0100, r1	; 0x800100 <_edata>
+ a66:	3d c0       	rjmp	.+122    	; 0xae2 <__stack+0x1e3>
 			{
 
 				if(sensorList[i].isSCS == 1)
- 66a:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
- 66e:	28 2f       	mov	r18, r24
- 670:	30 e0       	ldi	r19, 0x00	; 0
- 672:	43 e1       	ldi	r20, 0x13	; 19
- 674:	42 9f       	mul	r20, r18
- 676:	c0 01       	movw	r24, r0
- 678:	43 9f       	mul	r20, r19
- 67a:	90 0d       	add	r25, r0
- 67c:	11 24       	eor	r1, r1
- 67e:	9e 01       	movw	r18, r28
- 680:	2f 5f       	subi	r18, 0xFF	; 255
- 682:	3f 4f       	sbci	r19, 0xFF	; 255
- 684:	82 0f       	add	r24, r18
- 686:	93 1f       	adc	r25, r19
- 688:	86 96       	adiw	r24, 0x26	; 38
- 68a:	fc 01       	movw	r30, r24
- 68c:	80 81       	ld	r24, Z
- 68e:	81 30       	cpi	r24, 0x01	; 1
- 690:	21 f5       	brne	.+72     	; 0x6da <main+0x268>
+ a68:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ a6c:	48 2f       	mov	r20, r24
+ a6e:	50 e0       	ldi	r21, 0x00	; 0
+ a70:	9e 01       	movw	r18, r28
+ a72:	22 59       	subi	r18, 0x92	; 146
+ a74:	3f 4f       	sbci	r19, 0xFF	; 255
+ a76:	63 e1       	ldi	r22, 0x13	; 19
+ a78:	64 9f       	mul	r22, r20
+ a7a:	c0 01       	movw	r24, r0
+ a7c:	65 9f       	mul	r22, r21
+ a7e:	90 0d       	add	r25, r0
+ a80:	11 24       	eor	r1, r1
+ a82:	82 0f       	add	r24, r18
+ a84:	93 1f       	adc	r25, r19
+ a86:	02 96       	adiw	r24, 0x02	; 2
+ a88:	fc 01       	movw	r30, r24
+ a8a:	80 81       	ld	r24, Z
+ a8c:	81 30       	cpi	r24, 0x01	; 1
+ a8e:	21 f5       	brne	.+72     	; 0xad8 <__stack+0x1d9>
 				{
 
 					if(sensorList[i].numberOfMessages == 0)
- 692:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
- 696:	28 2f       	mov	r18, r24
- 698:	30 e0       	ldi	r19, 0x00	; 0
- 69a:	43 e1       	ldi	r20, 0x13	; 19
- 69c:	42 9f       	mul	r20, r18
- 69e:	c0 01       	movw	r24, r0
- 6a0:	43 9f       	mul	r20, r19
- 6a2:	90 0d       	add	r25, r0
- 6a4:	11 24       	eor	r1, r1
- 6a6:	9e 01       	movw	r18, r28
- 6a8:	2f 5f       	subi	r18, 0xFF	; 255
- 6aa:	3f 4f       	sbci	r19, 0xFF	; 255
- 6ac:	82 0f       	add	r24, r18
- 6ae:	93 1f       	adc	r25, r19
- 6b0:	85 96       	adiw	r24, 0x25	; 37
- 6b2:	fc 01       	movw	r30, r24
- 6b4:	80 81       	ld	r24, Z
+ a90:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ a94:	48 2f       	mov	r20, r24
+ a96:	50 e0       	ldi	r21, 0x00	; 0
+ a98:	9e 01       	movw	r18, r28
+ a9a:	22 59       	subi	r18, 0x92	; 146
+ a9c:	3f 4f       	sbci	r19, 0xFF	; 255
+ a9e:	63 e1       	ldi	r22, 0x13	; 19
+ aa0:	64 9f       	mul	r22, r20
+ aa2:	c0 01       	movw	r24, r0
+ aa4:	65 9f       	mul	r22, r21
+ aa6:	90 0d       	add	r25, r0
+ aa8:	11 24       	eor	r1, r1
+ aaa:	82 0f       	add	r24, r18
+ aac:	93 1f       	adc	r25, r19
+ aae:	01 96       	adiw	r24, 0x01	; 1
+ ab0:	fc 01       	movw	r30, r24
+ ab2:	80 81       	ld	r24, Z
 					{
 						//Send alert
 					}
 
 					sensorList[i].numberOfMessages = 0; 
- 6b6:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
- 6ba:	28 2f       	mov	r18, r24
- 6bc:	30 e0       	ldi	r19, 0x00	; 0
- 6be:	43 e1       	ldi	r20, 0x13	; 19
- 6c0:	42 9f       	mul	r20, r18
- 6c2:	c0 01       	movw	r24, r0
- 6c4:	43 9f       	mul	r20, r19
- 6c6:	90 0d       	add	r25, r0
- 6c8:	11 24       	eor	r1, r1
- 6ca:	9e 01       	movw	r18, r28
- 6cc:	2f 5f       	subi	r18, 0xFF	; 255
- 6ce:	3f 4f       	sbci	r19, 0xFF	; 255
- 6d0:	82 0f       	add	r24, r18
- 6d2:	93 1f       	adc	r25, r19
- 6d4:	85 96       	adiw	r24, 0x25	; 37
- 6d6:	fc 01       	movw	r30, r24
- 6d8:	10 82       	st	Z, r1
-	if(tick > 0)
-	{
-    
-		if(heartBeat > 20)
+ ab4:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ ab8:	48 2f       	mov	r20, r24
+ aba:	50 e0       	ldi	r21, 0x00	; 0
+ abc:	9e 01       	movw	r18, r28
+ abe:	22 59       	subi	r18, 0x92	; 146
+ ac0:	3f 4f       	sbci	r19, 0xFF	; 255
+ ac2:	63 e1       	ldi	r22, 0x13	; 19
+ ac4:	64 9f       	mul	r22, r20
+ ac6:	c0 01       	movw	r24, r0
+ ac8:	65 9f       	mul	r22, r21
+ aca:	90 0d       	add	r25, r0
+ acc:	11 24       	eor	r1, r1
+ ace:	82 0f       	add	r24, r18
+ ad0:	93 1f       	adc	r25, r19
+ ad2:	01 96       	adiw	r24, 0x01	; 1
+ ad4:	fc 01       	movw	r30, r24
+ ad6:	10 82       	st	Z, r1
 		{
+			
+			//transmitMOb.pt_data[0] = sensorList[0].sensorStruct.totalNumberOfpolynomials; 
+			//can_cmd(&transmitMOb);
+
 			for (i = 0; i < NUMBER_OF_SENSOR; i++)
- 6da:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
- 6de:	8f 5f       	subi	r24, 0xFF	; 255
- 6e0:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <_edata>
- 6e4:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
- 6e8:	83 30       	cpi	r24, 0x03	; 3
- 6ea:	08 f4       	brcc	.+2      	; 0x6ee <main+0x27c>
- 6ec:	be cf       	rjmp	.-132    	; 0x66a <main+0x1f8>
+ ad8:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ adc:	8f 5f       	subi	r24, 0xFF	; 255
+ ade:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <_edata>
+ ae2:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <_edata>
+ ae6:	83 30       	cpi	r24, 0x03	; 3
+ ae8:	08 f4       	brcc	.+2      	; 0xaec <__stack+0x1ed>
+ aea:	be cf       	rjmp	.-132    	; 0xa68 <__stack+0x169>
 					sensorList[i].numberOfMessages = 0; 
 				}
 
 			}
  
 			heartBeat = 0; 
- 6ee:	10 92 02 01 	sts	0x0102, r1	; 0x800102 <heartBeat>
+ aec:	10 92 02 01 	sts	0x0102, r1	; 0x800102 <heartBeat>
 		}
 
 
 
 	}
 	heartBeat++; 
- 6f2:	80 91 02 01 	lds	r24, 0x0102	; 0x800102 <heartBeat>
- 6f6:	8f 5f       	subi	r24, 0xFF	; 255
- 6f8:	80 93 02 01 	sts	0x0102, r24	; 0x800102 <heartBeat>
+ af0:	80 91 02 01 	lds	r24, 0x0102	; 0x800102 <heartBeat>
+ af4:	8f 5f       	subi	r24, 0xFF	; 255
+ af6:	80 93 02 01 	sts	0x0102, r24	; 0x800102 <heartBeat>
 	tick--; 
- 6fc:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
- 700:	81 50       	subi	r24, 0x01	; 1
- 702:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <tick>
+ afa:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
+ afe:	81 50       	subi	r24, 0x01	; 1
+ b00:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <tick>
 }
- 706:	93 cf       	rjmp	.-218    	; 0x62e <main+0x1bc>
+ b04:	51 cf       	rjmp	.-350    	; 0x9a8 <__stack+0xa9>
 
-00000708 <chip_init>:
+00000b06 <chip_init>:
 
 }
 
 
 void chip_init(void){
- 708:	cf 93       	push	r28
- 70a:	df 93       	push	r29
- 70c:	cd b7       	in	r28, 0x3d	; 61
- 70e:	de b7       	in	r29, 0x3e	; 62
+ b06:	cf 93       	push	r28
+ b08:	df 93       	push	r29
+ b0a:	cd b7       	in	r28, 0x3d	; 61
+ b0c:	de b7       	in	r29, 0x3e	; 62
 
 	//***** Chip initialization
 	DDRC = 4; //Set TXCAN as output and RXCAN as input
- 710:	87 e2       	ldi	r24, 0x27	; 39
- 712:	90 e0       	ldi	r25, 0x00	; 0
- 714:	24 e0       	ldi	r18, 0x04	; 4
- 716:	fc 01       	movw	r30, r24
- 718:	20 83       	st	Z, r18
+ b0e:	87 e2       	ldi	r24, 0x27	; 39
+ b10:	90 e0       	ldi	r25, 0x00	; 0
+ b12:	24 e0       	ldi	r18, 0x04	; 4
+ b14:	fc 01       	movw	r30, r24
+ b16:	20 83       	st	Z, r18
 	
 	bit_set(DDRD, BIT(1));
- 71a:	8a e2       	ldi	r24, 0x2A	; 42
- 71c:	90 e0       	ldi	r25, 0x00	; 0
- 71e:	2a e2       	ldi	r18, 0x2A	; 42
- 720:	30 e0       	ldi	r19, 0x00	; 0
- 722:	f9 01       	movw	r30, r18
- 724:	20 81       	ld	r18, Z
- 726:	22 60       	ori	r18, 0x02	; 2
- 728:	fc 01       	movw	r30, r24
- 72a:	20 83       	st	Z, r18
+ b18:	8a e2       	ldi	r24, 0x2A	; 42
+ b1a:	90 e0       	ldi	r25, 0x00	; 0
+ b1c:	2a e2       	ldi	r18, 0x2A	; 42
+ b1e:	30 e0       	ldi	r19, 0x00	; 0
+ b20:	f9 01       	movw	r30, r18
+ b22:	20 81       	ld	r18, Z
+ b24:	22 60       	ori	r18, 0x02	; 2
+ b26:	fc 01       	movw	r30, r24
+ b28:	20 83       	st	Z, r18
 	bit_set(DDRD, BIT(7));
- 72c:	8a e2       	ldi	r24, 0x2A	; 42
- 72e:	90 e0       	ldi	r25, 0x00	; 0
- 730:	2a e2       	ldi	r18, 0x2A	; 42
- 732:	30 e0       	ldi	r19, 0x00	; 0
- 734:	f9 01       	movw	r30, r18
- 736:	20 81       	ld	r18, Z
- 738:	20 68       	ori	r18, 0x80	; 128
- 73a:	fc 01       	movw	r30, r24
- 73c:	20 83       	st	Z, r18
+ b2a:	8a e2       	ldi	r24, 0x2A	; 42
+ b2c:	90 e0       	ldi	r25, 0x00	; 0
+ b2e:	2a e2       	ldi	r18, 0x2A	; 42
+ b30:	30 e0       	ldi	r19, 0x00	; 0
+ b32:	f9 01       	movw	r30, r18
+ b34:	20 81       	ld	r18, Z
+ b36:	20 68       	ori	r18, 0x80	; 128
+ b38:	fc 01       	movw	r30, r24
+ b3a:	20 83       	st	Z, r18
 	
 	bit_set(PORTD, BIT(1));
- 73e:	8b e2       	ldi	r24, 0x2B	; 43
- 740:	90 e0       	ldi	r25, 0x00	; 0
- 742:	2b e2       	ldi	r18, 0x2B	; 43
- 744:	30 e0       	ldi	r19, 0x00	; 0
- 746:	f9 01       	movw	r30, r18
- 748:	20 81       	ld	r18, Z
- 74a:	22 60       	ori	r18, 0x02	; 2
- 74c:	fc 01       	movw	r30, r24
- 74e:	20 83       	st	Z, r18
+ b3c:	8b e2       	ldi	r24, 0x2B	; 43
+ b3e:	90 e0       	ldi	r25, 0x00	; 0
+ b40:	2b e2       	ldi	r18, 0x2B	; 43
+ b42:	30 e0       	ldi	r19, 0x00	; 0
+ b44:	f9 01       	movw	r30, r18
+ b46:	20 81       	ld	r18, Z
+ b48:	22 60       	ori	r18, 0x02	; 2
+ b4a:	fc 01       	movw	r30, r24
+ b4c:	20 83       	st	Z, r18
 	//bit_set(PORTD, BIT(7));
 
 }
- 750:	00 00       	nop
- 752:	df 91       	pop	r29
- 754:	cf 91       	pop	r28
- 756:	08 95       	ret
+ b4e:	00 00       	nop
+ b50:	df 91       	pop	r29
+ b52:	cf 91       	pop	r28
+ b54:	08 95       	ret
 
-00000758 <__vector_15>:
+00000b56 <__vector_15>:
 
 
 
 ISR(TIMER0_COMPA_vect)
 {
- 758:	1f 92       	push	r1
- 75a:	0f 92       	push	r0
- 75c:	00 90 5f 00 	lds	r0, 0x005F	; 0x80005f <__TEXT_REGION_LENGTH__+0x7e005f>
- 760:	0f 92       	push	r0
- 762:	11 24       	eor	r1, r1
- 764:	8f 93       	push	r24
- 766:	cf 93       	push	r28
- 768:	df 93       	push	r29
- 76a:	cd b7       	in	r28, 0x3d	; 61
- 76c:	de b7       	in	r29, 0x3e	; 62
+ b56:	1f 92       	push	r1
+ b58:	0f 92       	push	r0
+ b5a:	00 90 5f 00 	lds	r0, 0x005F	; 0x80005f <__TEXT_REGION_LENGTH__+0x7e005f>
+ b5e:	0f 92       	push	r0
+ b60:	11 24       	eor	r1, r1
+ b62:	8f 93       	push	r24
+ b64:	cf 93       	push	r28
+ b66:	df 93       	push	r29
+ b68:	cd b7       	in	r28, 0x3d	; 61
+ b6a:	de b7       	in	r29, 0x3e	; 62
 	tick++;
- 76e:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
- 772:	8f 5f       	subi	r24, 0xFF	; 255
- 774:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <tick>
-	heartBeat++; 
- 778:	80 91 02 01 	lds	r24, 0x0102	; 0x800102 <heartBeat>
- 77c:	8f 5f       	subi	r24, 0xFF	; 255
- 77e:	80 93 02 01 	sts	0x0102, r24	; 0x800102 <heartBeat>
-}
- 782:	00 00       	nop
- 784:	df 91       	pop	r29
- 786:	cf 91       	pop	r28
- 788:	8f 91       	pop	r24
- 78a:	0f 90       	pop	r0
- 78c:	00 92 5f 00 	sts	0x005F, r0	; 0x80005f <__TEXT_REGION_LENGTH__+0x7e005f>
- 790:	0f 90       	pop	r0
- 792:	1f 90       	pop	r1
- 794:	18 95       	reti
+ b6c:	80 91 01 01 	lds	r24, 0x0101	; 0x800101 <tick>
+ b70:	8f 5f       	subi	r24, 0xFF	; 255
+ b72:	80 93 01 01 	sts	0x0101, r24	; 0x800101 <tick>
 
-00000796 <__vector_18>:
+}
+ b76:	00 00       	nop
+ b78:	df 91       	pop	r29
+ b7a:	cf 91       	pop	r28
+ b7c:	8f 91       	pop	r24
+ b7e:	0f 90       	pop	r0
+ b80:	00 92 5f 00 	sts	0x005F, r0	; 0x80005f <__TEXT_REGION_LENGTH__+0x7e005f>
+ b84:	0f 90       	pop	r0
+ b86:	1f 90       	pop	r1
+ b88:	18 95       	reti
+
+00000b8a <__vector_18>:
 
 ISR( CAN_INT_vect )
 {
- 796:	1f 92       	push	r1
- 798:	0f 92       	push	r0
- 79a:	00 90 5f 00 	lds	r0, 0x005F	; 0x80005f <__TEXT_REGION_LENGTH__+0x7e005f>
- 79e:	0f 92       	push	r0
- 7a0:	11 24       	eor	r1, r1
- 7a2:	8f 93       	push	r24
- 7a4:	cf 93       	push	r28
- 7a6:	df 93       	push	r29
- 7a8:	cd b7       	in	r28, 0x3d	; 61
- 7aa:	de b7       	in	r29, 0x3e	; 62
+ b8a:	1f 92       	push	r1
+ b8c:	0f 92       	push	r0
+ b8e:	00 90 5f 00 	lds	r0, 0x005F	; 0x80005f <__TEXT_REGION_LENGTH__+0x7e005f>
+ b92:	0f 92       	push	r0
+ b94:	11 24       	eor	r1, r1
+ b96:	2f 93       	push	r18
+ b98:	3f 93       	push	r19
+ b9a:	8f 93       	push	r24
+ b9c:	9f 93       	push	r25
+ b9e:	ef 93       	push	r30
+ ba0:	ff 93       	push	r31
+ ba2:	cf 93       	push	r28
+ ba4:	df 93       	push	r29
+ ba6:	cd b7       	in	r28, 0x3d	; 61
+ ba8:	de b7       	in	r29, 0x3e	; 62
 	receivedMessage++;
- 7ac:	80 91 03 01 	lds	r24, 0x0103	; 0x800103 <receivedMessage>
- 7b0:	8f 5f       	subi	r24, 0xFF	; 255
- 7b2:	80 93 03 01 	sts	0x0103, r24	; 0x800103 <receivedMessage>
+ baa:	80 91 03 01 	lds	r24, 0x0103	; 0x800103 <receivedMessage>
+ bae:	8f 5f       	subi	r24, 0xFF	; 255
+ bb0:	80 93 03 01 	sts	0x0103, r24	; 0x800103 <receivedMessage>
+	bit_set(PORTD, BIT(7));
+ bb4:	8b e2       	ldi	r24, 0x2B	; 43
+ bb6:	90 e0       	ldi	r25, 0x00	; 0
+ bb8:	2b e2       	ldi	r18, 0x2B	; 43
+ bba:	30 e0       	ldi	r19, 0x00	; 0
+ bbc:	f9 01       	movw	r30, r18
+ bbe:	20 81       	ld	r18, Z
+ bc0:	20 68       	ori	r18, 0x80	; 128
+ bc2:	fc 01       	movw	r30, r24
+ bc4:	20 83       	st	Z, r18
+	bit_set(PORTD, BIT(1));
+ bc6:	8b e2       	ldi	r24, 0x2B	; 43
+ bc8:	90 e0       	ldi	r25, 0x00	; 0
+ bca:	2b e2       	ldi	r18, 0x2B	; 43
+ bcc:	30 e0       	ldi	r19, 0x00	; 0
+ bce:	f9 01       	movw	r30, r18
+ bd0:	20 81       	ld	r18, Z
+ bd2:	22 60       	ori	r18, 0x02	; 2
+ bd4:	fc 01       	movw	r30, r24
+ bd6:	20 83       	st	Z, r18
 
- 7b6:	00 00       	nop
- 7b8:	df 91       	pop	r29
- 7ba:	cf 91       	pop	r28
- 7bc:	8f 91       	pop	r24
- 7be:	0f 90       	pop	r0
- 7c0:	00 92 5f 00 	sts	0x005F, r0	; 0x80005f <__TEXT_REGION_LENGTH__+0x7e005f>
- 7c4:	0f 90       	pop	r0
- 7c6:	1f 90       	pop	r1
- 7c8:	18 95       	reti
+ bd8:	00 00       	nop
+ bda:	df 91       	pop	r29
+ bdc:	cf 91       	pop	r28
+ bde:	ff 91       	pop	r31
+ be0:	ef 91       	pop	r30
+ be2:	9f 91       	pop	r25
+ be4:	8f 91       	pop	r24
+ be6:	3f 91       	pop	r19
+ be8:	2f 91       	pop	r18
+ bea:	0f 90       	pop	r0
+ bec:	00 92 5f 00 	sts	0x005F, r0	; 0x80005f <__TEXT_REGION_LENGTH__+0x7e005f>
+ bf0:	0f 90       	pop	r0
+ bf2:	1f 90       	pop	r1
+ bf4:	18 95       	reti
 
-000007ca <sendServiceMessage>:
+00000bf6 <sendServiceMessage>:
 	//ACK_FROM_NODE(sensor); //NEEDS TO BE MADE!. TRANSMIT THE STRUCT BACK
 }
 
 // sendServiceMessage puts parameters into array, which can be sent
 void sendServiceMessage(sensor_at_node* sensorAtNode, st_cmd_t* transmitMOb)//sensor_Types type, units unit, uint8_t range_min, uint8_t range_max, uint8_t trans_frq, uint8_t sampl_frq, uint8_t filt_type, uint8_t filt_par)
-{
- 7ca:	cf 93       	push	r28
- 7cc:	df 93       	push	r29
- 7ce:	00 d0       	rcall	.+0      	; 0x7d0 <sendServiceMessage+0x6>
- 7d0:	00 d0       	rcall	.+0      	; 0x7d2 <sendServiceMessage+0x8>
- 7d2:	00 d0       	rcall	.+0      	; 0x7d4 <sendServiceMessage+0xa>
- 7d4:	cd b7       	in	r28, 0x3d	; 61
- 7d6:	de b7       	in	r29, 0x3e	; 62
- 7d8:	9c 83       	std	Y+4, r25	; 0x04
- 7da:	8b 83       	std	Y+3, r24	; 0x03
- 7dc:	7e 83       	std	Y+6, r23	; 0x06
- 7de:	6d 83       	std	Y+5, r22	; 0x05
-	transmitMOb->pt_data[0] = 0b11000011;
- 7e0:	8d 81       	ldd	r24, Y+5	; 0x05
- 7e2:	9e 81       	ldd	r25, Y+6	; 0x06
- 7e4:	fc 01       	movw	r30, r24
- 7e6:	86 81       	ldd	r24, Z+6	; 0x06
- 7e8:	97 81       	ldd	r25, Z+7	; 0x07
- 7ea:	23 ec       	ldi	r18, 0xC3	; 195
- 7ec:	fc 01       	movw	r30, r24
- 7ee:	20 83       	st	Z, r18
-	
-	//transmitMOb->pt_data[1] = sensorAtNode->sensor_Type << 4 | sensorAtNode->unit;
-	transmitMOb->pt_data[2] = (sensorAtNode->period);
- 7f0:	8d 81       	ldd	r24, Y+5	; 0x05
- 7f2:	9e 81       	ldd	r25, Y+6	; 0x06
- 7f4:	fc 01       	movw	r30, r24
- 7f6:	86 81       	ldd	r24, Z+6	; 0x06
- 7f8:	97 81       	ldd	r25, Z+7	; 0x07
- 7fa:	02 96       	adiw	r24, 0x02	; 2
- 7fc:	2b 81       	ldd	r18, Y+3	; 0x03
- 7fe:	3c 81       	ldd	r19, Y+4	; 0x04
- 800:	f9 01       	movw	r30, r18
- 802:	24 81       	ldd	r18, Z+4	; 0x04
- 804:	fc 01       	movw	r30, r24
- 806:	20 83       	st	Z, r18
-	transmitMOb->pt_data[3] = sensorAtNode->cutOffFreq;
- 808:	8d 81       	ldd	r24, Y+5	; 0x05
- 80a:	9e 81       	ldd	r25, Y+6	; 0x06
- 80c:	fc 01       	movw	r30, r24
- 80e:	86 81       	ldd	r24, Z+6	; 0x06
- 810:	97 81       	ldd	r25, Z+7	; 0x07
- 812:	03 96       	adiw	r24, 0x03	; 3
- 814:	2b 81       	ldd	r18, Y+3	; 0x03
- 816:	3c 81       	ldd	r19, Y+4	; 0x04
- 818:	f9 01       	movw	r30, r18
- 81a:	25 81       	ldd	r18, Z+5	; 0x05
- 81c:	fc 01       	movw	r30, r24
- 81e:	20 83       	st	Z, r18
-	
-	for (uint8_t i = 4; i < 8; i++)
- 820:	84 e0       	ldi	r24, 0x04	; 4
- 822:	89 83       	std	Y+1, r24	; 0x01
- 824:	03 c0       	rjmp	.+6      	; 0x82c <sendServiceMessage+0x62>
- 826:	89 81       	ldd	r24, Y+1	; 0x01
- 828:	8f 5f       	subi	r24, 0xFF	; 255
- 82a:	89 83       	std	Y+1, r24	; 0x01
- 82c:	89 81       	ldd	r24, Y+1	; 0x01
- 82e:	88 30       	cpi	r24, 0x08	; 8
- 830:	d0 f3       	brcs	.-12     	; 0x826 <sendServiceMessage+0x5c>
-	{
-	//transmitMOb->pt_data[i] = sensorAtNode->totalNumberOfpolynomials;
-	} 
-
-	can_cmd(transmitMOb); //Send first message
- 832:	8d 81       	ldd	r24, Y+5	; 0x05
- 834:	9e 81       	ldd	r25, Y+6	; 0x06
- 836:	0e 94 e5 00 	call	0x1ca	; 0x1ca <can_cmd>
+{	
+ bf6:	cf 93       	push	r28
+ bf8:	df 93       	push	r29
+ bfa:	00 d0       	rcall	.+0      	; 0xbfc <sendServiceMessage+0x6>
+ bfc:	00 d0       	rcall	.+0      	; 0xbfe <sendServiceMessage+0x8>
+ bfe:	00 d0       	rcall	.+0      	; 0xc00 <sendServiceMessage+0xa>
+ c00:	cd b7       	in	r28, 0x3d	; 61
+ c02:	de b7       	in	r29, 0x3e	; 62
+ c04:	9c 83       	std	Y+4, r25	; 0x04
+ c06:	8b 83       	std	Y+3, r24	; 0x03
+ c08:	7e 83       	std	Y+6, r23	; 0x06
+ c0a:	6d 83       	std	Y+5, r22	; 0x05
 
 	for (uint8_t i = 0; i < sensorAtNode->totalNumberOfpolynomials; i++)
- 83a:	1a 82       	std	Y+2, r1	; 0x02
- 83c:	a7 c0       	rjmp	.+334    	; 0x98c <__stack+0x8d>
+ c0c:	19 82       	std	Y+1, r1	; 0x01
+ c0e:	af c0       	rjmp	.+350    	; 0xd6e <sendServiceMessage+0x178>
 	{
 	transmitMOb->pt_data[0] = 0b11000101;
- 83e:	8d 81       	ldd	r24, Y+5	; 0x05
- 840:	9e 81       	ldd	r25, Y+6	; 0x06
- 842:	fc 01       	movw	r30, r24
- 844:	86 81       	ldd	r24, Z+6	; 0x06
- 846:	97 81       	ldd	r25, Z+7	; 0x07
- 848:	25 ec       	ldi	r18, 0xC5	; 197
- 84a:	fc 01       	movw	r30, r24
- 84c:	20 83       	st	Z, r18
-	transmitMOb->pt_data[1] = ((i+1) << 4) & sensorAtNode->totalNumberOfpolynomials;
- 84e:	8d 81       	ldd	r24, Y+5	; 0x05
- 850:	9e 81       	ldd	r25, Y+6	; 0x06
- 852:	fc 01       	movw	r30, r24
- 854:	86 81       	ldd	r24, Z+6	; 0x06
- 856:	97 81       	ldd	r25, Z+7	; 0x07
- 858:	01 96       	adiw	r24, 0x01	; 1
- 85a:	2a 81       	ldd	r18, Y+2	; 0x02
- 85c:	22 2f       	mov	r18, r18
- 85e:	30 e0       	ldi	r19, 0x00	; 0
- 860:	2f 5f       	subi	r18, 0xFF	; 255
- 862:	3f 4f       	sbci	r19, 0xFF	; 255
- 864:	22 95       	swap	r18
- 866:	32 95       	swap	r19
- 868:	30 7f       	andi	r19, 0xF0	; 240
- 86a:	32 27       	eor	r19, r18
- 86c:	20 7f       	andi	r18, 0xF0	; 240
- 86e:	32 27       	eor	r19, r18
- 870:	42 2f       	mov	r20, r18
- 872:	2b 81       	ldd	r18, Y+3	; 0x03
- 874:	3c 81       	ldd	r19, Y+4	; 0x04
- 876:	f9 01       	movw	r30, r18
- 878:	27 85       	ldd	r18, Z+15	; 0x0f
- 87a:	24 23       	and	r18, r20
- 87c:	fc 01       	movw	r30, r24
- 87e:	20 83       	st	Z, r18
-	transmitMOb->pt_data[2] = sensorAtNode->polynomialList[i].binCoef & 0xFF;
- 880:	8d 81       	ldd	r24, Y+5	; 0x05
- 882:	9e 81       	ldd	r25, Y+6	; 0x06
- 884:	fc 01       	movw	r30, r24
- 886:	86 81       	ldd	r24, Z+6	; 0x06
- 888:	97 81       	ldd	r25, Z+7	; 0x07
- 88a:	9c 01       	movw	r18, r24
- 88c:	2e 5f       	subi	r18, 0xFE	; 254
- 88e:	3f 4f       	sbci	r19, 0xFF	; 255
- 890:	8b 81       	ldd	r24, Y+3	; 0x03
- 892:	9c 81       	ldd	r25, Y+4	; 0x04
- 894:	fc 01       	movw	r30, r24
- 896:	45 85       	ldd	r20, Z+13	; 0x0d
- 898:	56 85       	ldd	r21, Z+14	; 0x0e
- 89a:	8a 81       	ldd	r24, Y+2	; 0x02
- 89c:	88 2f       	mov	r24, r24
- 89e:	90 e0       	ldi	r25, 0x00	; 0
- 8a0:	88 0f       	add	r24, r24
- 8a2:	99 1f       	adc	r25, r25
- 8a4:	88 0f       	add	r24, r24
- 8a6:	99 1f       	adc	r25, r25
- 8a8:	84 0f       	add	r24, r20
- 8aa:	95 1f       	adc	r25, r21
- 8ac:	fc 01       	movw	r30, r24
- 8ae:	80 81       	ld	r24, Z
- 8b0:	91 81       	ldd	r25, Z+1	; 0x01
- 8b2:	a2 81       	ldd	r26, Z+2	; 0x02
- 8b4:	b3 81       	ldd	r27, Z+3	; 0x03
- 8b6:	f9 01       	movw	r30, r18
- 8b8:	80 83       	st	Z, r24
-	transmitMOb->pt_data[3] = sensorAtNode->polynomialList[i].binCoef >> 8 & 0xFF;
- 8ba:	8d 81       	ldd	r24, Y+5	; 0x05
- 8bc:	9e 81       	ldd	r25, Y+6	; 0x06
- 8be:	fc 01       	movw	r30, r24
- 8c0:	86 81       	ldd	r24, Z+6	; 0x06
- 8c2:	97 81       	ldd	r25, Z+7	; 0x07
- 8c4:	9c 01       	movw	r18, r24
- 8c6:	2d 5f       	subi	r18, 0xFD	; 253
- 8c8:	3f 4f       	sbci	r19, 0xFF	; 255
- 8ca:	8b 81       	ldd	r24, Y+3	; 0x03
- 8cc:	9c 81       	ldd	r25, Y+4	; 0x04
- 8ce:	fc 01       	movw	r30, r24
- 8d0:	45 85       	ldd	r20, Z+13	; 0x0d
- 8d2:	56 85       	ldd	r21, Z+14	; 0x0e
- 8d4:	8a 81       	ldd	r24, Y+2	; 0x02
- 8d6:	88 2f       	mov	r24, r24
- 8d8:	90 e0       	ldi	r25, 0x00	; 0
- 8da:	88 0f       	add	r24, r24
- 8dc:	99 1f       	adc	r25, r25
- 8de:	88 0f       	add	r24, r24
- 8e0:	99 1f       	adc	r25, r25
- 8e2:	84 0f       	add	r24, r20
- 8e4:	95 1f       	adc	r25, r21
- 8e6:	fc 01       	movw	r30, r24
- 8e8:	80 81       	ld	r24, Z
- 8ea:	91 81       	ldd	r25, Z+1	; 0x01
- 8ec:	a2 81       	ldd	r26, Z+2	; 0x02
- 8ee:	b3 81       	ldd	r27, Z+3	; 0x03
- 8f0:	89 2f       	mov	r24, r25
- 8f2:	9a 2f       	mov	r25, r26
- 8f4:	ab 2f       	mov	r26, r27
- 8f6:	bb 27       	eor	r27, r27
- 8f8:	f9 01       	movw	r30, r18
- 8fa:	80 83       	st	Z, r24
-	transmitMOb->pt_data[4] = sensorAtNode->polynomialList[i].binCoef >> 16 & 0xFF;
- 8fc:	8d 81       	ldd	r24, Y+5	; 0x05
- 8fe:	9e 81       	ldd	r25, Y+6	; 0x06
- 900:	fc 01       	movw	r30, r24
- 902:	86 81       	ldd	r24, Z+6	; 0x06
- 904:	97 81       	ldd	r25, Z+7	; 0x07
- 906:	9c 01       	movw	r18, r24
- 908:	2c 5f       	subi	r18, 0xFC	; 252
- 90a:	3f 4f       	sbci	r19, 0xFF	; 255
- 90c:	8b 81       	ldd	r24, Y+3	; 0x03
- 90e:	9c 81       	ldd	r25, Y+4	; 0x04
- 910:	fc 01       	movw	r30, r24
- 912:	45 85       	ldd	r20, Z+13	; 0x0d
- 914:	56 85       	ldd	r21, Z+14	; 0x0e
- 916:	8a 81       	ldd	r24, Y+2	; 0x02
- 918:	88 2f       	mov	r24, r24
- 91a:	90 e0       	ldi	r25, 0x00	; 0
- 91c:	88 0f       	add	r24, r24
- 91e:	99 1f       	adc	r25, r25
- 920:	88 0f       	add	r24, r24
- 922:	99 1f       	adc	r25, r25
- 924:	84 0f       	add	r24, r20
- 926:	95 1f       	adc	r25, r21
- 928:	fc 01       	movw	r30, r24
- 92a:	80 81       	ld	r24, Z
- 92c:	91 81       	ldd	r25, Z+1	; 0x01
- 92e:	a2 81       	ldd	r26, Z+2	; 0x02
- 930:	b3 81       	ldd	r27, Z+3	; 0x03
- 932:	cd 01       	movw	r24, r26
- 934:	aa 27       	eor	r26, r26
- 936:	bb 27       	eor	r27, r27
- 938:	f9 01       	movw	r30, r18
- 93a:	80 83       	st	Z, r24
-	transmitMOb->pt_data[5] = sensorAtNode->polynomialList[i].binCoef >> 24 & 0xFF;
- 93c:	8d 81       	ldd	r24, Y+5	; 0x05
- 93e:	9e 81       	ldd	r25, Y+6	; 0x06
- 940:	fc 01       	movw	r30, r24
- 942:	86 81       	ldd	r24, Z+6	; 0x06
- 944:	97 81       	ldd	r25, Z+7	; 0x07
- 946:	9c 01       	movw	r18, r24
- 948:	2b 5f       	subi	r18, 0xFB	; 251
- 94a:	3f 4f       	sbci	r19, 0xFF	; 255
- 94c:	8b 81       	ldd	r24, Y+3	; 0x03
- 94e:	9c 81       	ldd	r25, Y+4	; 0x04
- 950:	fc 01       	movw	r30, r24
- 952:	45 85       	ldd	r20, Z+13	; 0x0d
- 954:	56 85       	ldd	r21, Z+14	; 0x0e
- 956:	8a 81       	ldd	r24, Y+2	; 0x02
- 958:	88 2f       	mov	r24, r24
- 95a:	90 e0       	ldi	r25, 0x00	; 0
- 95c:	88 0f       	add	r24, r24
- 95e:	99 1f       	adc	r25, r25
- 960:	88 0f       	add	r24, r24
- 962:	99 1f       	adc	r25, r25
- 964:	84 0f       	add	r24, r20
- 966:	95 1f       	adc	r25, r21
- 968:	fc 01       	movw	r30, r24
- 96a:	80 81       	ld	r24, Z
- 96c:	91 81       	ldd	r25, Z+1	; 0x01
- 96e:	a2 81       	ldd	r26, Z+2	; 0x02
- 970:	b3 81       	ldd	r27, Z+3	; 0x03
- 972:	8b 2f       	mov	r24, r27
- 974:	99 27       	eor	r25, r25
- 976:	aa 27       	eor	r26, r26
- 978:	bb 27       	eor	r27, r27
- 97a:	f9 01       	movw	r30, r18
- 97c:	80 83       	st	Z, r24
+ c10:	8d 81       	ldd	r24, Y+5	; 0x05
+ c12:	9e 81       	ldd	r25, Y+6	; 0x06
+ c14:	fc 01       	movw	r30, r24
+ c16:	86 81       	ldd	r24, Z+6	; 0x06
+ c18:	97 81       	ldd	r25, Z+7	; 0x07
+ c1a:	25 ec       	ldi	r18, 0xC5	; 197
+ c1c:	fc 01       	movw	r30, r24
+ c1e:	20 83       	st	Z, r18
+	transmitMOb->pt_data[1] = ((i) << 4) | sensorAtNode->totalNumberOfpolynomials;
+ c20:	8d 81       	ldd	r24, Y+5	; 0x05
+ c22:	9e 81       	ldd	r25, Y+6	; 0x06
+ c24:	fc 01       	movw	r30, r24
+ c26:	86 81       	ldd	r24, Z+6	; 0x06
+ c28:	97 81       	ldd	r25, Z+7	; 0x07
+ c2a:	01 96       	adiw	r24, 0x01	; 1
+ c2c:	29 81       	ldd	r18, Y+1	; 0x01
+ c2e:	22 2f       	mov	r18, r18
+ c30:	30 e0       	ldi	r19, 0x00	; 0
+ c32:	22 95       	swap	r18
+ c34:	32 95       	swap	r19
+ c36:	30 7f       	andi	r19, 0xF0	; 240
+ c38:	32 27       	eor	r19, r18
+ c3a:	20 7f       	andi	r18, 0xF0	; 240
+ c3c:	32 27       	eor	r19, r18
+ c3e:	42 2f       	mov	r20, r18
+ c40:	2b 81       	ldd	r18, Y+3	; 0x03
+ c42:	3c 81       	ldd	r19, Y+4	; 0x04
+ c44:	f9 01       	movw	r30, r18
+ c46:	27 85       	ldd	r18, Z+15	; 0x0f
+ c48:	24 2b       	or	r18, r20
+ c4a:	fc 01       	movw	r30, r24
+ c4c:	20 83       	st	Z, r18
+	transmitMOb->pt_data[5] = sensorAtNode->polynomialList[i].binCoef & 0xFF;
+ c4e:	8d 81       	ldd	r24, Y+5	; 0x05
+ c50:	9e 81       	ldd	r25, Y+6	; 0x06
+ c52:	fc 01       	movw	r30, r24
+ c54:	86 81       	ldd	r24, Z+6	; 0x06
+ c56:	97 81       	ldd	r25, Z+7	; 0x07
+ c58:	9c 01       	movw	r18, r24
+ c5a:	2b 5f       	subi	r18, 0xFB	; 251
+ c5c:	3f 4f       	sbci	r19, 0xFF	; 255
+ c5e:	8b 81       	ldd	r24, Y+3	; 0x03
+ c60:	9c 81       	ldd	r25, Y+4	; 0x04
+ c62:	fc 01       	movw	r30, r24
+ c64:	45 85       	ldd	r20, Z+13	; 0x0d
+ c66:	56 85       	ldd	r21, Z+14	; 0x0e
+ c68:	89 81       	ldd	r24, Y+1	; 0x01
+ c6a:	88 2f       	mov	r24, r24
+ c6c:	90 e0       	ldi	r25, 0x00	; 0
+ c6e:	88 0f       	add	r24, r24
+ c70:	99 1f       	adc	r25, r25
+ c72:	88 0f       	add	r24, r24
+ c74:	99 1f       	adc	r25, r25
+ c76:	84 0f       	add	r24, r20
+ c78:	95 1f       	adc	r25, r21
+ c7a:	fc 01       	movw	r30, r24
+ c7c:	80 81       	ld	r24, Z
+ c7e:	91 81       	ldd	r25, Z+1	; 0x01
+ c80:	a2 81       	ldd	r26, Z+2	; 0x02
+ c82:	b3 81       	ldd	r27, Z+3	; 0x03
+ c84:	f9 01       	movw	r30, r18
+ c86:	80 83       	st	Z, r24
+	transmitMOb->pt_data[4] = sensorAtNode->polynomialList[i].binCoef >> 8 & 0xFF;
+ c88:	8d 81       	ldd	r24, Y+5	; 0x05
+ c8a:	9e 81       	ldd	r25, Y+6	; 0x06
+ c8c:	fc 01       	movw	r30, r24
+ c8e:	86 81       	ldd	r24, Z+6	; 0x06
+ c90:	97 81       	ldd	r25, Z+7	; 0x07
+ c92:	9c 01       	movw	r18, r24
+ c94:	2c 5f       	subi	r18, 0xFC	; 252
+ c96:	3f 4f       	sbci	r19, 0xFF	; 255
+ c98:	8b 81       	ldd	r24, Y+3	; 0x03
+ c9a:	9c 81       	ldd	r25, Y+4	; 0x04
+ c9c:	fc 01       	movw	r30, r24
+ c9e:	45 85       	ldd	r20, Z+13	; 0x0d
+ ca0:	56 85       	ldd	r21, Z+14	; 0x0e
+ ca2:	89 81       	ldd	r24, Y+1	; 0x01
+ ca4:	88 2f       	mov	r24, r24
+ ca6:	90 e0       	ldi	r25, 0x00	; 0
+ ca8:	88 0f       	add	r24, r24
+ caa:	99 1f       	adc	r25, r25
+ cac:	88 0f       	add	r24, r24
+ cae:	99 1f       	adc	r25, r25
+ cb0:	84 0f       	add	r24, r20
+ cb2:	95 1f       	adc	r25, r21
+ cb4:	fc 01       	movw	r30, r24
+ cb6:	80 81       	ld	r24, Z
+ cb8:	91 81       	ldd	r25, Z+1	; 0x01
+ cba:	a2 81       	ldd	r26, Z+2	; 0x02
+ cbc:	b3 81       	ldd	r27, Z+3	; 0x03
+ cbe:	89 2f       	mov	r24, r25
+ cc0:	9a 2f       	mov	r25, r26
+ cc2:	ab 2f       	mov	r26, r27
+ cc4:	bb 27       	eor	r27, r27
+ cc6:	f9 01       	movw	r30, r18
+ cc8:	80 83       	st	Z, r24
+	transmitMOb->pt_data[3] = sensorAtNode->polynomialList[i].binCoef >> 16 & 0xFF;
+ cca:	8d 81       	ldd	r24, Y+5	; 0x05
+ ccc:	9e 81       	ldd	r25, Y+6	; 0x06
+ cce:	fc 01       	movw	r30, r24
+ cd0:	86 81       	ldd	r24, Z+6	; 0x06
+ cd2:	97 81       	ldd	r25, Z+7	; 0x07
+ cd4:	9c 01       	movw	r18, r24
+ cd6:	2d 5f       	subi	r18, 0xFD	; 253
+ cd8:	3f 4f       	sbci	r19, 0xFF	; 255
+ cda:	8b 81       	ldd	r24, Y+3	; 0x03
+ cdc:	9c 81       	ldd	r25, Y+4	; 0x04
+ cde:	fc 01       	movw	r30, r24
+ ce0:	45 85       	ldd	r20, Z+13	; 0x0d
+ ce2:	56 85       	ldd	r21, Z+14	; 0x0e
+ ce4:	89 81       	ldd	r24, Y+1	; 0x01
+ ce6:	88 2f       	mov	r24, r24
+ ce8:	90 e0       	ldi	r25, 0x00	; 0
+ cea:	88 0f       	add	r24, r24
+ cec:	99 1f       	adc	r25, r25
+ cee:	88 0f       	add	r24, r24
+ cf0:	99 1f       	adc	r25, r25
+ cf2:	84 0f       	add	r24, r20
+ cf4:	95 1f       	adc	r25, r21
+ cf6:	fc 01       	movw	r30, r24
+ cf8:	80 81       	ld	r24, Z
+ cfa:	91 81       	ldd	r25, Z+1	; 0x01
+ cfc:	a2 81       	ldd	r26, Z+2	; 0x02
+ cfe:	b3 81       	ldd	r27, Z+3	; 0x03
+ d00:	cd 01       	movw	r24, r26
+ d02:	aa 27       	eor	r26, r26
+ d04:	bb 27       	eor	r27, r27
+ d06:	f9 01       	movw	r30, r18
+ d08:	80 83       	st	Z, r24
+	transmitMOb->pt_data[2] = sensorAtNode->polynomialList[i].binCoef >> 24 & 0xFF;
+ d0a:	8d 81       	ldd	r24, Y+5	; 0x05
+ d0c:	9e 81       	ldd	r25, Y+6	; 0x06
+ d0e:	fc 01       	movw	r30, r24
+ d10:	86 81       	ldd	r24, Z+6	; 0x06
+ d12:	97 81       	ldd	r25, Z+7	; 0x07
+ d14:	9c 01       	movw	r18, r24
+ d16:	2e 5f       	subi	r18, 0xFE	; 254
+ d18:	3f 4f       	sbci	r19, 0xFF	; 255
+ d1a:	8b 81       	ldd	r24, Y+3	; 0x03
+ d1c:	9c 81       	ldd	r25, Y+4	; 0x04
+ d1e:	fc 01       	movw	r30, r24
+ d20:	45 85       	ldd	r20, Z+13	; 0x0d
+ d22:	56 85       	ldd	r21, Z+14	; 0x0e
+ d24:	89 81       	ldd	r24, Y+1	; 0x01
+ d26:	88 2f       	mov	r24, r24
+ d28:	90 e0       	ldi	r25, 0x00	; 0
+ d2a:	88 0f       	add	r24, r24
+ d2c:	99 1f       	adc	r25, r25
+ d2e:	88 0f       	add	r24, r24
+ d30:	99 1f       	adc	r25, r25
+ d32:	84 0f       	add	r24, r20
+ d34:	95 1f       	adc	r25, r21
+ d36:	fc 01       	movw	r30, r24
+ d38:	80 81       	ld	r24, Z
+ d3a:	91 81       	ldd	r25, Z+1	; 0x01
+ d3c:	a2 81       	ldd	r26, Z+2	; 0x02
+ d3e:	b3 81       	ldd	r27, Z+3	; 0x03
+ d40:	8b 2f       	mov	r24, r27
+ d42:	99 27       	eor	r25, r25
+ d44:	aa 27       	eor	r26, r26
+ d46:	bb 27       	eor	r27, r27
+ d48:	f9 01       	movw	r30, r18
+ d4a:	80 83       	st	Z, r24
+	transmitMOb->id = sensorAtNode->CAN_ID;
+ d4c:	8b 81       	ldd	r24, Y+3	; 0x03
+ d4e:	9c 81       	ldd	r25, Y+4	; 0x04
+ d50:	fc 01       	movw	r30, r24
+ d52:	20 81       	ld	r18, Z
+ d54:	31 81       	ldd	r19, Z+1	; 0x01
+ d56:	8d 81       	ldd	r24, Y+5	; 0x05
+ d58:	9e 81       	ldd	r25, Y+6	; 0x06
+ d5a:	fc 01       	movw	r30, r24
+ d5c:	32 83       	std	Z+2, r19	; 0x02
+ d5e:	21 83       	std	Z+1, r18	; 0x01
 	can_cmd(transmitMOb);
- 97e:	8d 81       	ldd	r24, Y+5	; 0x05
- 980:	9e 81       	ldd	r25, Y+6	; 0x06
- 982:	0e 94 e5 00 	call	0x1ca	; 0x1ca <can_cmd>
-	//transmitMOb->pt_data[i] = sensorAtNode->totalNumberOfpolynomials;
-	} 
+ d60:	8d 81       	ldd	r24, Y+5	; 0x05
+ d62:	9e 81       	ldd	r25, Y+6	; 0x06
+ d64:	0e 94 e5 00 	call	0x1ca	; 0x1ca <can_cmd>
 
-	can_cmd(transmitMOb); //Send first message
+// sendServiceMessage puts parameters into array, which can be sent
+void sendServiceMessage(sensor_at_node* sensorAtNode, st_cmd_t* transmitMOb)//sensor_Types type, units unit, uint8_t range_min, uint8_t range_max, uint8_t trans_frq, uint8_t sampl_frq, uint8_t filt_type, uint8_t filt_par)
+{	
 
 	for (uint8_t i = 0; i < sensorAtNode->totalNumberOfpolynomials; i++)
- 986:	8a 81       	ldd	r24, Y+2	; 0x02
- 988:	8f 5f       	subi	r24, 0xFF	; 255
- 98a:	8a 83       	std	Y+2, r24	; 0x02
- 98c:	8b 81       	ldd	r24, Y+3	; 0x03
- 98e:	9c 81       	ldd	r25, Y+4	; 0x04
- 990:	fc 01       	movw	r30, r24
- 992:	97 85       	ldd	r25, Z+15	; 0x0f
- 994:	8a 81       	ldd	r24, Y+2	; 0x02
- 996:	89 17       	cp	r24, r25
- 998:	08 f4       	brcc	.+2      	; 0x99c <__stack+0x9d>
- 99a:	51 cf       	rjmp	.-350    	; 0x83e <sendServiceMessage+0x74>
-	transmitMOb->pt_data[5] = sensorAtNode->polynomialList[i].binCoef >> 24 & 0xFF;
+ d68:	89 81       	ldd	r24, Y+1	; 0x01
+ d6a:	8f 5f       	subi	r24, 0xFF	; 255
+ d6c:	89 83       	std	Y+1, r24	; 0x01
+ d6e:	8b 81       	ldd	r24, Y+3	; 0x03
+ d70:	9c 81       	ldd	r25, Y+4	; 0x04
+ d72:	fc 01       	movw	r30, r24
+ d74:	97 85       	ldd	r25, Z+15	; 0x0f
+ d76:	89 81       	ldd	r24, Y+1	; 0x01
+ d78:	89 17       	cp	r24, r25
+ d7a:	08 f4       	brcc	.+2      	; 0xd7e <sendServiceMessage+0x188>
+ d7c:	49 cf       	rjmp	.-366    	; 0xc10 <sendServiceMessage+0x1a>
+	transmitMOb->pt_data[2] = sensorAtNode->polynomialList[i].binCoef >> 24 & 0xFF;
+	transmitMOb->id = sensorAtNode->CAN_ID;
 	can_cmd(transmitMOb);
-	}
+	} 
+
+	transmitMOb->pt_data[0] = 0b11000011;
+ d7e:	8d 81       	ldd	r24, Y+5	; 0x05
+ d80:	9e 81       	ldd	r25, Y+6	; 0x06
+ d82:	fc 01       	movw	r30, r24
+ d84:	86 81       	ldd	r24, Z+6	; 0x06
+ d86:	97 81       	ldd	r25, Z+7	; 0x07
+ d88:	23 ec       	ldi	r18, 0xC3	; 195
+ d8a:	fc 01       	movw	r30, r24
+ d8c:	20 83       	st	Z, r18
+	transmitMOb->pt_data[1] = sensorAtNode->sensor_Type << 4 | sensorAtNode->unit;
+ d8e:	8d 81       	ldd	r24, Y+5	; 0x05
+ d90:	9e 81       	ldd	r25, Y+6	; 0x06
+ d92:	fc 01       	movw	r30, r24
+ d94:	86 81       	ldd	r24, Z+6	; 0x06
+ d96:	97 81       	ldd	r25, Z+7	; 0x07
+ d98:	01 96       	adiw	r24, 0x01	; 1
+ d9a:	2b 81       	ldd	r18, Y+3	; 0x03
+ d9c:	3c 81       	ldd	r19, Y+4	; 0x04
+ d9e:	f9 01       	movw	r30, r18
+ da0:	22 81       	ldd	r18, Z+2	; 0x02
+ da2:	22 2f       	mov	r18, r18
+ da4:	30 e0       	ldi	r19, 0x00	; 0
+ da6:	22 95       	swap	r18
+ da8:	32 95       	swap	r19
+ daa:	30 7f       	andi	r19, 0xF0	; 240
+ dac:	32 27       	eor	r19, r18
+ dae:	20 7f       	andi	r18, 0xF0	; 240
+ db0:	32 27       	eor	r19, r18
+ db2:	42 2f       	mov	r20, r18
+ db4:	2b 81       	ldd	r18, Y+3	; 0x03
+ db6:	3c 81       	ldd	r19, Y+4	; 0x04
+ db8:	f9 01       	movw	r30, r18
+ dba:	23 81       	ldd	r18, Z+3	; 0x03
+ dbc:	24 2b       	or	r18, r20
+ dbe:	fc 01       	movw	r30, r24
+ dc0:	20 83       	st	Z, r18
+	transmitMOb->pt_data[2] = sensorAtNode->period;
+ dc2:	8d 81       	ldd	r24, Y+5	; 0x05
+ dc4:	9e 81       	ldd	r25, Y+6	; 0x06
+ dc6:	fc 01       	movw	r30, r24
+ dc8:	86 81       	ldd	r24, Z+6	; 0x06
+ dca:	97 81       	ldd	r25, Z+7	; 0x07
+ dcc:	02 96       	adiw	r24, 0x02	; 2
+ dce:	2b 81       	ldd	r18, Y+3	; 0x03
+ dd0:	3c 81       	ldd	r19, Y+4	; 0x04
+ dd2:	f9 01       	movw	r30, r18
+ dd4:	24 81       	ldd	r18, Z+4	; 0x04
+ dd6:	fc 01       	movw	r30, r24
+ dd8:	20 83       	st	Z, r18
+	transmitMOb->pt_data[3] = sensorAtNode->cutOffFreq;
+ dda:	8d 81       	ldd	r24, Y+5	; 0x05
+ ddc:	9e 81       	ldd	r25, Y+6	; 0x06
+ dde:	fc 01       	movw	r30, r24
+ de0:	86 81       	ldd	r24, Z+6	; 0x06
+ de2:	97 81       	ldd	r25, Z+7	; 0x07
+ de4:	03 96       	adiw	r24, 0x03	; 3
+ de6:	2b 81       	ldd	r18, Y+3	; 0x03
+ de8:	3c 81       	ldd	r19, Y+4	; 0x04
+ dea:	f9 01       	movw	r30, r18
+ dec:	25 81       	ldd	r18, Z+5	; 0x05
+ dee:	fc 01       	movw	r30, r24
+ df0:	20 83       	st	Z, r18
+	
+	for (uint8_t i = 4; i < 8; i++)
+ df2:	84 e0       	ldi	r24, 0x04	; 4
+ df4:	8a 83       	std	Y+2, r24	; 0x02
+ df6:	0f c0       	rjmp	.+30     	; 0xe16 <sendServiceMessage+0x220>
+	{
+	transmitMOb->pt_data[i] = 0x00; 
+ df8:	8d 81       	ldd	r24, Y+5	; 0x05
+ dfa:	9e 81       	ldd	r25, Y+6	; 0x06
+ dfc:	fc 01       	movw	r30, r24
+ dfe:	26 81       	ldd	r18, Z+6	; 0x06
+ e00:	37 81       	ldd	r19, Z+7	; 0x07
+ e02:	8a 81       	ldd	r24, Y+2	; 0x02
+ e04:	88 2f       	mov	r24, r24
+ e06:	90 e0       	ldi	r25, 0x00	; 0
+ e08:	82 0f       	add	r24, r18
+ e0a:	93 1f       	adc	r25, r19
+ e0c:	fc 01       	movw	r30, r24
+ e0e:	10 82       	st	Z, r1
+	transmitMOb->pt_data[0] = 0b11000011;
+	transmitMOb->pt_data[1] = sensorAtNode->sensor_Type << 4 | sensorAtNode->unit;
+	transmitMOb->pt_data[2] = sensorAtNode->period;
+	transmitMOb->pt_data[3] = sensorAtNode->cutOffFreq;
+	
+	for (uint8_t i = 4; i < 8; i++)
+ e10:	8a 81       	ldd	r24, Y+2	; 0x02
+ e12:	8f 5f       	subi	r24, 0xFF	; 255
+ e14:	8a 83       	std	Y+2, r24	; 0x02
+ e16:	8a 81       	ldd	r24, Y+2	; 0x02
+ e18:	88 30       	cpi	r24, 0x08	; 8
+ e1a:	70 f3       	brcs	.-36     	; 0xdf8 <sendServiceMessage+0x202>
+	{
+	transmitMOb->pt_data[i] = 0x00; 
+	} 
+
+	can_cmd(transmitMOb); //send last message
+ e1c:	8d 81       	ldd	r24, Y+5	; 0x05
+ e1e:	9e 81       	ldd	r25, Y+6	; 0x06
+ e20:	0e 94 e5 00 	call	0x1ca	; 0x1ca <can_cmd>
+
 
 
 }
- 99c:	00 00       	nop
- 99e:	26 96       	adiw	r28, 0x06	; 6
- 9a0:	0f b6       	in	r0, 0x3f	; 63
- 9a2:	f8 94       	cli
- 9a4:	de bf       	out	0x3e, r29	; 62
- 9a6:	0f be       	out	0x3f, r0	; 63
- 9a8:	cd bf       	out	0x3d, r28	; 61
- 9aa:	df 91       	pop	r29
- 9ac:	cf 91       	pop	r28
- 9ae:	08 95       	ret
+ e24:	00 00       	nop
+ e26:	26 96       	adiw	r28, 0x06	; 6
+ e28:	0f b6       	in	r0, 0x3f	; 63
+ e2a:	f8 94       	cli
+ e2c:	de bf       	out	0x3e, r29	; 62
+ e2e:	0f be       	out	0x3f, r0	; 63
+ e30:	cd bf       	out	0x3d, r28	; 61
+ e32:	df 91       	pop	r29
+ e34:	cf 91       	pop	r28
+ e36:	08 95       	ret
 
-000009b0 <TimerSetup>:
+00000e38 <TimerSetup>:
  */ 
 
 #include "Timer_drv.h"
 
 void TimerSetup() //Find new name !!
 {
- 9b0:	cf 93       	push	r28
- 9b2:	df 93       	push	r29
- 9b4:	cd b7       	in	r28, 0x3d	; 61
- 9b6:	de b7       	in	r29, 0x3e	; 62
+ e38:	cf 93       	push	r28
+ e3a:	df 93       	push	r29
+ e3c:	cd b7       	in	r28, 0x3d	; 61
+ e3e:	de b7       	in	r29, 0x3e	; 62
 	Timer0_CTC1();
- 9b8:	84 e4       	ldi	r24, 0x44	; 68
- 9ba:	90 e0       	ldi	r25, 0x00	; 0
- 9bc:	22 e0       	ldi	r18, 0x02	; 2
- 9be:	fc 01       	movw	r30, r24
- 9c0:	20 83       	st	Z, r18
+ e40:	84 e4       	ldi	r24, 0x44	; 68
+ e42:	90 e0       	ldi	r25, 0x00	; 0
+ e44:	22 e0       	ldi	r18, 0x02	; 2
+ e46:	fc 01       	movw	r30, r24
+ e48:	20 83       	st	Z, r18
 	Timer0_CTC2();
- 9c2:	85 e4       	ldi	r24, 0x45	; 69
- 9c4:	90 e0       	ldi	r25, 0x00	; 0
- 9c6:	23 e0       	ldi	r18, 0x03	; 3
- 9c8:	fc 01       	movw	r30, r24
- 9ca:	20 83       	st	Z, r18
+ e4a:	85 e4       	ldi	r24, 0x45	; 69
+ e4c:	90 e0       	ldi	r25, 0x00	; 0
+ e4e:	23 e0       	ldi	r18, 0x03	; 3
+ e50:	fc 01       	movw	r30, r24
+ e52:	20 83       	st	Z, r18
 	Timer0_interrupt();
- 9cc:	8e e6       	ldi	r24, 0x6E	; 110
- 9ce:	90 e0       	ldi	r25, 0x00	; 0
- 9d0:	22 e0       	ldi	r18, 0x02	; 2
- 9d2:	fc 01       	movw	r30, r24
- 9d4:	20 83       	st	Z, r18
+ e54:	8e e6       	ldi	r24, 0x6E	; 110
+ e56:	90 e0       	ldi	r25, 0x00	; 0
+ e58:	22 e0       	ldi	r18, 0x02	; 2
+ e5a:	fc 01       	movw	r30, r24
+ e5c:	20 83       	st	Z, r18
 	Timer0_1ms();
- 9d6:	87 e4       	ldi	r24, 0x47	; 71
- 9d8:	90 e0       	ldi	r25, 0x00	; 0
- 9da:	2a ef       	ldi	r18, 0xFA	; 250
- 9dc:	fc 01       	movw	r30, r24
- 9de:	20 83       	st	Z, r18
+ e5e:	87 e4       	ldi	r24, 0x47	; 71
+ e60:	90 e0       	ldi	r25, 0x00	; 0
+ e62:	2a ef       	ldi	r18, 0xFA	; 250
+ e64:	fc 01       	movw	r30, r24
+ e66:	20 83       	st	Z, r18
 }
- 9e0:	00 00       	nop
- 9e2:	df 91       	pop	r29
- 9e4:	cf 91       	pop	r28
- 9e6:	08 95       	ret
+ e68:	00 00       	nop
+ e6a:	df 91       	pop	r29
+ e6c:	cf 91       	pop	r28
+ e6e:	08 95       	ret
 
-000009e8 <_exit>:
- 9e8:	f8 94       	cli
+00000e70 <_exit>:
+ e70:	f8 94       	cli
 
-000009ea <__stop_program>:
- 9ea:	ff cf       	rjmp	.-2      	; 0x9ea <__stop_program>
+00000e72 <__stop_program>:
+ e72:	ff cf       	rjmp	.-2      	; 0xe72 <__stop_program>
