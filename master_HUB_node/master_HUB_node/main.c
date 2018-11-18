@@ -20,20 +20,7 @@ volatile uint8_t i;
 
 int main(void)
 {
-	chip_init();
-	can_init();
-	TimerSetup();
-	
-	//bit_flip(PORTD, BIT(7));
-	heartBeat = 0; 
 
-	uint8_t receive_buffer[MSG_SIZE];
-	st_cmd_t receiveMOb;
-	receiveMOb.pt_data = &receive_buffer[0];
-	receiveMOb.MObNumber = 0x01;
-	receiveMOb.dlc = MSG_SIZE;
-	receiveMOb.cmd = RX;
-	receiveMOb.id = 0x0000;
 
 chip_init();
 can_init();
@@ -71,7 +58,6 @@ heartBeat = 0;
 	uint8_t transmit_buffer[MSG_SIZE];
 	st_cmd_t transmitMOb; 
 	transmitMOb.pt_data = &transmit_buffer[0];
-	transmitMOb.MObNumber = 0x02;
 	transmitMOb.MObNumber = 0x05;
 	transmitMOb.dlc = MSG_SIZE; 
 	transmitMOb.cmd = TX; 
@@ -87,17 +73,13 @@ polyCoef coefList3[2];
 coefList1[0].floatCoef = 23.545; 
 coefList1[1].floatCoef = 343.214; 
 
-coefList2[0].floatCoef = 23.545;
 coefList2[0].floatCoef = 19.545;
 coefList2[1].floatCoef = 343.214;
 
-coefList3[0].floatCoef = 23.545;
 coefList3[0].floatCoef = 300.545;
 coefList3[1].floatCoef = 343.214;
 //Setup sensorData structs
 
-sensorList[0].sensorStruct.CAN_ID = 0x00FF;
-sensorList[0].sensorStruct.samplingfreq = 0xFF; 
 sensorList[0].sensorStruct.CAN_ID = 0x0040;
 sensorList[0].sensorStruct.samplingfreq = 2; 
 sensorList[0].sensorStruct.period = 2;
@@ -113,21 +95,14 @@ sensorList[0].isSCS = 1;
 sensorList[1].sensorStruct.CAN_ID = 0x00FF;
 sensorList[1].sensorStruct.samplingfreq = 2;
 sensorList[1].sensorStruct.period = 2; 
-sensorList[1].sensorStruct.unit = celsius;
-sensorList[1].sensorStruct.sensor_Type = other_sensor;
 sensorList[1].sensorStruct.cutOffFreq = 2; 
 sensorList[1].sensorStruct.unit = degrees;
 sensorList[1].sensorStruct.sensor_Type = thermistor;
 sensorList[1].sensorStruct.totalNumberOfpolynomials = 2;
-sensorList[0].sensorStruct.polynomialList = &coefList2[0]; 
 sensorList[1].sensorStruct.polynomialList = &coefList2[0]; 
 sensorList[1].data = 0;
 sensorList[1].isSCS = 1;
 
-sensorList[2].sensorStruct.CAN_ID = 0x00FF;
-sensorList[2].sensorStruct.samplingfreq = 0xFF;
-sensorList[2].sensorStruct.unit = celsius;
-sensorList[2].sensorStruct.sensor_Type = other_sensor;
 sensorList[2].sensorStruct.CAN_ID = 0x00CC;
 sensorList[2].sensorStruct.samplingfreq = 2;
 sensorList[2].sensorStruct.period = 2; 
@@ -135,14 +110,12 @@ sensorList[2].sensorStruct.cutOffFreq = 2;
 sensorList[2].sensorStruct.unit = percentage;
 sensorList[2].sensorStruct.sensor_Type = potentiometer;
 sensorList[2].sensorStruct.totalNumberOfpolynomials = 2;
-sensorList[0].sensorStruct.polynomialList = &coefList3[0]; 
 sensorList[2].sensorStruct.polynomialList = &coefList3[0]; 
 sensorList[2].data = 0;
 sensorList[2].isSCS = 1;
 
 initSensors(sensorList, &transmitMOb);
 
-initSensors(&sensorList, &transmitMOb);
 transmitMOb.id = 0x0000; //reset CAN-id
 
 sei();
@@ -152,8 +125,6 @@ while(1)
 
 	if(receivedMessage > 0)
 	{
-		updateData(&sensorList, &receiveMOb);
-		receivedMessage--; 
 		updateData(sensorList, receiveMObs);
 		receivedMessage = 0; 
 
@@ -224,7 +195,6 @@ void chip_init(void){
 ISR(TIMER0_COMPA_vect)
 {
 	tick++;
-	heartBeat++; 
 
 }
 
