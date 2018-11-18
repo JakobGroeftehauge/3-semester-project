@@ -26,7 +26,9 @@ typedef struct {
 
 
 extern void initSensors(sensorData* sensorNum[NUMBER_OF_SENSOR], st_cmd_t* transmitMOb); 
+extern void initSensors(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* transmitMOb); 
 
 extern void updateData(sensorData* sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb);
+extern void updateData(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t receiveMOb[5]);
 
 #endif /* HUB_LIB_H_ */
