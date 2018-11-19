@@ -46,6 +46,10 @@ typedef  struct {
 
 extern void decodeCoefficient(sensor_at_node* SensorList,uint8_t message_array[8]);
 
+extern void sendError(sensor_at_node* Sensor, uint8_t errorType);
+
+extern void checkParameters(sensor_at_node* Sensor);			//NOT DONE
+
 extern void	ACK_TO_Hub(sensor_at_node* Sensor);
 
 extern void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node* sensor);
@@ -58,5 +62,6 @@ extern float runPolynomial(sensor_at_node* sensor);
 
 extern void sendFilteretData(sensor_at_node* Sensor);
 
-extern void sendError(sensor_at_node* Sensor, uint8_t errorType);
+extern void shutDownSensor(sensor_at_node* sensor);
+
 #endif /* PAYLOADPROTOCOL_H_ */
