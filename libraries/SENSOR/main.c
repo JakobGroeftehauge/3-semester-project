@@ -78,16 +78,13 @@ int main(void)
 	//Setup polynomiallist for each sensor;
 	float polynomialListe1[polynomialSize];
 	Sensorlist[0].polynomialList = &polynomialListe1;
-	Sensorlist[0].totalNumberOfpolynomials = 2;			//Default setting for polynomial value
-	Sensorlist[0].polynomialList[1] = 1;				//Default settings. Will return the value of the filtered data and does not need to be converted with a polynomial at hub.
+	Sensorlist[0].totalNumberOfpolynomials = 2;					//Default setting for polynomial value
+	Sensorlist[0].polynomialList[1].floatCoef = 1;				//Default settings. Will return the value of the filtered data and does not need to be converted with a polynomial at hub.
 	
-	
-
 	float polynomialListe2[polynomialSize];
 	Sensorlist[1].polynomialList = &polynomialListe2;
 	Sensorlist[1].totalNumberOfpolynomials = 2;			//Default setting for polynomial value
-	Sensorlist[1].polynomialList[1] = 1;				//Default settings. Will return the value of the filtered data and does not need to be converted with a polynomial at hub.
-	
+	Sensorlist[1].polynomialList[1].floatCoef = 1;				//Default settings. Will return the value of the filtered data and does not need to be converted with a polynomial at hub.
 	
 	//Setup sensor number (used to sample data)
 	if (Sensorlist[0].CAN_ID>Sensorlist[1].CAN_ID)	//Determines which sensor should have pin 1 and pin 2  
@@ -156,7 +153,7 @@ while(1)
 
 void node_init(void){
 
-	//***** Chip initialization
+	// Chip initialization
 	DDRC = 4; //Set TXCAN as output and RXCAN as input
 	
 	bit_set(DDRD, BIT(1));		//Setup for LED

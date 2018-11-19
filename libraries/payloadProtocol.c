@@ -6,25 +6,21 @@
  */ 
 #include "payloadProtocol.h"
 #include <math.h>
-extern void decodeCoefficient(sensor_at_node* Sensor,uint8_t message_array[8])
+
+
+void decodeCoefficient(sensor_at_node* Sensor,uint8_t message_array[8])
 {	
 	uint8_t coeffNumber =(message_array[1]& 0xF0)/16;
 	
 	Sensor->totalNumberOfpolynomials = message_array[1]&0b00001111;
-	
-	//union{
-		//float floatValue;
-		//uint8_t bytes[4];
-		//}converter;
-
 	Sensor->polynomialList[coeffNumber].binCoef = message_array[2];
-	Sensor->polynomialList[coeffNumber].binCoef = (Sensor->polynomialList[coeffNumber].binCoef) <<8 + message_array[3];
-	Sensor->polynomialList[coeffNumber].binCoef = (Sensor->polynomialList[coeffNumber].binCoef) << 16 + message_array[4];
-	Sensor->polynomialList[coeffNumber].binCoef = (Sensor->polynomialList[coeffNumber].binCoef) << 24 + message_array[5];
+	Sensor->polynomialList[coeffNumber].binCoef = ((Sensor->polynomialList[coeffNumber].binCoef) << 8  ) + message_array[3];
+	Sensor->polynomialList[coeffNumber].binCoef = ((Sensor->polynomialList[coeffNumber].binCoef) << 16 ) + message_array[4];
+	Sensor->polynomialList[coeffNumber].binCoef = ((Sensor->polynomialList[coeffNumber].binCoef) << 24 ) + message_array[5];
 
 }
 
-extern void	ACK_TO_Hub(sensor_at_node* Sensor)			// Takes data from the struct and sends it back to the hub. The hub should then be able to checkon it.
+void ACK_TO_Hub(sensor_at_node* Sensor)			// Takes data from the struct and sends it back to the hub. The hub should then be able to checkon it.
 {
 	Sensor->transmissionMOb->pt_data[0] = 0b11000100;
 	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type)*16+ Sensor->unit;
@@ -38,11 +34,12 @@ extern void	ACK_TO_Hub(sensor_at_node* Sensor)			// Takes data from the struct a
 	can_cmd(Sensor->transmissionMOb);
 }
 
-extern void sendError(sensor_at_node* Sensor,uint8_t errorType) // Sending an error message with a specific error type defined elswhere.
+// Sending an error message with a specific error type defined elsewhere.
+void sendError(sensor_at_node* Sensor,uint8_t errorType) 
 {
-	Sensor->transmissionMOb->pt_data[0] = 0b10100000;
-	Sensor->transmissionMOb->pt_data[1] = errorType;
-	Sensor ->transmissionMOb->pt_data[2] = Sensor->CAN_ID;
+	Sensor ->transmissionMOb->pt_data[0] = 0b10100000;
+	Sensor ->transmissionMOb->pt_data[1] = errorType;
+	Sensor ->transmissionMOb->pt_data[2] = 0;
 	Sensor ->transmissionMOb->pt_data[3] = 0;
 	Sensor ->transmissionMOb->pt_data[4] = 0;
 	Sensor ->transmissionMOb->pt_data[5] = 0;
@@ -51,7 +48,31 @@ extern void sendError(sensor_at_node* Sensor,uint8_t errorType) // Sending an er
 	can_cmd(Sensor->transmissionMOb);
 }
 
-extern float runPolynomial(sensor_at_node* sensor)
+void checkParameters(sensor_at_node* Sensor)
+{
+
+	if(Sensor->totalNumberOfpolynomials>8 || Sensor->totalNumberOfpolynomials == 0)
+	{
+		sendError(Sensor,0b00000111);
+		shutDownSensor(Sensor);
+	}
+// 	else if (Sensor->period<Sensor->samplingfreq)
+// 	{
+// 		sendError(Sensor,0b00000111);
+// 		shutDownSensor(Sensor);
+// 	}
+// 	else if(Sensor->samplingfreq == 0)		//If the sampling freq == 0 then the desired cutoff freq is not possible
+// 	{
+// 		sendError(Sensor,0b00000111);
+//		shutDownSensor(Sensor);
+// 	}
+	else
+	{
+		ACK_TO_Hub(&Sensor);
+	}
+}
+
+float runPolynomial(sensor_at_node* sensor)
 {	
 	float result = sensor-> polynomialList[0].floatCoef;
 	float filterValue = (sensor->filterValue/1023)*5; // Transform is from being a value between 0 - 1023 to 0v - 5v
@@ -64,7 +85,8 @@ extern float runPolynomial(sensor_at_node* sensor)
 	return result;
 }
 
-extern void sendFilteretData(sensor_at_node* Sensor)	// Sends the filtered data from the sensors given as parameters. Data comes from the struct and will be updated by another function.
+// Sends the filtered data from the sensors given as parameters. Data comes from the struct and will be updated by another function.
+void sendFilteretData(sensor_at_node* Sensor)	
 {
 	float polynomialValue = runPolynomial(Sensor);
 	Sensor->transmissionMOb->pt_data[0] = 0b00110000; // Data message
@@ -121,6 +143,16 @@ void sendServiceMessage(sensor_at_node* sensorAtNode, st_cmd_t* transmitMOb)//se
 
 }
 
+// shutDownSensor will shut down the node and set default values in struct
+void shutDownSensor(sensor_at_node* sensor)
+{
+	sensor->period = 0;
+	sensor->samplingfreq = 0;
+	sensor->polynomialList[0].floatCoef = 0;
+	sensor->polynomialList[1].floatCoef = 1;
+	sensor->totalNumberOfpolynomials = 2;
+	sensor->cutOffFreq = 0;
+}
 
 //Decoding message from hub and determines what kind of message type it is.
 void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t NUMBER_OF_SENSORS) // 
@@ -153,7 +185,7 @@ void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t 
 				if (message_struct->id == SensorList[i].CAN_ID)
 				{
 					decodeHubServiceMessage(message_array,&SensorList[i]);
-					ACK_TO_Hub(&SensorList[i]);
+					checkParameters(&SensorList[i]);
 					break;
 				}
 			}
@@ -161,9 +193,9 @@ void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t 
 		}
 		case 0b11100000: // ID FOR DATA RETRIEVING MESSAGE, FROM SPECIFIC MESSAGE
 		{
-			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
+			for(int i = 0; i < NUMBER_OF_SENSORS;i++)				//Run through the sensors
 			{
-				if (message_struct->id == SensorList[i].CAN_ID)
+				if (message_struct->id == SensorList[i].CAN_ID)		//Determines what sensor the message is for.
 				{
 					sendFilteretData(&SensorList[i]);
 					break;
@@ -171,9 +203,21 @@ void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t 
 			}
 			break;
 		}
+		case 0b11000100:
+		{
+			for(int i = 0; i < NUMBER_OF_SENSORS;i++)				//Run through the sensors
+			{
+				if (message_struct->id == SensorList[i].CAN_ID)		//Determines what sensor the message is for.
+				{
+					shutDownSensor(&SensorList[i]);
+					break;
+				}
+			}
+			break;
+		
+		}
 		default:
 		{
-			//SEND BACK ERROR?
 			break;
 		}
 		
