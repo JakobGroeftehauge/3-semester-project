@@ -22,6 +22,11 @@ volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
 volatile sensor_at_node Sensorlist[NUMBER_OF_SENSOR];
 volatile uint8_t data[MSG_SIZE];
+
+//NEEDS TO BE IMPLEMENTED
+	//Make the sensor CAN-IDs be based on some kind of offset
+	//Maybe allow the CAN-IDs to no be directly after each other.
+
 int main(void)
 {
 	
@@ -31,7 +36,6 @@ int main(void)
 	uint8_t samplingCounter2 = 0;
 	uint8_t transmitCounter1 = 0;
 	uint8_t transmitCounter2 = 0;
-
 
 
 	//Setup receive MOb
