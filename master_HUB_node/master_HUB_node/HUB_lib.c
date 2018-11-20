@@ -14,12 +14,12 @@
 
 
 
- void initSensors(sensorData sensorNum[2], st_cmd_t* transmitMOb)
+ void initSensors(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* transmitMOb)
  {
 
 	for(uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
 	{
-		sendServiceMessage(&(sensorNum[i].sensorStruct), transmitMOb);
+		sendServiceMessage(&sensorNum[i].sensorStruct, transmitMOb);
 	}
 
  }
@@ -33,10 +33,11 @@
 	 for(uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
 	 {
 
-		 if(sensorNum[i].sensorStruct.CAN_ID == receiveMObs->id)
+		 if(sensorNum[i].sensorStruct.CAN_ID == receiveMObs[0].id)
 		 {
-			 sensorNum[i].data = receiveMObs->pt_data[i];  //Change to support floats
-			 sensorNum[i].numberOfMessages++;
+			bit_flip(PORTD, BIT(1));
+			sensorNum[i].data = receiveMObs[HPMOb].pt_data[1];  //Change to support floats
+			sensorNum[i].numberOfMessages++;
 			return; 		
 		 }
 	 }

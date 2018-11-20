@@ -21,6 +21,7 @@ volatile uint8_t i;
 int main(void)
 {
 
+bit_set(PORTD, BIT(7));
 
 chip_init();
 can_init();
@@ -133,6 +134,7 @@ while(1)
 		{
 		transmitMOb.pt_data[i] = 0x00; 
 		}
+
 		transmitMOb.pt_data[0] = sensorList[0].data & 0xFF;
 		transmitMOb.pt_data[1] = sensorList[1].data & 0xFF;
 		transmitMOb.pt_data[2] = sensorList[2].data & 0xFF; 
@@ -201,7 +203,7 @@ ISR(TIMER0_COMPA_vect)
 ISR( CAN_INT_vect )
 {
 	receivedMessage++;
-	bit_set(PORTD, BIT(7));
-	bit_set(PORTD, BIT(1));
+	bit_flip(PORTD, BIT(7));
+	//bit_set(PORTD, BIT(1));
 
 }
