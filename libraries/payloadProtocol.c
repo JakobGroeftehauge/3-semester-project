@@ -8,17 +8,19 @@
 #include <math.h>
 
 
-void decodeCoefficient(sensor_at_node* Sensor,uint8_t message_array[8])
+void decodeCoefficient(sensor_at_node* Sensor)
 {	
-	uint8_t coeffNumber =(message_array[1]& 0xF0)/16;
+	uint8_t coeffNumber =(Sensor->receiveMOb->pt_data[1]& 0xF0)/16;
 	
-	Sensor->totalNumberOfpolynomials = message_array[1]&0b00001111;
-	Sensor->polynomialList[coeffNumber].binCoef = message_array[2];
-	Sensor->polynomialList[coeffNumber].binCoef = ((Sensor->polynomialList[coeffNumber].binCoef) << 8  ) + message_array[3];
-	Sensor->polynomialList[coeffNumber].binCoef = ((Sensor->polynomialList[coeffNumber].binCoef) << 16 ) + message_array[4];
-	Sensor->polynomialList[coeffNumber].binCoef = ((Sensor->polynomialList[coeffNumber].binCoef) << 24 ) + message_array[5];
+	Sensor->totalNumberOfpolynomials = Sensor->receiveMOb->pt_data[1]&0b00001111;
+	Sensor->polynomialList[coeffNumber].binCoef = Sensor->receiveMOb->pt_data[2];
+	Sensor->polynomialList[coeffNumber].binCoef = ((Sensor->polynomialList[coeffNumber].binCoef) << 8  ) + Sensor->receiveMOb->pt_data[3];
+	Sensor->polynomialList[coeffNumber].binCoef = ((Sensor->polynomialList[coeffNumber].binCoef) << 16 ) + Sensor->receiveMOb->pt_data[4];
+	Sensor->polynomialList[coeffNumber].binCoef = ((Sensor->polynomialList[coeffNumber].binCoef) << 24 ) + Sensor->receiveMOb->pt_data[5];
 
 }
+
+
 
 void ACK_TO_Hub(sensor_at_node* Sensor)			// Takes data from the struct and sends it back to the hub. The hub should then be able to checkon it.
 {
@@ -104,12 +106,12 @@ void sendFilteretData(sensor_at_node* Sensor)
 
 // decodeHubServiceMessage(uint8_t message_array[8],sensor_at_node* sensor) takes the array of message bytes
 // and fills out the given sensor struct
-void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node* sensor)
+void decodeHubServiceMessage(sensor_at_node* sensor)
 {
-	sensor->sensor_Type = (message_array[1] & 0b11110000)/16; // Shift left nibble to the right with /16
-	sensor->unit = message_array[1] & 0b00001111;
-	sensor->period = message_array[2];
-	sensor->cutOffFreq = message_array[3];
+	sensor->sensor_Type = (sensor->receiveMOb->pt_data[1] & 0b11110000)/16; // Shift left nibble to the right with /16
+	sensor->unit = sensor->receiveMOb->pt_data[1] & 0b00001111;
+	sensor->period = sensor->receiveMOb->pt_data[2];
+	sensor->cutOffFreq = sensor->receiveMOb->pt_data[3];
 }
 
 // sendServiceMessage puts parameters into array, which can be sent
@@ -156,66 +158,97 @@ void shutDownSensor(sensor_at_node* sensor)
 }
 
 //Decoding message from hub and determines what kind of message type it is.
-void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t NUMBER_OF_SENSORS) // 
+//void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t NUMBER_OF_SENSORS) // 
+//{
+	//
+	//uint8_t message_array[8];
+	//for(uint8_t i = 0; i<8; i++)
+	//{
+		//message_array[i] = message_struct -> pt_data[i];
+	//}
+	//
+	//switch (message_struct->pt_data[0])
+	//{
+		//case 0b11000101: //ID for setup of Coefficients
+		//{
+			//for(uint8_t i = 0; i < NUMBER_OF_SENSORS;i++)
+			//{
+				//if (message_struct->id == SensorList[i].CAN_ID)
+				//{
+					//decodeCoefficient(&SensorList[i],message_array);
+				//}
+				//break;
+			//}
+			//break;
+		//}
+		//case 0b11000011: // ID FOR A SERVICE MESSAGE
+		//{
+			//for(uint8_t i = 0; i < NUMBER_OF_SENSORS;i++)
+			//{
+				//if (message_struct->id == SensorList[i].CAN_ID)
+				//{
+					//decodeHubServiceMessage(message_array,&SensorList[i]);
+					//checkParameters(&SensorList[i]);
+					//break;
+				//}
+			//}
+			//break;
+		//}
+		//case 0b11100000: // ID FOR DATA RETRIEVING MESSAGE, FROM SPECIFIC MESSAGE
+		//{
+			//for(uint8_t i = 0; i < NUMBER_OF_SENSORS;i++)				//Run through the sensors
+			//{
+				//if (message_struct->id == SensorList[i].CAN_ID)		//Determines what sensor the message is for.
+				//{
+					//sendFilteretData(&SensorList[i]);
+					//break;
+				//}
+			//}
+			//break;
+		//}
+		//case 0b11000100:
+		//{
+			//for(uint8_t i = 0; i < NUMBER_OF_SENSORS;i++)				//Run through the sensors
+			//{
+				//if (message_struct->id == SensorList[i].CAN_ID)		//Determines what sensor the message is for.
+				//{
+					//shutDownSensor(&SensorList[i]);
+					//break;
+				//}
+			//}
+			//break;
+		//
+		//}
+		//default:
+		//{
+			//break;
+		//}
+		//
+	//}
+//}
+
+
+void decodeMessage2(sensor_at_node* sensor) //
 {
-	
-	uint8_t message_array[8];
-	for(uint8_t i = 0; i<8; i++)
-	{
-		message_array[i] = message_struct -> pt_data[i];
-	}
-	
-	switch (message_struct->pt_data[0])// only looks a first nibble
+		
+	switch (sensor->receiveMOb->pt_data[0])
 	{
 		case 0b11000101: //ID for setup of Coefficients
 		{
-			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
-			{
-				if (message_struct->id == SensorList[i].CAN_ID)
-				{
-					decodeCoefficient(&SensorList[i],message_array);
-				}
-				break;
-			}
-			break;
+				decodeCoefficient(sensor);
 		}
 		case 0b11000011: // ID FOR A SERVICE MESSAGE
 		{
-			for(int i = 0; i < NUMBER_OF_SENSORS;i++)
-			{
-				if (message_struct->id == SensorList[i].CAN_ID)
-				{
-					decodeHubServiceMessage(message_array,&SensorList[i]);
-					checkParameters(&SensorList[i]);
-					break;
-				}
-			}
-			break;
+				decodeHubServiceMessage(sensor);
+				checkParameters(sensor);
 		}
 		case 0b11100000: // ID FOR DATA RETRIEVING MESSAGE, FROM SPECIFIC MESSAGE
 		{
-			for(int i = 0; i < NUMBER_OF_SENSORS;i++)				//Run through the sensors
-			{
-				if (message_struct->id == SensorList[i].CAN_ID)		//Determines what sensor the message is for.
-				{
-					sendFilteretData(&SensorList[i]);
-					break;
-				}
-			}
-			break;
+				sendFilteretData(sensor);
 		}
 		case 0b11000100:
 		{
-			for(int i = 0; i < NUMBER_OF_SENSORS;i++)				//Run through the sensors
-			{
-				if (message_struct->id == SensorList[i].CAN_ID)		//Determines what sensor the message is for.
-				{
-					shutDownSensor(&SensorList[i]);
-					break;
-				}
-			}
-			break;
-		
+					shutDownSensor(sensor);		
 		}
 		default:
 		{
@@ -224,4 +257,3 @@ void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t 
 		
 	}
 }
-

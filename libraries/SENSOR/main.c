@@ -32,23 +32,30 @@ int main(void)
 	uint8_t transmitCounter1 = 0;
 	uint8_t transmitCounter2 = 0;
 
+
+
 	//Setup receive MOb
-	uint8_t receive_buffer[MSG_SIZE];
-	st_cmd_t receiveMOb; 
-	receiveMOb.pt_data = &receive_buffer[0];
-	receiveMOb.MObNumber = 0x00; 
-	receiveMOb.dlc = MSG_SIZE; 
-	receiveMOb.cmd = RX; 
-	receiveMOb.mask = 0x0000;
+	uint8_t receiveBuffers[NUMBER_OF_SENSOR][MSG_SIZE];
+	st_cmd_t receiveMObs[NUMBER_OF_SENSOR]; 
+	for (uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
+	{
+			receiveMObs[i].pt_data = &receiveBuffers[i];
+			receiveMObs[i].MObNumber = i;
+			receiveMObs[i].dlc = MSG_SIZE;
+			receiveMObs[i].cmd = RX;
+			receiveMObs[i].mask = 0b11111111;
+			receiveMObs[i].id = Sensor1_ID + i;
+	}
 	
+
 	//Setup transmit MOb  
-		uint8_t transmit_buffer[MSG_SIZE];
-		st_cmd_t transmitMOb; 
-		transmitMOb.pt_data = &transmit_buffer[0]; 
-		transmitMOb.MObNumber = 0x03; 
-		transmitMOb.dlc = MSG_SIZE; 
-		transmitMOb.cmd = TX; 
-		transmitMOb.id = 0x00010;  
+	uint8_t transmit_buffer[MSG_SIZE];
+	st_cmd_t transmitMOb; 
+	transmitMOb.pt_data = &transmit_buffer[0]; 
+	transmitMOb.MObNumber = 0x03; 
+	transmitMOb.dlc = MSG_SIZE; 
+	transmitMOb.cmd = TX; 
+	transmitMOb.id = 0x00010;  
 	
 	//-----------------Default settings for sensors--------------------//
 	
@@ -56,23 +63,25 @@ int main(void)
 	uint8_t transmit0_buffer[MSG_SIZE];
 	st_cmd_t transmitMOb0;
 	transmitMOb0.pt_data = &transmit0_buffer[0];
-	transmitMOb0.MObNumber = 0x01;
+	transmitMOb0.MObNumber = 0x02;
 	transmitMOb0.dlc = MSG_SIZE;
 	transmitMOb0.cmd = TX;
 	transmitMOb0.id = Sensor1_ID;
 	Sensorlist[0].CAN_ID =	Sensor1_ID;
 	Sensorlist[0].transmissionMOb = &transmitMOb0;
+	Sensorlist[0].receiveMOb = &receiveMObs[0];
 	
 	//Setup transmit MOb for sensor0
 	uint8_t transmit1_buffer[MSG_SIZE];
 	st_cmd_t transmitMOb1;
 	transmitMOb1.pt_data = &transmit1_buffer[0];
-	transmitMOb1.MObNumber = 0x02;
+	transmitMOb1.MObNumber = 0x03;
 	transmitMOb1.dlc = MSG_SIZE;
 	transmitMOb1.cmd = TX;
 	transmitMOb1.id = Sensor2_ID;
 	Sensorlist[1].CAN_ID = Sensor2_ID;
 	Sensorlist[1].transmissionMOb = &transmitMOb1;
+	Sensorlist[1].receiveMOb = &receiveMObs[1];
 	
 	//Setup polynomiallist for each sensor;
 	float polynomialListe1[polynomialSize];
@@ -101,22 +110,24 @@ int main(void)
 	
 	node_init();			//Setup for pins for output
 	can_init(); 
-	ADCSetup();				// ADC Drive 
-	TimerSetup();			// Timer Drive: Will start a timer with a 1kHz interrupt.
-	can_cmd(&receiveMOb);	// Setting up receiveMOb
+	ADCSetup();					// ADC Drive 
+	TimerSetup();				// Timer Drive: Will start a timer with a 1kHz interrupt.
+	can_cmd(&receiveMObs[0]);	// Setting up receiveMOb
+	can_cmd(&receiveMObs[1]);
 	sei();					// Global interrupt enable
 
 //-------------------- MAIN CODE ---------------------------------//
 while(1)
 {	
-	if (receivedMessages > 0)										// Received Messages interrupt (A message is received and is ready to be read)
-	{
-		Sensorlist[0].samplingfreq = 0xFF;
-		Sensorlist[1].samplingfreq = 0xFF;
-		transfer_data(&receiveMOb);									// Transfer the received data to a struct.
-		decodeMessage(&receiveMOb,&Sensorlist,NUMBER_OF_SENSOR);	// Decoding what kind of message is received and runs the necessary functions.
-		receivedMessages = 0;										
-	}
+	//This below here should probably be moved to interrupt
+	//if (receivedMessages > 0)										// Received Messages interrupt (A message is received and is ready to be read)
+	//{
+		//Sensorlist[0].samplingfreq = 0xFF;
+		//Sensorlist[1].samplingfreq = 0xFF;
+		//transfer_data(&receiveMOb);									// Transfer the received data to a struct.
+		//decodeMessage(&receiveMOb,&Sensorlist,NUMBER_OF_SENSOR);	// Decoding what kind of message is received and runs the necessary functions.
+		//receivedMessages = 0;										
+	//}
 	
 	if (tick>=1)			// Timer interrupt counter (1ms)
 	{
@@ -168,7 +179,10 @@ ISR(TIMER0_COMPA_vect)			//Timer interrupt (1kHz)
 
 ISR( CAN_INT_vect )				//Receive interrupt
 {
-	receivedMessages++;			// Inc receivedMessages which will be used in main loop.
+	//receivedMessages++;			// Inc receivedMessages which will be used in main loop.
+	uint8_t HPMOb = CANHPMOB;
+	transfer_data(&(Sensorlist[HPMOb].receiveMOb));
+	decodeMessage2(&Sensorlist[HPMOb]);
 }
 
 ISR(ADC_vect)

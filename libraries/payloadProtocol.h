@@ -38,13 +38,14 @@ typedef  struct {
 	uint8_t			cutOffFreq;
 	float			filterValue;
 	st_cmd_t*		transmissionMOb;
+	st_cmd_t*		receiveMOb;
 	uint8_t			samplingfreq;
 	polyCoef*		polynomialList;
 	uint8_t			totalNumberOfpolynomials;
 	uint8_t			sensorNumber;
 }sensor_at_node ;
 
-extern void decodeCoefficient(sensor_at_node* SensorList,uint8_t message_array[8]);
+extern void decodeCoefficient(sensor_at_node* sensor);
 
 extern void sendError(sensor_at_node* Sensor, uint8_t errorType);
 
@@ -52,11 +53,13 @@ extern void checkParameters(sensor_at_node* Sensor);			//NOT DONE
 
 extern void	ACK_TO_Hub(sensor_at_node* Sensor);
 
-extern void decodeHubServiceMessage(uint8_t message_array[8], sensor_at_node* sensor);
+extern void decodeHubServiceMessage(sensor_at_node* sensor);
 
 extern void sendServiceMessage(sensor_at_node* sensorStruct, st_cmd_t* transmitMOb);
 
 extern void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList,uint8_t);
+
+extern void decodeMessage2(sensor_at_node* sensor);
 
 extern float runPolynomial(sensor_at_node* sensor);
 

@@ -50,6 +50,8 @@ switch(MObStruct->cmd)
 	
 	}
 
+
+//Should be placed in the driver
 void can_tx(st_cmd_t* MObStruct) {
 
 	uint8_t i;   
