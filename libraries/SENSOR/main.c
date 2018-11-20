@@ -41,15 +41,14 @@ int main(void)
 	receiveMOb.cmd = RX; 
 	receiveMOb.mask = 0x0000;
 	
-// 	Setup transmit MOb  
-// 		uint8_t transmit_buffer[MSG_SIZE];
-// 		st_cmd_t transmitMOb; 
-// 		transmitMOb.pt_data = &transmit_buffer[0]; 
-// 		transmitMOb.MObNumber = 0x03; 
-// 		transmitMOb.dlc = MSG_SIZE; 
-// 		transmitMOb.cmd = TX; 
-// 		transmitMOb.id = 0x00010;  
-	
+	//Setup transmit MOb  
+		uint8_t transmit_buffer[MSG_SIZE];
+		st_cmd_t transmitMOb; 
+		transmitMOb.pt_data = &transmit_buffer[0]; 
+		transmitMOb.MObNumber = 0x03; 
+		transmitMOb.dlc = MSG_SIZE; 
+		transmitMOb.cmd = TX; 
+		transmitMOb.id = 0x00010;  
 	
 	//-----------------Default settings for sensors--------------------//
 	
@@ -83,7 +82,7 @@ int main(void)
 	
 	float polynomialListe2[polynomialSize];
 	Sensorlist[1].polynomialList = &polynomialListe2;
-	Sensorlist[1].totalNumberOfpolynomials = 2;			//Default setting for polynomial value
+	Sensorlist[1].totalNumberOfpolynomials = 2;					//Default setting for polynomial value
 	Sensorlist[1].polynomialList[1].floatCoef = 1;				//Default settings. Will return the value of the filtered data and does not need to be converted with a polynomial at hub.
 	
 	//Setup sensor number (used to sample data)
@@ -107,7 +106,7 @@ int main(void)
 	can_cmd(&receiveMOb);	// Setting up receiveMOb
 	sei();					// Global interrupt enable
 
-
+//-------------------- MAIN CODE ---------------------------------//
 while(1)
 {	
 	if (receivedMessages > 0)										// Received Messages interrupt (A message is received and is ready to be read)
@@ -126,6 +125,8 @@ while(1)
 		samplingCounter2++;	// Sampling counter 2
 		transmitCounter1++;	// Transmitting counter 1
 		transmitCounter2++;	// Transmitting counter 2
+		
+//---------------------- Sampling data ------------------- // 		
 		if (samplingCounter1 >= Sensorlist[0].samplingfreq && Sensorlist[0].samplingfreq !=0 )	//Determines if it is time to sample data for sensor 1. 
 		{
 			sampleData(&Sensorlist[0]);															//Samples the data and filter it. 
@@ -136,7 +137,7 @@ while(1)
 			sampleData(&Sensorlist[1]);
 			samplingCounter2 = 0;
 		}
-		
+//-------------------- Transmitting data ------------------- // 
 		if (transmitCounter1 >= Sensorlist[0].period && Sensorlist[0].period != 0)				//Determines if it is time to transmit data for sensor 1. 
 		{
 			sendFilteretData(&Sensorlist[0]);													//Sending the data. The data have been converted using the polynomial and filtered. 
@@ -154,10 +155,10 @@ while(1)
 void node_init(void){
 
 	// Chip initialization
-	DDRC = 4; //Set TXCAN as output and RXCAN as input
+	DDRC = 0b00000100; //Set TXCAN as output and RXCAN as input
 	
-	bit_set(DDRD, BIT(1));		//Setup for LED
-	bit_set(DDRD, BIT(7));		//Setup for LED
+	bit_set(DDRD, BIT(1));		//Setup LED
+	bit_set(DDRD, BIT(7));		//Setup LED
 }
 
 ISR(TIMER0_COMPA_vect)			//Timer interrupt (1kHz)
@@ -172,5 +173,5 @@ ISR( CAN_INT_vect )				//Receive interrupt
 
 ISR(ADC_vect)
 {
-	bit_flip(PORTD,BIT(7));
+	
 }

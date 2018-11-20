@@ -22,13 +22,13 @@ void decodeCoefficient(sensor_at_node* Sensor,uint8_t message_array[8])
 
 void ACK_TO_Hub(sensor_at_node* Sensor)			// Takes data from the struct and sends it back to the hub. The hub should then be able to checkon it.
 {
-	Sensor->transmissionMOb->pt_data[0] = 0b11000100;
-	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type)*16+ Sensor->unit;
-	Sensor->transmissionMOb->pt_data[2] = Sensor->period;
-	Sensor->transmissionMOb->pt_data[3] = Sensor->cutOffFreq;
-	Sensor ->transmissionMOb->pt_data[4] = Sensor->cutOffFreq;
-	Sensor ->transmissionMOb->pt_data[5] = Sensor->samplingfreq;
-	Sensor ->transmissionMOb->pt_data[6] = Sensor->totalNumberOfpolynomials;
+	Sensor ->transmissionMOb->pt_data[0] = 0b11000001;
+	Sensor ->transmissionMOb->pt_data[1] = (Sensor->sensor_Type)*16+ Sensor->unit;
+	Sensor ->transmissionMOb->pt_data[2] = Sensor->period;
+	Sensor ->transmissionMOb->pt_data[3] = Sensor->cutOffFreq;
+	Sensor ->transmissionMOb->pt_data[4] = Sensor->samplingfreq;
+	Sensor ->transmissionMOb->pt_data[5] = Sensor->totalNumberOfpolynomials;
+	Sensor ->transmissionMOb->pt_data[6] = 0;
 	Sensor ->transmissionMOb->pt_data[7] = 0;
 	
 	can_cmd(Sensor->transmissionMOb);
@@ -65,21 +65,22 @@ void checkParameters(sensor_at_node* Sensor)
 // 	{
 // 		sendError(Sensor,0b00000111);
 //		shutDownSensor(Sensor);
-// 	}
+//	}
 	else
 	{
-		ACK_TO_Hub(&Sensor);
+		ACK_TO_Hub(Sensor);
 	}
+	
 }
 
 float runPolynomial(sensor_at_node* sensor)
 {	
 	float result = sensor-> polynomialList[0].floatCoef;
-	float filterValue = (sensor->filterValue/1023)*5; // Transform is from being a value between 0 - 1023 to 0v - 5v
+	float filterValue = (sensor->filterValue/1023)*5; // Transform it from being a value between 0 - 1023 to 0v - 5v
 	
 	for (int i=0; i<sensor->totalNumberOfpolynomials-1;i++)
 	{
-		result +=sensor->polynomialList[i+1].floatCoef*pow(filterValue,i+1);
+		result +=sensor->polynomialList[i+1].floatCoef*pow(filterValue,i+1); // Uses the 
 	}
 	
 	return result;
