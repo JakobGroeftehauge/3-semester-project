@@ -34,7 +34,7 @@ switch(MObStruct->cmd)
 
 	default:
 			//MObStruct->status = NOT_ACCEPTED;
-			bit_flip(PORTD, BIT(7));
+			//bit_flip(PORTD, BIT(7));
 			status = 0x01;
 			break; 
 	}

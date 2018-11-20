@@ -103,6 +103,7 @@ void sendServiceMessage(sensor_at_node* sensorAtNode, st_cmd_t* transmitMOb)//se
 	transmitMOb->pt_data[2] = sensorAtNode->polynomialList[i].binCoef >> 24 & 0xFF;
 	transmitMOb->id = sensorAtNode->CAN_ID;
 	can_cmd(transmitMOb);
+	_delay_ms(20);
 	} 
 
 	transmitMOb->pt_data[0] = 0b11000011;

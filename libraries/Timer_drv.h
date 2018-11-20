@@ -40,4 +40,6 @@
 
 #define  Timer0_1ms() (OCR0A=250); //250
 
+extern void TimerSetup(); 
+
 #endif /* TIMER_DRV_H_ */

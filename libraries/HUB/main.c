@@ -8,30 +8,35 @@
 #include <avr/io.h>
 #include "CAN_drv.h"
 #include "HUB_lib.h"
-#include  "payloadProtocol.h"
+#include "payloadProtocol.h"
+#include "Timer_drv.h"
 #define NUMBER_OF_SENSOR 3
 #define NUMBER_OF_RECEIVEMOBS 5
  
 volatile uint8_t tick; 
-volatile uint8_t heartBeat; 
+volatile uint8_t heartBeatSCS; 
+volatile uint8_t heartBeatReg; 
 volatile uint8_t receivedMessage; 
 volatile uint8_t i; 
-
+st_cmd_t receiveMObs[NUMBER_OF_RECEIVEMOBS];
+uint8_t recieveBuffers[NUMBER_OF_RECEIVEMOBS][MSG_SIZE];
+volatile sensorData sensorList[NUMBER_OF_SENSOR];
+st_cmd_t transmitMOb; 
 
 int main(void)
 {
 
-bit_set(PORTD, BIT(7));
+//bit_set(PORTD, BIT(7));
 
 chip_init();
 can_init();
 TimerSetup();
 
-heartBeat = 0; 
+heartBeatSCS = 0; 
 
 
-	st_cmd_t receiveMObs[NUMBER_OF_RECEIVEMOBS];
-	uint8_t recieveBuffers[NUMBER_OF_RECEIVEMOBS][MSG_SIZE];
+	//st_cmd_t receiveMObs[NUMBER_OF_RECEIVEMOBS];
+	//uint8_t recieveBuffers[NUMBER_OF_RECEIVEMOBS][MSG_SIZE];
 	for (i = 0; i < NUMBER_OF_RECEIVEMOBS; i++)
 	{
 		receiveMObs[i].cmd = RX;
@@ -57,7 +62,7 @@ heartBeat = 0;
 	//can_cmd(&recieveMOb);
 
 	uint8_t transmit_buffer[MSG_SIZE];
-	st_cmd_t transmitMOb; 
+
 	transmitMOb.pt_data = &transmit_buffer[0];
 	transmitMOb.MObNumber = 0x05;
 	transmitMOb.dlc = MSG_SIZE; 
@@ -65,7 +70,7 @@ heartBeat = 0;
 	transmitMOb.id = 0x0000;  
 
 
-volatile sensorData sensorList[NUMBER_OF_SENSOR];
+//volatile sensorData sensorList[NUMBER_OF_SENSOR];
 polyCoef coefList1[2]; 
 polyCoef coefList2[2];
 polyCoef coefList3[2];
@@ -81,28 +86,30 @@ coefList3[0].floatCoef = 300.545;
 coefList3[1].floatCoef = 343.214;
 //Setup sensorData structs
 
-sensorList[0].sensorStruct.CAN_ID = 0x0040;
+sensorList[0].sensorStruct.CAN_ID = 0x0001;
 sensorList[0].sensorStruct.samplingfreq = 2; 
-sensorList[0].sensorStruct.period = 2;
+sensorList[0].sensorStruct.period = 100;
 sensorList[0].sensorStruct.cutOffFreq = 2; 
 sensorList[0].sensorStruct.unit = celsius; 
 sensorList[0].sensorStruct.sensor_Type = other_sensor;
 sensorList[0].sensorStruct.totalNumberOfpolynomials = 2;
 sensorList[0].sensorStruct.polynomialList = &coefList1[0]; 
+sensorList[0].ACK = 0;
 sensorList[0].data = 0;
 sensorList[0].isSCS = 1; 
 
 
-sensorList[1].sensorStruct.CAN_ID = 0x00FF;
+sensorList[1].sensorStruct.CAN_ID = 0x0002;
 sensorList[1].sensorStruct.samplingfreq = 2;
-sensorList[1].sensorStruct.period = 2; 
+sensorList[1].sensorStruct.period = 100; 
 sensorList[1].sensorStruct.cutOffFreq = 2; 
 sensorList[1].sensorStruct.unit = degrees;
 sensorList[1].sensorStruct.sensor_Type = thermistor;
 sensorList[1].sensorStruct.totalNumberOfpolynomials = 2;
 sensorList[1].sensorStruct.polynomialList = &coefList2[0]; 
 sensorList[1].data = 0;
-sensorList[1].isSCS = 1;
+sensorList[1].ACK = 0;  
+sensorList[1].isSCS = 0;
 
 sensorList[2].sensorStruct.CAN_ID = 0x00CC;
 sensorList[2].sensorStruct.samplingfreq = 2;
@@ -113,66 +120,70 @@ sensorList[2].sensorStruct.sensor_Type = potentiometer;
 sensorList[2].sensorStruct.totalNumberOfpolynomials = 2;
 sensorList[2].sensorStruct.polynomialList = &coefList3[0]; 
 sensorList[2].data = 0;
-sensorList[2].isSCS = 1;
+sensorList[2].isSCS = 0;
+
+
+bit_set(PORTD, BIT(1));
+sei(); 
+
 
 initSensors(sensorList, &transmitMOb);
 
-transmitMOb.id = 0x0000; //reset CAN-id
 
-sei();
+transmitMOb.id = 0x0000; //reset CAN-id
+//receivedMessage = 0; 
+
+
 
 while(1)
 {
 
-	if(receivedMessage > 0)
-	{
-		updateData(sensorList, receiveMObs);
-		receivedMessage = 0; 
-
-
-		for (uint8_t i = 0; i < 8; i++)
-		{
-		transmitMOb.pt_data[i] = 0x00; 
-		}
-
-		transmitMOb.pt_data[0] = sensorList[0].data & 0xFF;
-		transmitMOb.pt_data[1] = sensorList[1].data & 0xFF;
-		transmitMOb.pt_data[2] = sensorList[2].data & 0xFF; 
-		can_cmd(&transmitMOb);
-	}
-
 	if(tick > 0)
 	{
     
-		if(heartBeat > 20)
+		if(heartBeatSCS > 20)
 		{
-			
-			//transmitMOb.pt_data[0] = sensorList[0].sensorStruct.totalNumberOfpolynomials; 
-			//can_cmd(&transmitMOb);
-
-			for (i = 0; i < NUMBER_OF_SENSOR; i++)
+			if (heartBeatReg > 5)
 			{
+				for(i = 0; i < NUMBER_OF_SENSOR; i++)
+				{
+				if(sensorList[i].numberOfMessages ==  0)
+				{
+				//send alert
+				}
+				sensorList[i].numberOfMessages = 0; 
+				}
+			heartBeatReg = 0; 
+			}
 
-				if(sensorList[i].isSCS == 1)
+			else
+			{
+				for (i = 0; i < NUMBER_OF_SENSOR; i++)
 				{
 
-					if(sensorList[i].numberOfMessages == 0)
+					if(sensorList[i].isSCS == 1)
 					{
-						//Send alert
+				
+						if(sensorList[i].numberOfMessages == 0)
+						{
+							//Send alert
+						}
+
+						sensorList[i].numberOfMessages = 0; 
 					}
 
-					sensorList[i].numberOfMessages = 0; 
 				}
-
 			}
- 
-			heartBeat = 0; 
+			heartBeatReg++; 
+			heartBeatSCS = 0; 
 		}
 
 
 
 	}
-	heartBeat++; 
+
+
+	heartBeatSCS++; 
 	tick--; 
 }
 
@@ -187,7 +198,7 @@ void chip_init(void){
 	bit_set(DDRD, BIT(1));
 	bit_set(DDRD, BIT(7));
 	
-	bit_set(PORTD, BIT(1));
+	//bit_set(PORTD, BIT(1));
 	//bit_set(PORTD, BIT(7));
 
 }
@@ -202,8 +213,33 @@ ISR(TIMER0_COMPA_vect)
 
 ISR( CAN_INT_vect )
 {
-	receivedMessage++;
-	bit_flip(PORTD, BIT(7));
-	//bit_set(PORTD, BIT(1));
+	bit_set(PORTD, BIT(7));
+	uint8_t HPMOb = (CANHPMOB & 0xF0) >> 4;
+	transfer_data(&receiveMObs[HPMOb]);
+	
+	switch(receiveMObs[HPMOb].pt_data[0] & 0xFF)
+	{
+		case 0x30:
 
+			updateData(sensorList, &receiveMObs[HPMOb]); 
+			break; 
+
+		case 0xC1://ACK FROM NODE
+
+			ACKnode(sensorList, &receiveMObs[HPMOb]); 
+			break; 
+	
+		case 0xA0: //ERROR SIGNAL 
+		//NOT DEFINED - CALL BACK
+
+		default: 
+		break; 
+
+		}
+
+		bit_clear(PORTD, BIT(7));
+	//
+				//bit_set(PORTD, BIT(7)); 
+			//updateData(sensorList, receiveMObs);
+			//bit_clear(PORTD, BIT(7));
 }
