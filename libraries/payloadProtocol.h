@@ -26,9 +26,9 @@ typedef enum {
 }units;
 
 typedef union {
-	uint32_t	binCoef;
-	float		floatCoef;
-} polyCoef;
+	uint32_t	binVal;
+	float		floatVal;
+} floatUnion;
 
 typedef  struct {
 	uint16_t		CAN_ID;
@@ -36,13 +36,13 @@ typedef  struct {
 	units			unit;	//Will be used to determent the translation of the ADC data.
 	uint8_t			period;
 	uint8_t			cutOffFreq;
-	float			filterValue;
+	floatUnion		filterValue;
 	st_cmd_t*		transmissionMOb;
 	st_cmd_t*		receiveMOb;
 	uint8_t			samplingfreq;
-	polyCoef*		polynomialList;
+	floatUnion*		polynomialList;
 	uint8_t			totalNumberOfpolynomials;
-	uint8_t			sensorNumber;
+	uint8_t			sensorNumber;			// Indicates which pin is used for the sensor
 }sensor_at_node ;
 
 extern void decodeCoefficient(sensor_at_node* sensor);

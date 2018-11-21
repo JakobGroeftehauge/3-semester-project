@@ -13,10 +13,10 @@ void decodeCoefficient(sensor_at_node* Sensor)
 	uint8_t coeffNumber =(Sensor->receiveMOb->pt_data[1]& 0xF0)/16;
 	
 	Sensor->totalNumberOfpolynomials = Sensor->receiveMOb->pt_data[1]&0b00001111;
-	Sensor->polynomialList[coeffNumber].binCoef = Sensor->receiveMOb->pt_data[2];
-	Sensor->polynomialList[coeffNumber].binCoef = ((Sensor->polynomialList[coeffNumber].binCoef) << 8  ) + Sensor->receiveMOb->pt_data[3];
-	Sensor->polynomialList[coeffNumber].binCoef = ((Sensor->polynomialList[coeffNumber].binCoef) << 16 ) + Sensor->receiveMOb->pt_data[4];
-	Sensor->polynomialList[coeffNumber].binCoef = ((Sensor->polynomialList[coeffNumber].binCoef) << 24 ) + Sensor->receiveMOb->pt_data[5];
+	Sensor->polynomialList[coeffNumber].binVal = Sensor->receiveMOb->pt_data[2];
+	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 8  ) + Sensor->receiveMOb->pt_data[3];
+	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 16 ) + Sensor->receiveMOb->pt_data[4];
+	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 24 ) + Sensor->receiveMOb->pt_data[5];
 
 }
 
@@ -77,12 +77,12 @@ void checkParameters(sensor_at_node* Sensor)
 
 float runPolynomial(sensor_at_node* sensor)
 {	
-	float result = sensor-> polynomialList[0].floatCoef;
-	float filterValue = (sensor->filterValue/1023)*5; // Transform it from being a value between 0 - 1023 to 0v - 5v
+	float result = sensor-> polynomialList[0].floatVal;
+	float filterValue = (sensor->filterValue.floatVal/1023)*5; // Transform it from being a value between 0 - 1023 to 0v - 5v
 	
-	for (int i=0; i<sensor->totalNumberOfpolynomials-1;i++)
+	for (uint8_t i=0; i<sensor->totalNumberOfpolynomials-1;i++)
 	{
-		result +=sensor->polynomialList[i+1].floatCoef*pow(filterValue,i+1); // Uses the 
+		result +=sensor->polynomialList[i+1].floatVal*pow(filterValue,i+1); // Uses the 
 	}
 	
 	return result;
@@ -91,14 +91,16 @@ float runPolynomial(sensor_at_node* sensor)
 // Sends the filtered data from the sensors given as parameters. Data comes from the struct and will be updated by another function.
 void sendFilteretData(sensor_at_node* Sensor)	
 {
-	float polynomialValue = runPolynomial(Sensor);
+	floatUnion polynomialValue;
+	polynomialValue.floatVal = runPolynomial(Sensor);
 	Sensor->transmissionMOb->pt_data[0] = 0b00110000; // Data message
 	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type*16)+Sensor->unit;
-	uint8_t *vp = (uint8_t *)&polynomialValue;
-	Sensor->transmissionMOb->pt_data[2] = vp[3];
-	Sensor->transmissionMOb->pt_data[3] = vp[2];
-	Sensor->transmissionMOb->pt_data[4] = vp[1];
-	Sensor->transmissionMOb->pt_data[5] = vp[0];
+	
+	Sensor->transmissionMOb->pt_data[5] = polynomialValue.binVal & 0xFF;
+	Sensor->transmissionMOb->pt_data[4] = polynomialValue.binVal >> 8 & 0xFF;
+	Sensor->transmissionMOb->pt_data[3] = polynomialValue.binVal >> 16 & 0xFF;
+	Sensor->transmissionMOb->pt_data[2] = polynomialValue.binVal >> 24 & 0xFF;
+
 	Sensor ->transmissionMOb->pt_data[6] = 0;
 	Sensor ->transmissionMOb->pt_data[7] = 0;
 	can_cmd(Sensor->transmissionMOb);
@@ -122,10 +124,10 @@ void sendServiceMessage(sensor_at_node* sensorAtNode, st_cmd_t* transmitMOb)//se
 	{
 	transmitMOb->pt_data[0] = 0b11000101;
 	transmitMOb->pt_data[1] = ((i) << 4) | sensorAtNode->totalNumberOfpolynomials;
-	transmitMOb->pt_data[5] = sensorAtNode->polynomialList[i].binCoef & 0xFF;
-	transmitMOb->pt_data[4] = sensorAtNode->polynomialList[i].binCoef >> 8 & 0xFF;
-	transmitMOb->pt_data[3] = sensorAtNode->polynomialList[i].binCoef >> 16 & 0xFF;
-	transmitMOb->pt_data[2] = sensorAtNode->polynomialList[i].binCoef >> 24 & 0xFF;
+	transmitMOb->pt_data[5] = sensorAtNode->polynomialList[i].binVal & 0xFF;
+	transmitMOb->pt_data[4] = sensorAtNode->polynomialList[i].binVal >> 8 & 0xFF;
+	transmitMOb->pt_data[3] = sensorAtNode->polynomialList[i].binVal >> 16 & 0xFF;
+	transmitMOb->pt_data[2] = sensorAtNode->polynomialList[i].binVal >> 24 & 0xFF;
 	transmitMOb->id = sensorAtNode->CAN_ID;
 	can_cmd(transmitMOb);
 	} 
@@ -151,82 +153,13 @@ void shutDownSensor(sensor_at_node* sensor)
 {
 	sensor->period = 0;
 	sensor->samplingfreq = 0;
-	sensor->polynomialList[0].floatCoef = 0;
-	sensor->polynomialList[1].floatCoef = 1;
+	sensor->polynomialList[0].floatVal = 0;
+	sensor->polynomialList[1].floatVal = 1;
 	sensor->totalNumberOfpolynomials = 2;
 	sensor->cutOffFreq = 0;
 }
 
 //Decoding message from hub and determines what kind of message type it is.
-//void decodeMessage(st_cmd_t* message_struct,sensor_at_node* SensorList, uint8_t NUMBER_OF_SENSORS) // 
-//{
-	//
-	//uint8_t message_array[8];
-	//for(uint8_t i = 0; i<8; i++)
-	//{
-		//message_array[i] = message_struct -> pt_data[i];
-	//}
-	//
-	//switch (message_struct->pt_data[0])
-	//{
-		//case 0b11000101: //ID for setup of Coefficients
-		//{
-			//for(uint8_t i = 0; i < NUMBER_OF_SENSORS;i++)
-			//{
-				//if (message_struct->id == SensorList[i].CAN_ID)
-				//{
-					//decodeCoefficient(&SensorList[i],message_array);
-				//}
-				//break;
-			//}
-			//break;
-		//}
-		//case 0b11000011: // ID FOR A SERVICE MESSAGE
-		//{
-			//for(uint8_t i = 0; i < NUMBER_OF_SENSORS;i++)
-			//{
-				//if (message_struct->id == SensorList[i].CAN_ID)
-				//{
-					//decodeHubServiceMessage(message_array,&SensorList[i]);
-					//checkParameters(&SensorList[i]);
-					//break;
-				//}
-			//}
-			//break;
-		//}
-		//case 0b11100000: // ID FOR DATA RETRIEVING MESSAGE, FROM SPECIFIC MESSAGE
-		//{
-			//for(uint8_t i = 0; i < NUMBER_OF_SENSORS;i++)				//Run through the sensors
-			//{
-				//if (message_struct->id == SensorList[i].CAN_ID)		//Determines what sensor the message is for.
-				//{
-					//sendFilteretData(&SensorList[i]);
-					//break;
-				//}
-			//}
-			//break;
-		//}
-		//case 0b11000100:
-		//{
-			//for(uint8_t i = 0; i < NUMBER_OF_SENSORS;i++)				//Run through the sensors
-			//{
-				//if (message_struct->id == SensorList[i].CAN_ID)		//Determines what sensor the message is for.
-				//{
-					//shutDownSensor(&SensorList[i]);
-					//break;
-				//}
-			//}
-			//break;
-		//
-		//}
-		//default:
-		//{
-			//break;
-		//}
-		//
-	//}
-//}
-
 
 void decodeMessage2(sensor_at_node* sensor) //
 {
@@ -236,19 +169,23 @@ void decodeMessage2(sensor_at_node* sensor) //
 		case 0b11000101: //ID for setup of Coefficients
 		{
 				decodeCoefficient(sensor);
+				break;
 		}
 		case 0b11000011: // ID FOR A SERVICE MESSAGE
 		{
 				decodeHubServiceMessage(sensor);
 				checkParameters(sensor);
+				break;
 		}
 		case 0b11100000: // ID FOR DATA RETRIEVING MESSAGE, FROM SPECIFIC MESSAGE
 		{
 				sendFilteretData(sensor);
+				break;
 		}
 		case 0b11000100:
 		{
-					shutDownSensor(sensor);		
+				shutDownSensor(sensor);		
+				break;
 		}
 		default:
 		{
