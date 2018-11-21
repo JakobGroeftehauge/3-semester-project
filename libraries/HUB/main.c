@@ -10,6 +10,9 @@
 #include "HUB_lib.h"
 #include "payloadProtocol.h"
 #include "Timer_drv.h"
+#include "alertFunction.h"
+
+
 #define NUMBER_OF_SENSOR 3
 #define NUMBER_OF_RECEIVEMOBS 5
  
@@ -31,6 +34,7 @@ int main(void)
 chip_init();
 can_init();
 TimerSetup();
+setupAlertFunction(&blinkLED);
 
 heartBeatSCS = 0; 
 
@@ -229,11 +233,13 @@ ISR( CAN_INT_vect )
 			ACKnode(sensorList, &receiveMObs[HPMOb]); 
 			break; 
 	
-		case 0xA0: //ERROR SIGNAL 
+		case 0xA0:
+			alertFunction();//ERROR SIGNAL 
+			break; 
 		//NOT DEFINED - CALL BACK
 
 		default: 
-		break; 
+			break; 
 
 		}
 
