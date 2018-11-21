@@ -218,6 +218,14 @@ void setup_receive_mob(st_cmd_t* MObStruct){
 
 	CANIDM4 = 0x00; 	// ""
 	
+	CANIDT1	= (MObStruct->id / 8);
+	
+	CANIDT2 = ((MObStruct->id & 0x07) << 5);
+	
+	CANIDT3 = 0x00;
+	
+	CANIDT4 = 0x00; 
+	
 	CANCDMOB = ( 1 << CONMOB1) | ( 8 << DLC0);
 	
 }  

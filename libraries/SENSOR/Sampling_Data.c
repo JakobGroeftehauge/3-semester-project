@@ -29,7 +29,7 @@ void sampleData(sensor_at_node* sensor)
 		
 		//filterfunction(ADC_data;
 		
-		sensor->filterValue=ADC_data;	
+		sensor->filterValue.floatVal=ADC_data;	
 	} 
 	else if (sensor->sensorNumber==2)
 {	
@@ -47,7 +47,7 @@ void sampleData(sensor_at_node* sensor)
 		
 		//filterfunction(ADC_data);
 		
-		sensor->filterValue=ADC_data;
+		sensor->filterValue.floatVal=ADC_data;
 	}
 	Wire_off(ADC_data,sensor);
 }
