@@ -9,6 +9,7 @@
 #include "CAN_drv.h"
 #include "HUB_lib.h"
 #include "payloadProtocol.h"
+#include "alertFunction.h"
 #include "Timer_drv.h"
 #define NUMBER_OF_SENSOR 3
 #define NUMBER_OF_RECEIVEMOBS 5
@@ -229,8 +230,10 @@ ISR( CAN_INT_vect )
 			ACKnode(sensorList, &receiveMObs[HPMOb]); 
 			break; 
 	
-		case 0xA0: //ERROR SIGNAL 
-		//NOT DEFINED - CALL BACK
+		case 0xA0: 
+			alertFunction();
+			break;//ERROR SIGNAL 
+
 
 		default: 
 		break; 
