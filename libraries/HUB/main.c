@@ -34,7 +34,7 @@ int main(void)
 chip_init();
 can_init();
 TimerSetup();
-setupAlertFunction(&blinkLED);
+//setupAlertFunction(&blinkLED);
 
 heartBeatSCS = 0; 
 
@@ -80,14 +80,14 @@ polyCoef coefList2[2];
 polyCoef coefList3[2];
 
 
-coefList1[0].floatCoef = 23.545; 
-coefList1[1].floatCoef = 343.214; 
+coefList1[0].floatCoef = 1; //23; 
+coefList1[1].floatCoef = 1; //343.214; 
 
-coefList2[0].floatCoef = 19.545;
-coefList2[1].floatCoef = 343.214;
+coefList2[0].floatCoef = 1;//19.545;
+coefList2[1].floatCoef = 1;//343.214;
 
-coefList3[0].floatCoef = 300.545;
-coefList3[1].floatCoef = 343.214;
+coefList3[0].floatCoef = 1;//300.545;
+coefList3[1].floatCoef = 1;//343.214;
 //Setup sensorData structs
 
 sensorList[0].sensorStruct.CAN_ID = 0x0001;
@@ -127,7 +127,7 @@ sensorList[2].data = 0;
 sensorList[2].isSCS = 0;
 
 
-bit_set(PORTD, BIT(1));
+//bit_set(PORTD, BIT(1));
 sei(); 
 
 
@@ -199,11 +199,11 @@ void chip_init(void){
 	//***** Chip initialization
 	DDRC = 4; //Set TXCAN as output and RXCAN as input
 	
-	bit_set(DDRD, BIT(1));
+	//bit_set(DDRD, BIT(1));
 	bit_set(DDRD, BIT(7));
 	
 	//bit_set(PORTD, BIT(1));
-	//bit_set(PORTD, BIT(7));
+	bit_set(PORTD, BIT(7));
 
 }
 
@@ -217,7 +217,7 @@ ISR(TIMER0_COMPA_vect)
 
 ISR( CAN_INT_vect )
 {
-	bit_set(PORTD, BIT(7));
+	//bit_set(PORTD, BIT(7));
 	uint8_t HPMOb = (CANHPMOB & 0xF0) >> 4;
 	transfer_data(&receiveMObs[HPMOb]);
 	
@@ -234,6 +234,7 @@ ISR( CAN_INT_vect )
 			break; 
 	
 		case 0xA0:
+			//bit_set(PORTD, BIT(1));
 			alertFunction();//ERROR SIGNAL 
 			break; 
 		//NOT DEFINED - CALL BACK
@@ -243,7 +244,7 @@ ISR( CAN_INT_vect )
 
 		}
 
-		bit_clear(PORTD, BIT(7));
+		//bit_clear(PORTD, BIT(7));
 	//
 				//bit_set(PORTD, BIT(7)); 
 			//updateData(sensorList, receiveMObs);

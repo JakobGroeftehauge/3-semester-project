@@ -33,4 +33,5 @@ extern void updateData(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receive
 
 extern void ACKnode(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb); 
 
+
 #endif /* HUB_LIB_H_ */
