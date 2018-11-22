@@ -15,15 +15,15 @@ void decodeCoefficient(sensor_at_node* Sensor)
 	Sensor->totalNumberOfpolynomials = Sensor->receiveMOb->pt_data[1]&0b00001111;
 	Sensor->polynomialList[coeffNumber].binVal = Sensor->receiveMOb->pt_data[2];
 	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 8  ) + Sensor->receiveMOb->pt_data[3];
-	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 16 ) + Sensor->receiveMOb->pt_data[4];
-	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 24 ) + Sensor->receiveMOb->pt_data[5];
+	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 8 ) + Sensor->receiveMOb->pt_data[4];
+	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 8 ) + Sensor->receiveMOb->pt_data[5];
 
 }
 
-
-
 void ACK_TO_Hub(sensor_at_node* Sensor)			// Takes data from the struct and sends it back to the hub. The hub should then be able to checkon it.
 {
+	Sensor ->sensorSetupBool = 1; //Indicators that the sensor have received and ACK the setup message.
+	
 	Sensor ->transmissionMOb->pt_data[0] = 0b11000001;
 	Sensor ->transmissionMOb->pt_data[1] = (Sensor->sensor_Type)*16+ Sensor->unit;
 	Sensor ->transmissionMOb->pt_data[2] = Sensor->period;
@@ -82,7 +82,7 @@ float runPolynomial(sensor_at_node* sensor)
 	
 	for (uint8_t i=0; i<sensor->totalNumberOfpolynomials-1;i++)
 	{
-		result +=sensor->polynomialList[i+1].floatVal*pow(filterValue,i+1); // Uses the 
+		result = result+ sensor->polynomialList[i+1].floatVal*pow(filterValue,i+1); // Uses the 
 	}
 	
 	return result;
@@ -92,7 +92,7 @@ float runPolynomial(sensor_at_node* sensor)
 void sendFilteretData(sensor_at_node* Sensor)	
 {
 	floatUnion polynomialValue;
-	polynomialValue.floatVal = runPolynomial(Sensor);
+	polynomialValue.floatVal =runPolynomial(Sensor);
 	Sensor->transmissionMOb->pt_data[0] = 0b00110000; // Data message
 	Sensor->transmissionMOb->pt_data[1] = (Sensor->sensor_Type*16)+Sensor->unit;
 	
@@ -101,8 +101,8 @@ void sendFilteretData(sensor_at_node* Sensor)
 	Sensor->transmissionMOb->pt_data[3] = polynomialValue.binVal >> 16 & 0xFF;
 	Sensor->transmissionMOb->pt_data[2] = polynomialValue.binVal >> 24 & 0xFF;
 
-	Sensor ->transmissionMOb->pt_data[6] = 0;
-	Sensor ->transmissionMOb->pt_data[7] = 0;
+	Sensor ->transmissionMOb->pt_data[6] = 0x0;
+	Sensor ->transmissionMOb->pt_data[7] = 0x0;
 	can_cmd(Sensor->transmissionMOb);
 }
 
@@ -128,7 +128,10 @@ void sendServiceMessage(sensor_at_node* sensorAtNode, st_cmd_t* transmitMOb)//se
 	transmitMOb->pt_data[4] = sensorAtNode->polynomialList[i].binVal >> 8 & 0xFF;
 	transmitMOb->pt_data[3] = sensorAtNode->polynomialList[i].binVal >> 16 & 0xFF;
 	transmitMOb->pt_data[2] = sensorAtNode->polynomialList[i].binVal >> 24 & 0xFF;
+	transmitMOb->pt_data[6] = 0;
+	transmitMOb->pt_data[7] = 0;
 	transmitMOb->id = sensorAtNode->CAN_ID;
+	
 	can_cmd(transmitMOb);
 	_delay_ms(20);
 	} 
@@ -194,4 +197,17 @@ void decodeMessage2(sensor_at_node* sensor) //
 		}
 		
 	}
+}
+
+void sendSensorRequesterSetup(sensor_at_node* Sensor)
+{
+	Sensor ->transmissionMOb->pt_data[0] = 0b11001000;
+	Sensor ->transmissionMOb->pt_data[1] = 0;
+	Sensor ->transmissionMOb->pt_data[2] = 0;
+	Sensor ->transmissionMOb->pt_data[3] = 0;
+	Sensor ->transmissionMOb->pt_data[4] = 0;
+	Sensor ->transmissionMOb->pt_data[5] = 0;
+	Sensor ->transmissionMOb->pt_data[6] = 0;
+	Sensor ->transmissionMOb->pt_data[7] = 0;
+	can_cmd(Sensor->transmissionMOb);
 }

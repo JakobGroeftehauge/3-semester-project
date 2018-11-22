@@ -58,10 +58,24 @@ void ACKnode(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb)
 
 	 if(sensorNum[i].sensorStruct.CAN_ID == receiveMOb->id)
 	 {
-		//bit_set(PORTD, BIT(7));
 		 sensorNum[i].ACK = 0x01;  //Change to support floats
 		 return;
 	 }
  }
  
+ }
+ 
+ void sensorRequesterSetup(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb, st_cmd_t* transmitMOb)
+ {
+	 for(volatile uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
+	 {
+
+		 if(sensorNum[i].sensorStruct.CAN_ID == receiveMOb->id)
+		 {
+			 _delay_ms(20);
+			 sendServiceMessage(&sensorNum[i].sensorStruct, transmitMOb);
+			 return;
+		 }
+	 }
+	 
  }

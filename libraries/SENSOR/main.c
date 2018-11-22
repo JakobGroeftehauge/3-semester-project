@@ -101,12 +101,35 @@ int main(void)
 	TimerSetup();				// Timer Drive: Will start a timer with a 1kHz interrupt.
 	can_cmd(&receiveMObs[0]);	// Setting up receiveMOb
 	can_cmd(&receiveMObs[1]);
-	bit_set(PORTD,BIT(1));
+	//bit_set(PORTD,BIT(1));
 	sei();					// Global interrupt enable
 
 //-------------------- MAIN CODE ---------------------------------//
+volatile uint8_t  k = 1;
 while(1)
 {	
+	if(k ==1 ){
+	_delay_ms(500);
+	_delay_ms(500);
+	_delay_ms(500);
+	_delay_ms(500);
+	k = 0;
+	Sensorlist[0].filterValue.floatVal=10;
+	Sensorlist[1].filterValue.floatVal=10;
+	}
+	
+	if(Sensorlist[0].sensorSetupBool == 0)
+	{
+		sendSensorRequesterSetup(&Sensorlist[0]);
+		Sensorlist[0].sensorSetupBool = 1;
+	}
+	
+	if(Sensorlist[1].sensorSetupBool == 0)
+	{
+		sendSensorRequesterSetup(&Sensorlist[1]);
+		Sensorlist[1].sensorSetupBool = 1;
+	}
+	bit_set(PORTD,BIT(1));
 	
 	if (tick>=1)			// Timer interrupt counter (1ms)
 	{
