@@ -8,6 +8,7 @@
 #define NUMBER_OF_RECEIVEMOBS 5
 #include <avr/io.h>
 #include "CAN_drv.h"
+#include "alertFunction.h"
 #include "HUB_lib.h"
 #include "payloadProtocol.h"
 #include "Timer_drv.h"
