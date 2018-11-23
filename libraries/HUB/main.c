@@ -8,9 +8,9 @@
 #define NUMBER_OF_RECEIVEMOBS 5
 #include <avr/io.h>
 #include "CAN_drv.h"
-#include "alertFunction.h"
 #include "HUB_lib.h"
 #include "payloadProtocol.h"
+#include "alertFunction.h"
 #include "Timer_drv.h"
 
 
@@ -222,6 +222,11 @@ ISR( CAN_INT_vect )
 			sensorRequesterSetup(sensorList, &receiveMObs[HPMOb],&transmitMOb);
 			break;
 		}
+
+		case 0xA0: 
+			alertFunction();
+			break;//ERROR SIGNAL 
+
 		default: 
 		{
 			break; 
