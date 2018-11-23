@@ -222,11 +222,6 @@ ISR( CAN_INT_vect )
 			sensorRequesterSetup(sensorList, &receiveMObs[HPMOb],&transmitMOb);
 			break;
 		}
-
-		case 0xA0: 
-			alertFunction();
-			break;//ERROR SIGNAL 
-
 		default: 
 		{
 			break; 
