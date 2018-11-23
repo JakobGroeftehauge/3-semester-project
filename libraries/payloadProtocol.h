@@ -56,8 +56,6 @@ extern void	ACK_TO_Hub(sensor_at_node* Sensor);
 
 extern void decodeHubServiceMessage(sensor_at_node* sensor);
 
-extern void sendServiceMessage(sensor_at_node* sensorStruct, st_cmd_t* transmitMOb);
-
 extern void decodeMessage2(sensor_at_node* sensor);
 
 extern float runPolynomial(sensor_at_node* sensor);

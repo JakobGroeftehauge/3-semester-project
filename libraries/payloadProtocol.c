@@ -116,42 +116,6 @@ void decodeHubServiceMessage(sensor_at_node* sensor)
 	sensor->cutOffFreq = sensor->receiveMOb->pt_data[3];
 }
 
-// sendServiceMessage puts parameters into array, which can be sent
-void sendServiceMessage(sensor_at_node* sensorAtNode, st_cmd_t* transmitMOb)//sensor_Types type, units unit, uint8_t range_min, uint8_t range_max, uint8_t trans_frq, uint8_t sampl_frq, uint8_t filt_type, uint8_t filt_par)
-{	
-
-	for (uint8_t i = 0; i < sensorAtNode->totalNumberOfpolynomials; i++)
-	{
-	transmitMOb->pt_data[0] = 0b11000101;
-	transmitMOb->pt_data[1] = ((i) << 4) | sensorAtNode->totalNumberOfpolynomials;
-	transmitMOb->pt_data[5] = sensorAtNode->polynomialList[i].binVal & 0xFF;
-	transmitMOb->pt_data[4] = sensorAtNode->polynomialList[i].binVal >> 8 & 0xFF;
-	transmitMOb->pt_data[3] = sensorAtNode->polynomialList[i].binVal >> 16 & 0xFF;
-	transmitMOb->pt_data[2] = sensorAtNode->polynomialList[i].binVal >> 24 & 0xFF;
-	transmitMOb->pt_data[6] = 0;
-	transmitMOb->pt_data[7] = 0;
-	transmitMOb->id = sensorAtNode->CAN_ID;
-	
-	can_cmd(transmitMOb);
-	_delay_ms(20);
-	} 
-
-	transmitMOb->pt_data[0] = 0b11000011;
-	transmitMOb->pt_data[1] = sensorAtNode->sensor_Type << 4 | sensorAtNode->unit;
-	transmitMOb->pt_data[2] = sensorAtNode->period;
-	transmitMOb->pt_data[3] = sensorAtNode->cutOffFreq;
-	
-	for (uint8_t i = 4; i < 8; i++)
-	{
-	transmitMOb->pt_data[i] = 0x00; 
-	} 
-
-	can_cmd(transmitMOb); //send last message
-
-
-
-}
-
 // shutDownSensor will shut down the node and set default values in struct
 void shutDownSensor(sensor_at_node* sensor)
 {

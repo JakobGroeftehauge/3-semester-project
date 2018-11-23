@@ -4,10 +4,6 @@
  * Created: 11/13/2018 2:48:30 PM
  *  Author: Jakob
  */ 
-
- //#include "HUB_lib.h"
-
- //#include "CAN_lib.h"
  #include "CAN_drv.h"
  #include "HUB_lib.h"
  #include "Timer_drv.h"
@@ -35,14 +31,11 @@
 
  void updateData(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb)
  {
-	//uint8_t HPMOb = (CANHPMOB & 0xF0) >> 4; 
-	//transfer_data(&receiveMObs[HPMOb]); 
 	 for(volatile uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
 	 {
 
 		 if(sensorNum[i].sensorStruct.CAN_ID == receiveMOb->id)
 		 {
-			//bit_flip(PORTD, BIT(1));
 			sensorNum[i].data = receiveMOb->pt_data[1];  //Change to support floats
 			sensorNum[i].numberOfMessages++;
 			return; 		
@@ -78,4 +71,37 @@ void ACKnode(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb)
 		 }
 	 }
 	 
+ }
+ 
+ // sendServiceMessage puts parameters into array, which can be sent
+ //sensor_Types type, units unit, uint8_t range_min, uint8_t range_max, uint8_t trans_frq, uint8_t sampl_frq, uint8_t filt_type, uint8_t filt_par)
+ void sendServiceMessage(sensor_at_node* sensorAtNode, st_cmd_t* transmitMOb)
+ {
+
+	 for (uint8_t i = 0; i < sensorAtNode->totalNumberOfpolynomials; i++)
+	 {
+		 transmitMOb->pt_data[0] = 0b11000101;
+		 transmitMOb->pt_data[1] = ((i) << 4) | sensorAtNode->totalNumberOfpolynomials;
+		 transmitMOb->pt_data[5] = sensorAtNode->polynomialList[i].binVal & 0xFF;
+		 transmitMOb->pt_data[4] = sensorAtNode->polynomialList[i].binVal >> 8 & 0xFF;
+		 transmitMOb->pt_data[3] = sensorAtNode->polynomialList[i].binVal >> 16 & 0xFF;
+		 transmitMOb->pt_data[2] = sensorAtNode->polynomialList[i].binVal >> 24 & 0xFF;
+		 transmitMOb->pt_data[6] = 0;
+		 transmitMOb->pt_data[7] = 0;
+		 transmitMOb->id = sensorAtNode->CAN_ID;
+		 
+		 can_cmd(transmitMOb);
+		 _delay_ms(20);
+	 }
+
+	 transmitMOb->pt_data[0] = 0b11000011;
+	 transmitMOb->pt_data[1] = sensorAtNode->sensor_Type << 4 | sensorAtNode->unit;
+	 transmitMOb->pt_data[2] = sensorAtNode->period;
+	 transmitMOb->pt_data[3] = sensorAtNode->cutOffFreq;
+	 
+	 for (uint8_t i = 4; i < 8; i++)
+	 {
+		 transmitMOb->pt_data[i] = 0x00;
+	 }
+	 can_cmd(transmitMOb); //send last message
  }
