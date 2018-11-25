@@ -27,8 +27,7 @@ void sampleData(sensor_at_node* sensor)
 		ADC_data = buffer;
 		bit_set(ADCSRA,BIT(4));
 		
-		//filterfunction(ADC_data;
-		
+
 		sensor->filterValue.floatVal=ADC_data;	
 	} 
 	else if (sensor->sensorNumber==2)
@@ -44,12 +43,10 @@ void sampleData(sensor_at_node* sensor)
 		buffer += ADCH*256;
 		ADC_data = buffer;
 		bit_set(ADCSRA,BIT(4));
-		
-		//filterfunction(ADC_data);
-		
+
 		sensor->filterValue.floatVal=ADC_data;
 	}
-	Wire_off(ADC_data,sensor);
+	//Wire_off(ADC_data,sensor);
 }
 
 void Wire_off(uint16_t data ,sensor_at_node* sensor)

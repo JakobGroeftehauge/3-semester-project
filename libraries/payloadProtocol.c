@@ -101,8 +101,8 @@ void sendFilteretData(sensor_at_node* Sensor)
 	Sensor->transmissionMOb->pt_data[3] = polynomialValue.binVal >> 16 & 0xFF;
 	Sensor->transmissionMOb->pt_data[2] = polynomialValue.binVal >> 24 & 0xFF;
 
-	Sensor ->transmissionMOb->pt_data[6] = 0x0;
-	Sensor ->transmissionMOb->pt_data[7] = 0x0;
+	Sensor ->transmissionMOb->pt_data[6] = 0x00;
+	Sensor ->transmissionMOb->pt_data[7] = 0x00;
 	can_cmd(Sensor->transmissionMOb);
 }
 
@@ -157,7 +157,7 @@ void decodeMessage2(sensor_at_node* sensor) //
 		}
 		default:
 		{
-			break;
+				break;
 		}
 		
 	}
@@ -174,4 +174,19 @@ void sendSensorRequesterSetup(sensor_at_node* Sensor)
 	Sensor ->transmissionMOb->pt_data[6] = 0;
 	Sensor ->transmissionMOb->pt_data[7] = 0;
 	can_cmd(Sensor->transmissionMOb);
+}
+
+void assignFilter(sensor_at_node* sensor, Filter* filterlist, uint8_t antalFiltre)
+{
+
+	//for (uint8_t i = 0; i < antalFiltre; i++)
+	//{
+		//if(sensor->cutOffFreq == filterlist.cutOffAt100Hz)
+		//{
+			//sensor->filterPt = &(filterlist);
+		//}
+	//}
+	sensor->filterPt = filterlist;
+
+	//sensor->samplingfreq = 0xA0; 
 }

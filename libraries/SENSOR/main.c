@@ -82,8 +82,7 @@ int main(void)
 	
 	
 	//Setup sensor number (used to sample data)
-	if (Sensorlist[0].CAN_ID>Sensorlist[1].CAN_ID)	//Determines which sensor should have pin 1 and pin 2  
-													//The one with lowest CAN ID will have pin 1 as input.
+	if (Sensorlist[0].CAN_ID>Sensorlist[1].CAN_ID)	//Determines which sensor should have pin 1 and pin 2  	//The one with lowest CAN ID will have pin 1 as input.										//The one with lowest CAN ID will have pin 1 as input.
 	{
 		Sensorlist[0].sensorNumber = 1;
 		Sensorlist[1].sensorNumber = 2;	
@@ -93,6 +92,17 @@ int main(void)
 		Sensorlist[1].sensorNumber = 1;
 		Sensorlist[0].sensorNumber = 2;
 	}
+
+	//-----------------------------SETUP FILTER-------------------------------//
+		Filter lowPass1 = {6, 20,{{-0.2051450,0.0286554},{-0.2547188,0.1912965},{-0.3660429,0.6076038}},{{1, 1.9719105, 1},{1, 1.7994412, 1},{0.0174262, 0.0286020,0.0174262}}};
+
+
+			for (uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
+			{
+				assignFilter(&Sensorlist[i], &lowPass1, 1);
+				//Sensorlist[i].filterPt = &lowPass1;
+				flushBuffers(&(Sensorlist[i].bufferList[0]),6);
+			}
 	//------------------- end of default settings for sensor ---------------- // 
 	
 	node_init();			//Setup for pins for output
@@ -118,6 +128,9 @@ int main(void)
 		sendSensorRequesterSetup(&Sensorlist[1]);
 	}
 
+	Sensorlist[0].samplingfreq = 100;
+	Sensorlist[1].samplingfreq = 100;
+
 //-------------------- MAIN CODE ---------------------------------//
 while(1)
 {		
@@ -135,18 +148,23 @@ while(1)
 //---------------------- Sampling data ------------------- // 		
 		if (samplingCounter1 >= Sensorlist[0].samplingfreq && Sensorlist[0].samplingfreq !=0 )	//Determines if it is time to sample data for sensor 1. 
 		{
-			sampleData(&Sensorlist[0]);															//Samples the data and filter it. 
-			samplingCounter1 = 0;																//The data will be saved in the sensor struct.
+			sampleData(&Sensorlist[0]);
+			//float input0 = 1;
+			Sensorlist[0].filterValue.floatVal = calculateFilterAlternative(Sensorlist[0].filterValue.floatVal, Sensorlist[0].filterPt, &(Sensorlist[0].bufferList));															//Samples the data and filter it. 
+			samplingCounter1 = 0;	
+			
 		}
 		if (samplingCounter2 >= Sensorlist[1].samplingfreq && Sensorlist[1].samplingfreq !=0  )	//Same as above
 		{
 			sampleData(&Sensorlist[1]);
+			//float input1 = 1;
+			Sensorlist[0].filterValue.floatVal = calculateFilterAlternative(Sensorlist[1].filterValue.floatVal, Sensorlist[1].filterPt, &(Sensorlist[1].bufferList));
 			samplingCounter2 = 0;
 		}
 //-------------------- Transmitting data ------------------- // 
 		if (transmitCounter1 >= Sensorlist[0].period && Sensorlist[0].period != 0)				//Determines if it is time to transmit data for sensor 1. 
 		{
-			sendFilteretData(&Sensorlist[0]);													//Sending the data. The data have been converted using the polynomial and filtered. 
+			sendFilteretData(&Sensorlist[0]);//Sending the data. The data have been converted using the polynomial and filtered. 
 			transmitCounter1=0;
 		}
 		if (transmitCounter2 >= Sensorlist[1].period && Sensorlist[1].period != 0)				//Same as above.
@@ -174,15 +192,18 @@ ISR(TIMER0_COMPA_vect)			//Timer interrupt (1kHz)
 
 ISR( CAN_INT_vect )				//Receive interrupt
 {
+	bit_set(PORTD,BIT(7));
+	uint8_t saveCanpage = CANPAGE;
 	//receivedMessages++;			// Inc receivedMessages which will be used in main loop.
 	uint8_t HPMOb = (CANHPMOB & 0xF0)>>4;
 	transfer_data((Sensorlist[HPMOb].receiveMOb));
 	
 	decodeMessage2(&Sensorlist[HPMOb]);
-	bit_flip(PORTD,BIT(7));
+	CANPAGE = saveCanpage;
+	bit_clear(PORTD,BIT(7));
 }
 
-ISR(ADC_vect)
-{
-	
-}
+//ISR(ADC_vect)
+//{
+	//
+//}
