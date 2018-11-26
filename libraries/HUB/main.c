@@ -5,15 +5,15 @@
  * Author : Jakob
  */ 
 
+#define NUMBER_OF_RECEIVEMOBS 5
 #include <avr/io.h>
 #include "CAN_drv.h"
 #include "HUB_lib.h"
 #include "payloadProtocol.h"
 #include "alertFunction.h"
-#include "Timer_drv.h"
-#define NUMBER_OF_SENSOR 3
-#define NUMBER_OF_RECEIVEMOBS 5
- 
+#include "Timer_drv.h" //test
+
+
 volatile uint8_t tick; 
 volatile uint8_t heartBeatSCS; 
 volatile uint8_t heartBeatReg; 
@@ -72,13 +72,13 @@ heartBeatSCS = 0;
 
 
 //volatile sensorData sensorList[NUMBER_OF_SENSOR];
-floatUnion coefList1[2]; 
+floatUnion coefList1[2];
 floatUnion coefList2[2];
 floatUnion coefList3[2];
 
 
-coefList1[0].floatVal = 23.545; 
-coefList1[1].floatVal = 343.214; 
+coefList1[0].floatVal = 23.545;
+coefList1[1].floatVal = 343.214;
 
 coefList2[0].floatVal = 19.545;
 coefList2[1].floatVal = 343.214;
@@ -88,38 +88,38 @@ coefList3[1].floatVal = 343.214;
 //Setup sensorData structs
 
 sensorList[0].sensorStruct.CAN_ID = 0x0001;
-sensorList[0].sensorStruct.samplingfreq = 2; 
+sensorList[0].sensorStruct.samplingfreq = 2;
 sensorList[0].sensorStruct.period = 100;
-sensorList[0].sensorStruct.cutOffFreq = 2; 
-sensorList[0].sensorStruct.unit = celsius; 
+sensorList[0].sensorStruct.cutOffFreq = 2;
+sensorList[0].sensorStruct.unit = celsius;
 sensorList[0].sensorStruct.sensor_Type = other_sensor;
 sensorList[0].sensorStruct.totalNumberOfpolynomials = 2;
-sensorList[0].sensorStruct.polynomialList = &coefList1[0]; 
+sensorList[0].sensorStruct.polynomialList = &coefList1[0];
 sensorList[0].ACK = 0;
 sensorList[0].data = 0;
-sensorList[0].isSCS = 1; 
+sensorList[0].isSCS = 1;
 
 
 sensorList[1].sensorStruct.CAN_ID = 0x0002;
 sensorList[1].sensorStruct.samplingfreq = 2;
-sensorList[1].sensorStruct.period = 100; 
-sensorList[1].sensorStruct.cutOffFreq = 2; 
+sensorList[1].sensorStruct.period = 100;
+sensorList[1].sensorStruct.cutOffFreq = 2;
 sensorList[1].sensorStruct.unit = degrees;
 sensorList[1].sensorStruct.sensor_Type = thermistor;
 sensorList[1].sensorStruct.totalNumberOfpolynomials = 2;
-sensorList[1].sensorStruct.polynomialList = &coefList2[0]; 
+sensorList[1].sensorStruct.polynomialList = &coefList2[0];
 sensorList[1].data = 0;
-sensorList[1].ACK = 0;  
+sensorList[1].ACK = 0;
 sensorList[1].isSCS = 0;
 
 sensorList[2].sensorStruct.CAN_ID = 0x00CC;
 sensorList[2].sensorStruct.samplingfreq = 2;
-sensorList[2].sensorStruct.period = 2; 
-sensorList[2].sensorStruct.cutOffFreq = 2; 
+sensorList[2].sensorStruct.period = 2;
+sensorList[2].sensorStruct.cutOffFreq = 2;
 sensorList[2].sensorStruct.unit = percentage;
 sensorList[2].sensorStruct.sensor_Type = potentiometer;
 sensorList[2].sensorStruct.totalNumberOfpolynomials = 2;
-sensorList[2].sensorStruct.polynomialList = &coefList3[0]; 
+sensorList[2].sensorStruct.polynomialList = &coefList3[0];
 sensorList[2].data = 0;
 sensorList[2].isSCS = 0;
 
@@ -138,10 +138,8 @@ transmitMOb.id = 0x0000; //reset CAN-id
 
 while(1)
 {
-
 	if(tick > 0)
 	{
-    
 		if(heartBeatSCS > 20)
 		{
 			if (heartBeatReg > 5)
@@ -156,34 +154,24 @@ while(1)
 				}
 			heartBeatReg = 0; 
 			}
-
 			else
 			{
 				for (i = 0; i < NUMBER_OF_SENSOR; i++)
 				{
-
 					if(sensorList[i].isSCS == 1)
 					{
-				
 						if(sensorList[i].numberOfMessages == 0)
 						{
 							//Send alert
 						}
-
 						sensorList[i].numberOfMessages = 0; 
 					}
-
 				}
 			}
 			heartBeatReg++; 
 			heartBeatSCS = 0; 
 		}
-
-
-
 	}
-
-
 	heartBeatSCS++; 
 	tick--; 
 }
@@ -195,13 +183,8 @@ void chip_init(void){
 
 	//***** Chip initialization
 	DDRC = 4; //Set TXCAN as output and RXCAN as input
-	
 	bit_set(DDRD, BIT(1));
 	bit_set(DDRD, BIT(7));
-	
-	//bit_set(PORTD, BIT(1));
-	//bit_set(PORTD, BIT(7));
-
 }
 
 
@@ -209,7 +192,6 @@ void chip_init(void){
 ISR(TIMER0_COMPA_vect)
 {
 	tick++;
-
 }
 
 ISR( CAN_INT_vect )
@@ -221,28 +203,28 @@ ISR( CAN_INT_vect )
 	switch(receiveMObs[HPMOb].pt_data[0] & 0xFF)
 	{
 		case 0x30:
-
+		{
 			updateData(sensorList, &receiveMObs[HPMOb]); 
 			break; 
-
+		}
 		case 0xC1://ACK FROM NODE
-
+		{
 			ACKnode(sensorList, &receiveMObs[HPMOb]); 
 			break; 
-	
-		case 0xA0: 
-			alertFunction();
-			break;//ERROR SIGNAL 
-
-
-		default: 
-		break; 
-
 		}
-
-		bit_clear(PORTD, BIT(7));
-	//
-				//bit_set(PORTD, BIT(7)); 
-			//updateData(sensorList, receiveMObs);
-			//bit_clear(PORTD, BIT(7));
+		case 0xA0: //ERROR SIGNAL 
+		{
+			alertFunction();
+			break;//ERROR SIGNAL
+		}
+		case 0xC8: // Sensor Requester
+		{
+			sensorRequesterSetup(sensorList, &receiveMObs[HPMOb],&transmitMOb);
+			break;
+		}
+		default: 
+		{
+			break; 
+		}
+		}
 }

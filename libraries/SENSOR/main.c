@@ -105,8 +105,7 @@ int main(void)
 	sei();					// Global interrupt enable
 	
 	while(tick<255)
-	{
-		
+	{	
 	}
 	
 	if(Sensorlist[0].sensorSetupBool == 0)
