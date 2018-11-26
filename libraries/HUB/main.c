@@ -77,14 +77,14 @@ floatUnion coefList2[2];
 floatUnion coefList3[2];
 
 
-coefList1[0].floatVal = 23.545;
-coefList1[1].floatVal = 343.214;
+coefList1[0].floatVal = 0;
+coefList1[1].floatVal = 1;
 
-coefList2[0].floatVal = 19.545;
-coefList2[1].floatVal = 343.214;
+coefList2[0].floatVal = 0;
+coefList2[1].floatVal = 1;
 
-coefList3[0].floatVal = 300.545;
-coefList3[1].floatVal = 343.214;
+coefList3[0].floatVal = 0;
+coefList3[1].floatVal = 1;
 //Setup sensorData structs
 
 sensorList[0].sensorStruct.CAN_ID = 0x0001;

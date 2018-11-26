@@ -11,7 +11,7 @@
 #ifndef HUB_LIB_H_
 #define HUB_LIB_H_
 
-#define NUMBER_OF_SENSOR 2
+#define NUMBER_OF_SENSOR 3
 
 #include "payloadProtocol.h"
 
