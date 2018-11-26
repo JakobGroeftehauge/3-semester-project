@@ -150,7 +150,7 @@ while(1)
 		{
 			sampleData(&Sensorlist[0]);
 			//float input0 = 1;
-			Sensorlist[0].filterValue.floatVal = calculateFilterAlternative(Sensorlist[0].filterValue.floatVal, Sensorlist[0].filterPt, &(Sensorlist[0].bufferList));															//Samples the data and filter it. 
+			//Sensorlist[0].filterValue.floatVal = calculateFilterAlternative(Sensorlist[0].filterValue.floatVal, Sensorlist[0].filterPt, &(Sensorlist[0].bufferList));															//Samples the data and filter it. 
 			samplingCounter1 = 0;	
 			
 		}
@@ -158,7 +158,7 @@ while(1)
 		{
 			sampleData(&Sensorlist[1]);
 			//float input1 = 1;
-			Sensorlist[0].filterValue.floatVal = calculateFilterAlternative(Sensorlist[1].filterValue.floatVal, Sensorlist[1].filterPt, &(Sensorlist[1].bufferList));
+			//Sensorlist[0].filterValue.floatVal = calculateFilterAlternative(Sensorlist[1].filterValue.floatVal, Sensorlist[1].filterPt, &(Sensorlist[1].bufferList));
 			samplingCounter2 = 0;
 		}
 //-------------------- Transmitting data ------------------- // 
