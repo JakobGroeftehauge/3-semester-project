@@ -135,7 +135,7 @@ int main(void)
 while(1)
 {		
 	
-	bit_set(PORTD,BIT(1));
+	//bit_set(PORTD,BIT(1));
 	
 	if (tick>=1)			// Timer interrupt counter (1ms)
 	{
@@ -148,11 +148,12 @@ while(1)
 //---------------------- Sampling data ------------------- // 		
 		if (samplingCounter1 >= Sensorlist[0].samplingfreq && Sensorlist[0].samplingfreq !=0 )	//Determines if it is time to sample data for sensor 1. 
 		{
+			//bit_set(PORTD,BIT(7));
 			sampleData(&Sensorlist[0]);
 			//float input0 = 1;
 			//Sensorlist[0].filterValue.floatVal = calculateFilterAlternative(Sensorlist[0].filterValue.floatVal, Sensorlist[0].filterPt, &(Sensorlist[0].bufferList));															//Samples the data and filter it. 
 			samplingCounter1 = 0;	
-			
+			//bit_clear(PORTD,BIT(7));
 		}
 		if (samplingCounter2 >= Sensorlist[1].samplingfreq && Sensorlist[1].samplingfreq !=0  )	//Same as above
 		{

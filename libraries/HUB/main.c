@@ -199,9 +199,9 @@ ISR(TIMER0_COMPA_vect)
 	tick++;
 }
 
-ISR( CAN_INT_vect )
+ISR( CAN_INT_vect ) //Receive interrupt
 {
-	//bit_set(PORTD, BIT(7));
+	bit_set(PORTD, BIT(7));
 	uint8_t HPMOb = (CANHPMOB & 0xF0) >> 4;
 	transfer_data(&receiveMObs[HPMOb]);
 	
@@ -221,7 +221,7 @@ ISR( CAN_INT_vect )
 		{
 			//alertFunction();
 			increaseErrorCounter(sensorList, &receiveMObs[HPMOb], &transmitMOb);
-			bit_flip(PORTD, BIT(7));
+			//bit_flip(PORTD, BIT(7));
 			break;//ERROR SIGNAL
 		}
 		case 0xC8: // Sensor Requester
@@ -234,4 +234,5 @@ ISR( CAN_INT_vect )
 			break; 
 		}
 		}
+	bit_clear(PORTD,BIT(7));
 }
