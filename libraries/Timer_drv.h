@@ -38,7 +38,7 @@
 // 0<<OCIE0A = Timer/Counter Output Compare Match A Interrupt Enable (USE OCR0A (IF OCR0A=124 -> 1000Hz) –> Output Compare Register A)
 // 0<<TOIE0  = Timer/Counter0 Overflow Interrupt NOT Enable
 
-#define  Timer0_1ms() (OCR0A=250); //250
+#define  Timer0_1ms() (OCR0A=124); //250
 
 extern void TimerSetup(); 
 
