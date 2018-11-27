@@ -180,7 +180,7 @@ void sendSensorRequesterSetup(sensor_at_node* Sensor)
 void assignFilter(sensor_at_node* sensor, Filter* filterlist, uint8_t antalFiltre)
 {
 	
-	sensor->filterPt = filterlist;
+	//sensor->filterPt = filterlist;
 
 	uint16_t samplingPeriod = (filterlist->cutOffAt100Hz*1000)/(sensor->cutOffFreq*100); 
 	sensor->samplingfreq = samplingPeriod & 0xFF; 

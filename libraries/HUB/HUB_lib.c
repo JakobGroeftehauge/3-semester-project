@@ -66,7 +66,7 @@ void ACKnode(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb)
 
 		 if(sensorNum[i].sensorStruct.CAN_ID == receiveMOb->id)
 		 {
-			 _delay_ms(20);
+			//_delay_ms(20);
 			 sendServiceMessage(&sensorNum[i].sensorStruct, transmitMOb);
 			 return;
 		 }
@@ -92,7 +92,7 @@ void ACKnode(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb)
 		 transmitMOb->id = sensorAtNode->CAN_ID;
 		 
 		 can_cmd(transmitMOb);
-		 _delay_ms(20);
+		 //_delay_ms(20);
 	 }
 
 	 transmitMOb->pt_data[0] = 0b11000011;

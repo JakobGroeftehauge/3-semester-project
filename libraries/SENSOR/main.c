@@ -27,8 +27,7 @@ volatile st_cmd_t receiveMObs[NUMBER_OF_SENSOR];
 volatile uint8_t transmitBuffers[NUMBER_OF_SENSOR][MSG_SIZE];
 volatile st_cmd_t transmitMObs[NUMBER_OF_SENSOR];
 volatile float polynomialLists[NUMBER_OF_SENSOR][polynomialSize];
-Filter lowpass1;
-
+Filter lowPass1 = {6, 10,{{-0.978726409252575,0.251141008333413},{-1.124780222959660,0.415320779783934},{-1.409974885144777,0.749736858010378}},{{1, 1.682614394119966, 1},{1, 0.434137484442287, 1},{0.001650259552247, -0.0003005929665964,0.001650259552249}}};
 //NEEDS TO BE IMPLEMENTED
 	//Make the sensor CAN-IDs be based on some kind of offset
 	//Maybe allow the CAN-IDs to no be directly after each other.
@@ -95,13 +94,20 @@ int main(void)
 	}
 
 	//-----------------------------SETUP FILTER-------------------------------//
-		Filter lowPass1 = {6, 10,{{-0.978726409252575,0.251141008333413},{-1.124780222959660,0.415320779783934},{-1.409974885144777,0.749736858010378}},{{1, 1.682614394119966, 1},{1, 0.434137484442287, 1},{0.001650259552247, -0.0003005929665964,0.001650259552249}}};
-
+		
+// 		lowPass1.order =6;
+// 		lowPass1.cutOffAt100Hz = 10;
+// 		lowPass1.aCoefs[0] = {-0.978726409252575,0.251141008333413};
+// 		lowPass1.aCoefs[1] = {-1.124780222959660,0.415320779783934};
+// 		lowPass1.aCoefs[2] = {-1.409974885144777,0.749736858010378};
+// 		lowPass1.bCoefs[0] = {1, 1.682614394119966, 1};
+// 		lowPass1.bCoefs[1] = {1, 0.434137484442287, 1};
+// 		lowPass1.bCoefs[2] = {0.001650259552247, -0.0003005929665964,0.001650259552249};
 
 			for (uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
 			{
 				//assignFilter(&Sensorlist[i], &lowPass1, 1);
-				//Sensorlist[i].filterPt = &lowPass1;
+				Sensorlist[i].filterPt = &lowPass1;
 				flushBuffers(&(Sensorlist[i].bufferList[0]),6);
 			}
 	//------------------- end of default settings for sensor ---------------- // 
@@ -200,7 +206,7 @@ ISR( CAN_INT_vect )				//Receive interrupt
 	uint8_t HPMOb = (CANHPMOB & 0xF0)>>4;
 	transfer_data((Sensorlist[HPMOb].receiveMOb));
 	
-	decodeMessage2(&Sensorlist[HPMOb], &lowpass1);
+	decodeMessage2(&Sensorlist[HPMOb], &lowPass1);
 	CANPAGE = saveCanpage;
 	bit_clear(PORTD,BIT(7));
 }

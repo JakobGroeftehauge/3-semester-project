@@ -115,7 +115,7 @@ sensorList[1].data = 0;
 sensorList[1].ACK = 0;
 sensorList[1].isSCS = 0;
 
-sensorList[2].sensorStruct.CAN_ID = 0x00CC;
+sensorList[2].sensorStruct.CAN_ID = 0x0003;
 sensorList[2].sensorStruct.samplingfreq = 2;
 sensorList[2].sensorStruct.period = 2;
 sensorList[2].sensorStruct.cutOffFreq = 2;
@@ -126,6 +126,55 @@ sensorList[2].sensorStruct.polynomialList = &coefList3[0];
 sensorList[2].numberOfErrors = 0;
 sensorList[2].data = 0;
 sensorList[2].isSCS = 0;
+
+sensorList[3].sensorStruct.CAN_ID = 0x0004;
+sensorList[3].sensorStruct.samplingfreq = 2;
+sensorList[3].sensorStruct.period = 2;
+sensorList[3].sensorStruct.cutOffFreq = 2;
+sensorList[3].sensorStruct.unit = percentage;
+sensorList[3].sensorStruct.sensor_Type = potentiometer;
+sensorList[3].sensorStruct.totalNumberOfpolynomials = 2;
+sensorList[3].sensorStruct.polynomialList = &coefList3[0];
+sensorList[3].numberOfErrors = 0;
+sensorList[3].data = 0;
+sensorList[3].isSCS = 0;
+
+sensorList[4].sensorStruct.CAN_ID = 0x0005;
+sensorList[4].sensorStruct.samplingfreq = 2;
+sensorList[4].sensorStruct.period = 2;
+sensorList[4].sensorStruct.cutOffFreq = 2;
+sensorList[4].sensorStruct.unit = percentage;
+sensorList[4].sensorStruct.sensor_Type = potentiometer;
+sensorList[4].sensorStruct.totalNumberOfpolynomials = 2;
+sensorList[4].sensorStruct.polynomialList = &coefList3[0];
+sensorList[4].numberOfErrors = 0;
+sensorList[4].data = 0;
+sensorList[4].isSCS = 0;
+
+sensorList[5].sensorStruct.CAN_ID = 0x0006;
+sensorList[5].sensorStruct.samplingfreq = 2;
+sensorList[5].sensorStruct.period = 2;
+sensorList[5].sensorStruct.cutOffFreq = 2;
+sensorList[5].sensorStruct.unit = percentage;
+sensorList[5].sensorStruct.sensor_Type = potentiometer;
+sensorList[5].sensorStruct.totalNumberOfpolynomials = 2;
+sensorList[5].sensorStruct.polynomialList = &coefList3[0];
+sensorList[5].numberOfErrors = 0;
+sensorList[5].data = 0;
+sensorList[5].isSCS = 0;
+
+sensorList[6].sensorStruct.CAN_ID = 0x0007;
+sensorList[6].sensorStruct.samplingfreq = 2;
+sensorList[6].sensorStruct.period = 2;
+sensorList[6].sensorStruct.cutOffFreq = 2;
+sensorList[6].sensorStruct.unit = percentage;
+sensorList[6].sensorStruct.sensor_Type = potentiometer;
+sensorList[6].sensorStruct.totalNumberOfpolynomials = 2;
+sensorList[6].sensorStruct.polynomialList = &coefList3[0];
+sensorList[6].numberOfErrors = 0;
+sensorList[6].data = 0;
+sensorList[6].isSCS = 0;
+
 
 
 //bit_set(PORTD, BIT(1));
