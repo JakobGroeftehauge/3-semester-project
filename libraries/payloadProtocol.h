@@ -59,7 +59,7 @@ extern void	ACK_TO_Hub(sensor_at_node* Sensor);
 
 extern void decodeHubServiceMessage(sensor_at_node* sensor);
 
-extern void decodeMessage2(sensor_at_node* sensor);
+extern void decodeMessage2(sensor_at_node* sensor, Filter* filter);
 
 extern float runPolynomial(sensor_at_node* sensor);
 
