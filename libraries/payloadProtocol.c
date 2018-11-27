@@ -8,6 +8,7 @@
 #include <math.h>
 
 
+
 void decodeCoefficient(sensor_at_node* Sensor)
 {	
 	uint8_t coeffNumber =(Sensor->receiveMOb->pt_data[1]& 0xF0)/16;

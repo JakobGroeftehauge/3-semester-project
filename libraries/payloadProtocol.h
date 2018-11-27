@@ -11,8 +11,6 @@
 #include "CAN_lib.h"
 #include "filter.h"
 
-
-
 typedef enum{
 	thermistor,
 	potentiometer,

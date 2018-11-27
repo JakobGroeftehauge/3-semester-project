@@ -15,6 +15,7 @@
 #include "ADC_drv.h"
 #include "Sampling_Data.h"
 #define NUMBER_OF_SENSOR 2
+#define NUMBER_OF_RECEIVEMOBS 4
 #define Sensor1_ID 0x1
 #define Sensor2_ID 0x2
 #define polynomialSize 8
@@ -22,12 +23,14 @@ volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
 volatile sensor_at_node Sensorlist[NUMBER_OF_SENSOR];
 volatile uint8_t data[MSG_SIZE];
-volatile uint8_t receiveBuffers[NUMBER_OF_SENSOR][MSG_SIZE];
-volatile st_cmd_t receiveMObs[NUMBER_OF_SENSOR];
+volatile uint8_t receiveBuffers[NUMBER_OF_RECEIVEMOBS][MSG_SIZE];
+volatile st_cmd_t receiveMObs[NUMBER_OF_RECEIVEMOBS];
 volatile uint8_t transmitBuffers[NUMBER_OF_SENSOR][MSG_SIZE];
 volatile st_cmd_t transmitMObs[NUMBER_OF_SENSOR];
 volatile float polynomialLists[NUMBER_OF_SENSOR][polynomialSize];
 Filter lowPass1 = {6, 10,{{-0.978726409252575,0.251141008333413},{-1.124780222959660,0.415320779783934},{-1.409974885144777,0.749736858010378}},{{1, 1.682614394119966, 1},{1, 0.434137484442287, 1},{0.001650259552247, -0.0003005929665964,0.001650259552249}}};
+
+
 
 //NEEDS TO BE IMPLEMENTED
 	//Make the sensor CAN-IDs be based on some kind of offset
@@ -60,22 +63,42 @@ int main(void)
 	
 	
 	//Setup receive MOb
-
-	for (uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
+	
+	for (uint8_t i = 0; i < NUMBER_OF_RECEIVEMOBS; i++)
 	{
 		receiveMObs[i].pt_data = &receiveBuffers[i];
 		receiveMObs[i].MObNumber = i;
 		receiveMObs[i].dlc = MSG_SIZE;
 		receiveMObs[i].cmd = RX;
 		receiveMObs[i].mask = 0b11111111;
-		receiveMObs[i].id = Sensorlist[i].CAN_ID;
+		receiveMObs[i].newData = 0;
+		if (i < NUMBER_OF_RECEIVEMOBS/NUMBER_OF_SENSOR)
+		{
+			receiveMObs[i].id = Sensorlist[0].CAN_ID;
+		}
+		else
+		{
+			receiveMObs[i].id = Sensorlist[1].CAN_ID;
+		}	
 	}
-		
+
+	// ------- More similar to old approach
+	//for (uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
+	//{
+		//receiveMObs[i].pt_data = &receiveBuffers[i];
+		//receiveMObs[i].MObNumber = i;
+		//receiveMObs[i].dlc = MSG_SIZE;
+		//receiveMObs[i].cmd = RX;
+		//receiveMObs[i].mask = 0b11111111;
+		//receiveMObs[i].id = Sensorlist[i].CAN_ID;
+		//receiveMObs[i].newData = 0;
+	//}
+		//
 	//setup transmit MOb
 	for (uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
 	{
 		transmitMObs[i].pt_data = &transmitBuffers[i];
-		transmitMObs[i].MObNumber = NUMBER_OF_SENSOR + i;
+		transmitMObs[i].MObNumber = NUMBER_OF_RECEIVEMOBS + i;
 		transmitMObs[i].dlc = MSG_SIZE;
 		transmitMObs[i].cmd = TX;
 		transmitMObs[i].id = Sensorlist[i].CAN_ID;
@@ -96,7 +119,6 @@ int main(void)
 
 	//-----------------------------SETUP FILTER-------------------------------//
 		
-
 
 			for (uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
 			{
@@ -137,6 +159,34 @@ while(1)
 {		
 	
 	bit_set(PORTD,BIT(1));
+	
+	for (uint8_t i = 0; i < NUMBER_OF_RECEIVEMOBS; i++)
+	{
+		if (receiveMObs[i].newData == 1)
+		{
+			for (uint8_t u = 0; u < NUMBER_OF_SENSOR; u++)
+			{
+				if (receiveMObs[i].id == Sensorlist[u].CAN_ID)
+				{
+					decodeMessage2(&Sensorlist[u], &lowPass1);
+					receiveMObs[i].newData = 0;
+				}
+			}
+
+		}
+			
+	}
+	
+	// ------ More similar to old approach, uncomment if new doesnt work --------------
+	//for (uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
+	//{
+		//if (Sensorlist[i].receiveMOb->newData == 1)
+		//{
+			//decodeMessage2(&Sensorlist[i], &lowPass1);
+			//Sensorlist[i].receiveMOb->newData == 0;
+		//}
+		//
+	//}
 	
 	if (tick>=1)			// Timer interrupt counter (1ms)
 	{
@@ -197,9 +247,14 @@ ISR( CAN_INT_vect )				//Receive interrupt
 	uint8_t saveCanpage = CANPAGE;
 	//receivedMessages++;			// Inc receivedMessages which will be used in main loop.
 	uint8_t HPMOb = (CANHPMOB & 0xF0)>>4;
-	transfer_data((Sensorlist[HPMOb].receiveMOb));
 	
-	decodeMessage2(&Sensorlist[HPMOb], &lowPass1);
+	// New approach, logic in main loop
+	transfer_data(&receiveMObs[HPMOb]);
+	
+	//----------- Similar to old approach --------------
+	//transfer_data((Sensorlist[HPMOb].receiveMOb));
+	//
+	//decodeMessage2(&Sensorlist[HPMOb], &lowPass1);
 	CANPAGE = saveCanpage;
 	bit_clear(PORTD,BIT(7));
 }
