@@ -27,6 +27,7 @@ volatile st_cmd_t receiveMObs[NUMBER_OF_SENSOR];
 volatile uint8_t transmitBuffers[NUMBER_OF_SENSOR][MSG_SIZE];
 volatile st_cmd_t transmitMObs[NUMBER_OF_SENSOR];
 volatile float polynomialLists[NUMBER_OF_SENSOR][polynomialSize];
+Filter lowpass1;
 
 //NEEDS TO BE IMPLEMENTED
 	//Make the sensor CAN-IDs be based on some kind of offset
@@ -99,7 +100,7 @@ int main(void)
 
 			for (uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
 			{
-				assignFilter(&Sensorlist[i], &lowPass1, 1);
+				//assignFilter(&Sensorlist[i], &lowPass1, 1);
 				//Sensorlist[i].filterPt = &lowPass1;
 				flushBuffers(&(Sensorlist[i].bufferList[0]),6);
 			}
@@ -199,7 +200,7 @@ ISR( CAN_INT_vect )				//Receive interrupt
 	uint8_t HPMOb = (CANHPMOB & 0xF0)>>4;
 	transfer_data((Sensorlist[HPMOb].receiveMOb));
 	
-	decodeMessage2(&Sensorlist[HPMOb]);
+	decodeMessage2(&Sensorlist[HPMOb], &lowpass1);
 	CANPAGE = saveCanpage;
 	bit_clear(PORTD,BIT(7));
 }

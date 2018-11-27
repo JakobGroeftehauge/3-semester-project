@@ -129,7 +129,7 @@ void shutDownSensor(sensor_at_node* sensor)
 
 //Decoding message from hub and determines what kind of message type it is.
 
-void decodeMessage2(sensor_at_node* sensor) //
+void decodeMessage2(sensor_at_node* sensor, Filter* filter) //
 {
 		
 	switch (sensor->receiveMOb->pt_data[0])
@@ -142,6 +142,7 @@ void decodeMessage2(sensor_at_node* sensor) //
 		case 0b11000011: // ID FOR A SERVICE MESSAGE
 		{
 				decodeHubServiceMessage(sensor);
+				assignFilter(sensor, filter, 1);
 				checkParameters(sensor);
 				break;
 		}
