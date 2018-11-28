@@ -17,7 +17,7 @@
 
 typedef struct {
 	//uint16_t id;
-	uint8_t data;
+	floatUnion data;
 	uint8_t numberOfMessages;
 	uint8_t isSCS;
 	uint8_t ACK; 
