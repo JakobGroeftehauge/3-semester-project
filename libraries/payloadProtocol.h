@@ -47,7 +47,7 @@ typedef  struct {
 	bufferElement	bufferList[5];		// Indicates which pin is used for the sensor
 }sensor_at_node ;
 
-extern void decodeCoefficient(sensor_at_node* sensor);
+extern void decodeCoefficient(sensor_at_node* sensor, st_cmd_t* receiveMOb);
 
 extern void sendError(sensor_at_node* Sensor, uint8_t errorType);
 
@@ -55,9 +55,9 @@ extern void checkParameters(sensor_at_node* Sensor);			//NOT DONE
 
 extern void	ACK_TO_Hub(sensor_at_node* Sensor);
 
-extern void decodeHubServiceMessage(sensor_at_node* sensor);
+extern void decodeHubServiceMessage(sensor_at_node* sensor, st_cmd_t* receiveMOb);
 
-extern void decodeMessage2(sensor_at_node* sensor, Filter* filter);
+extern void decodeMessage2(sensor_at_node* sensor, st_cmd_t* receiveMOb, Filter* filter);
 
 extern float runPolynomial(sensor_at_node* sensor);
 

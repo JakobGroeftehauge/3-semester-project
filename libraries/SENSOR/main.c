@@ -79,7 +79,7 @@ int main(void)
 		else
 		{
 			receiveMObs[i].id = Sensorlist[1].CAN_ID;
-		}	
+		}
 	}
 
 	// ------- More similar to old approach
@@ -134,6 +134,8 @@ int main(void)
 	TimerSetup();				// Timer Drive: Will start a timer with a 1kHz interrupt.
 	can_cmd(&receiveMObs[0]);	// Setting up receiveMOb
 	can_cmd(&receiveMObs[1]);
+	can_cmd(&receiveMObs[2]);	// Setting up receiveMOb
+	can_cmd(&receiveMObs[3]);
 	//bit_set(PORTD,BIT(1));
 	sei();					// Global interrupt enable
 	
@@ -164,11 +166,12 @@ while(1)
 	{
 		if (receiveMObs[i].newData == 1)
 		{
+			bit_set(PORTD,BIT(7));
 			for (uint8_t u = 0; u < NUMBER_OF_SENSOR; u++)
 			{
 				if (receiveMObs[i].id == Sensorlist[u].CAN_ID)
 				{
-					decodeMessage2(&Sensorlist[u], &lowPass1);
+					decodeMessage2(&Sensorlist[u], &receiveMObs[i], &lowPass1);
 					receiveMObs[i].newData = 0;
 				}
 			}
