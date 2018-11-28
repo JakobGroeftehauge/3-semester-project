@@ -37,6 +37,7 @@ typedef  struct{
 	uint8_t* pt_data;
 	uint8_t MObNumber; 
 	uint8_t status;  
+	uint8_t newData;
 				} st_cmd_t;
 
 

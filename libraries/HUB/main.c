@@ -97,7 +97,7 @@ sensorList[0].sensorStruct.totalNumberOfpolynomials = 2;
 sensorList[0].sensorStruct.polynomialList = &coefList1[0];
 sensorList[0].numberOfErrors = 0;
 sensorList[0].ACK = 0;
-sensorList[0].data = 0;
+sensorList[0].data.binVal = 0;
 sensorList[0].isSCS = 1;
 
 
@@ -111,7 +111,7 @@ sensorList[1].sensorStruct.sensor_Type = thermistor;
 sensorList[1].sensorStruct.totalNumberOfpolynomials = 2;
 sensorList[1].sensorStruct.polynomialList = &coefList2[0];
 sensorList[1].numberOfErrors = 0;
-sensorList[1].data = 0;
+sensorList[1].data.binVal = 0;
 sensorList[1].ACK = 0;
 sensorList[1].isSCS = 0;
 
@@ -124,7 +124,7 @@ sensorList[2].sensorStruct.sensor_Type = potentiometer;
 sensorList[2].sensorStruct.totalNumberOfpolynomials = 2;
 sensorList[2].sensorStruct.polynomialList = &coefList3[0];
 sensorList[2].numberOfErrors = 0;
-sensorList[2].data = 0;
+sensorList[2].data.binVal = 0;
 sensorList[2].isSCS = 0;
 
 

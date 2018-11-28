@@ -8,15 +8,16 @@
 #include <math.h>
 
 
-void decodeCoefficient(sensor_at_node* Sensor)
+
+void decodeCoefficient(sensor_at_node* Sensor, st_cmd_t* receiveMOb)
 {	
-	uint8_t coeffNumber =(Sensor->receiveMOb->pt_data[1]& 0xF0)/16;
+	uint8_t coeffNumber =(receiveMOb->pt_data[1]& 0xF0)/16;
 	
-	Sensor->totalNumberOfpolynomials = Sensor->receiveMOb->pt_data[1]&0b00001111;
-	Sensor->polynomialList[coeffNumber].binVal = Sensor->receiveMOb->pt_data[2];
-	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 8  ) + Sensor->receiveMOb->pt_data[3];
-	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 8 ) + Sensor->receiveMOb->pt_data[4];
-	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 8 ) + Sensor->receiveMOb->pt_data[5];
+	Sensor->totalNumberOfpolynomials = receiveMOb->pt_data[1]&0b00001111;
+	Sensor->polynomialList[coeffNumber].binVal = receiveMOb->pt_data[2];
+	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 8  ) + receiveMOb->pt_data[3];
+	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 8 ) + receiveMOb->pt_data[4];
+	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 8 ) + receiveMOb->pt_data[5];
 
 }
 
@@ -108,12 +109,12 @@ void sendFilteretData(sensor_at_node* Sensor)
 
 // decodeHubServiceMessage(uint8_t message_array[8],sensor_at_node* sensor) takes the array of message bytes
 // and fills out the given sensor struct
-void decodeHubServiceMessage(sensor_at_node* sensor)
+void decodeHubServiceMessage(sensor_at_node* sensor, st_cmd_t* receiveMOb)
 {
-	sensor->sensor_Type = (sensor->receiveMOb->pt_data[1] & 0b11110000)/16; // Shift left nibble to the right with /16
-	sensor->unit = sensor->receiveMOb->pt_data[1] & 0b00001111;
-	sensor->period = sensor->receiveMOb->pt_data[2];
-	sensor->cutOffFreq = sensor->receiveMOb->pt_data[3];
+	sensor->sensor_Type = (receiveMOb->pt_data[1] & 0b11110000)/16; // Shift left nibble to the right with /16
+	sensor->unit = receiveMOb->pt_data[1] & 0b00001111;
+	sensor->period = receiveMOb->pt_data[2];
+	sensor->cutOffFreq = receiveMOb->pt_data[3];
 }
 
 // shutDownSensor will shut down the node and set default values in struct
@@ -129,19 +130,19 @@ void shutDownSensor(sensor_at_node* sensor)
 
 //Decoding message from hub and determines what kind of message type it is.
 
-void decodeMessage2(sensor_at_node* sensor, Filter* filter) //
+void decodeMessage2(sensor_at_node* sensor, st_cmd_t* receiveMOb, Filter* filter) //
 {
 		
-	switch (sensor->receiveMOb->pt_data[0])
+	switch (receiveMOb->pt_data[0])		
 	{
 		case 0b11000101: //ID for setup of Coefficients
 		{
-				decodeCoefficient(sensor);
+				decodeCoefficient(sensor, receiveMOb);
 				break;
 		}
 		case 0b11000011: // ID FOR A SERVICE MESSAGE
 		{
-				decodeHubServiceMessage(sensor);
+				decodeHubServiceMessage(sensor, receiveMOb);
 				assignFilter(sensor, filter, 1);
 				checkParameters(sensor);
 				break;
@@ -182,7 +183,7 @@ void assignFilter(sensor_at_node* sensor, Filter* filterlist, uint8_t antalFiltr
 	
 	sensor->filterPt = filterlist;
 
-	uint16_t samplingPeriod = (filterlist->cutOffAt100Hz*1000)/(sensor->cutOffFreq*100); 
+	uint16_t samplingPeriod = (filterlist->cutOffAt100Hz*2000)/(sensor->cutOffFreq*100); 
 	sensor->samplingfreq = samplingPeriod & 0xFF; 
 
 }
