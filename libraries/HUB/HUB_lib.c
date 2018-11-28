@@ -52,6 +52,7 @@ void ACKnode(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb)
 	 if(sensorNum[i].sensorStruct.CAN_ID == receiveMOb->id)
 	 {
 		 sensorNum[i].ACK = 0x01;  //Change to support floats
+		 sensorNum[i].numberOfErrors = 0; 
 		 return;
 	 }
  }
@@ -104,4 +105,31 @@ void ACKnode(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb)
 		 transmitMOb->pt_data[i] = 0x00;
 	 }
 	 can_cmd(transmitMOb); //send last message
+ }
+
+ void increaseErrorCounter(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb, st_cmd_t* transmitMOb)
+ {
+
+	 for(volatile uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
+	 {
+
+		 if(sensorNum[i].sensorStruct.CAN_ID == receiveMOb->id)
+		 {
+			 sensorNum[i].numberOfErrors++; 
+			if(sensorNum[i].numberOfErrors >= 4)
+			{
+			sendShutdown(transmitMOb, sensorNum[i]); 
+			}			
+			 return;
+		 }
+	 }
+	 
+ }
+
+
+ void sendShutdown(st_cmd_t* transmitMOb, sensorData sensor)
+ {
+ transmitMOb->pt_data[0] = 0xC4; 
+ transmitMOb->id = sensor.sensorStruct.CAN_ID;
+ can_cmd(transmitMOb); 
  }

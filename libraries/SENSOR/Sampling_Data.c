@@ -12,6 +12,12 @@ void sampleData(sensor_at_node* sensor)
 {
 	float ADC_data=0;
 	uint16_t buffer=0;
+	static uint8_t preventWireOff = 0; 
+
+	if(preventWireOff < 101)
+	{
+	preventWireOff++; 
+	}
 	
 	
 	if (sensor->sensorNumber == 1) 
@@ -26,10 +32,10 @@ void sampleData(sensor_at_node* sensor)
 		buffer += ADCH*256;
 		ADC_data = buffer;
 		bit_set(ADCSRA,BIT(4));
-		
-		//filterfunction(ADC_data;
-		
-		sensor->filterValue.floatVal=ADC_data;	
+		//ADC_data = 200; 
+		sensor->filterValue.floatVal = calculateFilterAlternative(ADC_data, sensor->filterPt, &(sensor->bufferList));
+
+
 	} 
 	else if (sensor->sensorNumber==2)
 {	
@@ -44,12 +50,13 @@ void sampleData(sensor_at_node* sensor)
 		buffer += ADCH*256;
 		ADC_data = buffer;
 		bit_set(ADCSRA,BIT(4));
-		
-		//filterfunction(ADC_data);
-		
-		sensor->filterValue.floatVal=ADC_data;
+		//ADC_data = 200;
+		sensor->filterValue.floatVal = calculateFilterAlternative(ADC_data, sensor->filterPt, &(sensor->bufferList));
 	}
+	if(preventWireOff > 100)
+	{
 	Wire_off(ADC_data,sensor);
+	}
 }
 
 void Wire_off(uint16_t data ,sensor_at_node* sensor)
