@@ -51,7 +51,7 @@ void ACKnode(sensorData sensorNum[NUMBER_OF_SENSOR], st_cmd_t* receiveMOb)
 
 	 if(sensorNum[i].sensorStruct.CAN_ID == receiveMOb->id)
 	 {
-		 sensorNum[i].ACK = 0x01;  //Change to support floats
+		 sensorNum[i].ACK = 0x01;  
 		 sensorNum[i].numberOfErrors = 0; 
 		 return;
 	 }

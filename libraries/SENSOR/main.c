@@ -31,7 +31,7 @@ Filter lowpass1;
 
 //NEEDS TO BE IMPLEMENTED
 	//Make the sensor CAN-IDs be based on some kind of offset
-	//Maybe allow the CAN-IDs to no be directly after each other.
+	//Maybe allow the CAN-IDs to not be directly after each other.
 
 int main(void)
 {
@@ -128,10 +128,6 @@ int main(void)
 	{
 		sendSensorRequesterSetup(&Sensorlist[1]);
 	}
-
-	Sensorlist[0].samplingfreq = 100;
-	Sensorlist[1].samplingfreq = 100;
-
 //-------------------- MAIN CODE ---------------------------------//
 while(1)
 {		
@@ -165,7 +161,7 @@ while(1)
 //-------------------- Transmitting data ------------------- // 
 		if (transmitCounter1 >= Sensorlist[0].period && Sensorlist[0].period != 0)				//Determines if it is time to transmit data for sensor 1. 
 		{
-			sendFilteretData(&Sensorlist[0]);//Sending the data. The data have been converted using the polynomial and filtered. 
+			sendFilteretData(&Sensorlist[0]);								//Sending the data. The data have been converted using the polynomial and filtered. 
 			transmitCounter1=0;
 		}
 		if (transmitCounter2 >= Sensorlist[1].period && Sensorlist[1].period != 0)				//Same as above.

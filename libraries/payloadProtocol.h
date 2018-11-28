@@ -46,7 +46,7 @@ typedef  struct {
 	uint8_t			sensorNumber;			// Indicates which pin is used for the sensor
 	uint8_t			sensorSetupBool;
 	Filter*			filterPt;
-	bufferElement	bufferList[5];		// Indicates which pin is used for the sensor
+	bufferElement	bufferList[5];		
 }sensor_at_node ;
 
 extern void decodeCoefficient(sensor_at_node* sensor);
