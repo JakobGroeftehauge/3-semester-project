@@ -200,32 +200,28 @@ while(1)
 		{
 			
 			sampleData(&Sensorlist[0]);
-			//float input0 = 1;
-			//Sensorlist[0].filterValue.floatVal = calculateFilterAlternative(Sensorlist[0].filterValue.floatVal, Sensorlist[0].filterPt, &(Sensorlist[0].bufferList));															//Samples the data and filter it. 
+			sendFilteretData(&Sensorlist[0]);
 			samplingCounter1 = 0;	
 			
 			
 		}
 		if ((samplingCounter2) >= 2 && Sensorlist[1].samplingfreq !=0  )// Sensorlist[1].samplingfreq && Sensorlist[1].samplingfreq !=0  )	//Same as above
 		{
-			bit_set(PORTD,BIT(7));
 			sampleData(&Sensorlist[1]);
-			//float input1 = 1;
-			//Sensorlist[0].filterValue.floatVal = calculateFilterAlternative(Sensorlist[1].filterValue.floatVal, Sensorlist[1].filterPt, &(Sensorlist[1].bufferList));
+			
 			samplingCounter2 = 0;
-			bit_clear(PORTD,BIT(7));
 		}
 //-------------------- Transmitting data ------------------- // 
-		if ((transmitCounter1/2) >= Sensorlist[0].period && Sensorlist[0].period != 0)				//Determines if it is time to transmit data for sensor 1. 
-		{
-			sendFilteretData(&Sensorlist[0]);//Sending the data. The data have been converted using the polynomial and filtered. 
-			transmitCounter1=0;
-		}
-		if ((transmitCounter2/2) >= Sensorlist[1].period && Sensorlist[1].period != 0)				//Same as above.
-		{
-			sendFilteretData(&Sensorlist[1]);
-			transmitCounter2=0;
-		}
+// 		if ((transmitCounter1/2) >= Sensorlist[0].period && Sensorlist[0].period != 0)				//Determines if it is time to transmit data for sensor 1. 
+// 		{
+// 			sendFilteretData(&Sensorlist[0]);//Sending the data. The data have been converted using the polynomial and filtered. 
+// 			transmitCounter1=0;
+// 		}
+// 		if ((transmitCounter2/2) >= Sensorlist[1].period && Sensorlist[1].period != 0)				//Same as above.
+// 		{
+// 			sendFilteretData(&Sensorlist[1]);
+// 			transmitCounter2=0;
+// 		}
 	}
 }
 }
