@@ -175,42 +175,55 @@ transmitMOb.id = 0x0000; //reset CAN-id
 
 while(1)
 {
-	if(tick > 0)
+	bit_set(PORTD,BIT(7)); 
+	uint8_t k = 0;
+	for(uint8_t i=0;i<NUMBER_OF_SENSOR;i++)
 	{
-		if(heartBeatSCS > 20)
+		if(sensorList[i].ACK==1)
 		{
-			if (heartBeatReg > 5)
-			{
-				for(i = 0; i < NUMBER_OF_SENSOR; i++)
-				{
-				if(sensorList[i].numberOfMessages ==  0 && sensorList[i].ACK)
-				{
-				//alertFunction(); 
-				}
-				sensorList[i].numberOfMessages = 0; 
-				}
-			heartBeatReg = 0; 
-			}
-			else
-			{
-				for (i = 0; i < NUMBER_OF_SENSOR; i++)
-				{
-					if(sensorList[i].isSCS == 1)
-					{
-						if(sensorList[i].numberOfMessages == 0 && sensorList[i].ACK)
-						{
-						//alertFunction(); 
-						}
-						sensorList[i].numberOfMessages = 0; 
-					}
-				}
-			}
-			heartBeatReg++; 
-			heartBeatSCS = 0; 
+			k++;
 		}
 	}
-	heartBeatSCS++; 
-	tick--; 
+	if (k==NUMBER_OF_SENSOR)
+	{
+		bit_clear(PORTD,BIT(7));
+	}
+// 	if(tick > 0)
+// 	{
+// 		if(heartBeatSCS > 20)
+// 		{
+// 			if (heartBeatReg > 5)
+// 			{
+// 				for(i = 0; i < NUMBER_OF_SENSOR; i++)
+// 				{
+// 				if(sensorList[i].numberOfMessages ==  0 && sensorList[i].ACK)
+// 				{
+// 				//alertFunction(); 
+// 				}
+// 				sensorList[i].numberOfMessages = 0; 
+// 				}
+// 			heartBeatReg = 0; 
+// 			}
+// 			else
+// 			{
+// 				for (i = 0; i < NUMBER_OF_SENSOR; i++)
+// 				{
+// 					if(sensorList[i].isSCS == 1)
+// 					{
+// 						if(sensorList[i].numberOfMessages == 0 && sensorList[i].ACK)
+// 						{
+// 						//alertFunction(); 
+// 						}
+// 						sensorList[i].numberOfMessages = 0; 
+// 					}
+// 				}
+// 			}
+// 			heartBeatReg++; 
+// 			heartBeatSCS = 0; 
+// 		}
+// 	}
+// 	heartBeatSCS++; 
+// 	tick--; 
 }
 
 }

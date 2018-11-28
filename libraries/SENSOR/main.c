@@ -38,6 +38,7 @@ Filter lowPass1 = {6, 10,{{-0.978726409252575,0.251141008333413},{-1.12478022295
 
 int main(void)
 {
+	
 	for(uint8_t i = 0; i<polynomialSize; i++)
 	{
 		polynomialLists[0][i]=0;
@@ -224,9 +225,11 @@ while(1)
 //-------------------- Transmitting data ------------------- // 
 		if ((transmitCounter1/2) >= Sensorlist[0].period && Sensorlist[0].period != 0)				//Determines if it is time to transmit data for sensor 1. 
 		{
-			sendFilteretData(&Sensorlist[0]);//Sending the data. The data have been converted using the polynomial and filtered. 
-			transmitCounter1=0;
-		}
+			
+				sendFilteretData(&Sensorlist[0]);//Sending the data. The data have been converted using the polynomial and filtered.
+				transmitCounter1=0;
+			
+			
 		if ((transmitCounter2/2) >= Sensorlist[1].period && Sensorlist[1].period != 0)				//Same as above.
 		{
 			sendFilteretData(&Sensorlist[1]);
