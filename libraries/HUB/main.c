@@ -72,9 +72,11 @@ heartBeatSCS = 0;
 
 
 //volatile sensorData sensorList[NUMBER_OF_SENSOR];
-floatUnion coefList1[2];
+floatUnion coefList1[2]; 
 floatUnion coefList2[2];
 floatUnion coefList3[2];
+floatUnion coefList4[2];
+floatUnion coefList5[3];
 
 
 coefList1[0].floatVal = 0;
@@ -83,31 +85,38 @@ coefList1[1].floatVal = 1;
 coefList2[0].floatVal = 0;
 coefList2[1].floatVal = 1;
 
-coefList3[0].floatVal = 0;
-coefList3[1].floatVal = 1;
+coefList3[0].floatVal = -12.5;
+coefList3[1].floatVal = 25;
+
+coefList4[0].floatVal = 0;
+coefList4[1].floatVal = 1;
+
+coefList5[0].floatVal = 0;
+coefList5[1].floatVal = 2;
+coefList5[2].floatVal = 1;
 //Setup sensorData structs
 
-sensorList[0].sensorStruct.CAN_ID = 0x0001;
-sensorList[0].sensorStruct.samplingfreq = 2;
-sensorList[0].sensorStruct.period = 100;
-sensorList[0].sensorStruct.cutOffFreq = 2;
-sensorList[0].sensorStruct.unit = celsius;
-sensorList[0].sensorStruct.sensor_Type = other_sensor;
+sensorList[0].sensorStruct.CAN_ID = 0x0200;
+sensorList[0].sensorStruct.samplingfreq = 0;
+sensorList[0].sensorStruct.period = 10;
+sensorList[0].sensorStruct.cutOffFreq = 10;
+sensorList[0].sensorStruct.unit = other_unit;
+sensorList[0].sensorStruct.sensor_Type = potentiometer;
 sensorList[0].sensorStruct.totalNumberOfpolynomials = 2;
 sensorList[0].sensorStruct.polynomialList = &coefList1[0];
 sensorList[0].numberOfErrors = 0;
 sensorList[0].ACK = 0;
 sensorList[0].data.binVal = 0;
-sensorList[0].isSCS = 1;
+sensorList[0].isSCS = 0;
 
 
 
-sensorList[1].sensorStruct.CAN_ID = 0x0002;
-sensorList[1].sensorStruct.samplingfreq = 2;
-sensorList[1].sensorStruct.period = 100;
-sensorList[1].sensorStruct.cutOffFreq = 2;
-sensorList[1].sensorStruct.unit = degrees;
-sensorList[1].sensorStruct.sensor_Type = thermistor;
+sensorList[1].sensorStruct.CAN_ID = 0x0202;
+sensorList[1].sensorStruct.samplingfreq = 0;
+sensorList[1].sensorStruct.period = 10;
+sensorList[1].sensorStruct.cutOffFreq = 12;
+sensorList[1].sensorStruct.unit = percentage;
+sensorList[1].sensorStruct.sensor_Type = potentiometer;
 sensorList[1].sensorStruct.totalNumberOfpolynomials = 2;
 sensorList[1].sensorStruct.polynomialList = &coefList2[0];
 sensorList[1].numberOfErrors = 0;
@@ -115,18 +124,41 @@ sensorList[1].data.binVal = 0;
 sensorList[1].ACK = 0;
 sensorList[1].isSCS = 0;
 
-sensorList[2].sensorStruct.CAN_ID = 0x00CC;
-sensorList[2].sensorStruct.samplingfreq = 2;
-sensorList[2].sensorStruct.period = 2;
-sensorList[2].sensorStruct.cutOffFreq = 2;
+sensorList[2].sensorStruct.CAN_ID = 0x0100;
+sensorList[2].sensorStruct.samplingfreq = 0;
+sensorList[2].sensorStruct.period = 5;
+sensorList[2].sensorStruct.cutOffFreq = 15;
 sensorList[2].sensorStruct.unit = percentage;
 sensorList[2].sensorStruct.sensor_Type = potentiometer;
-sensorList[2].sensorStruct.totalNumberOfpolynomials = 2;
+sensorList[2].sensorStruct.totalNumberOfpolynomials = 3;
 sensorList[2].sensorStruct.polynomialList = &coefList3[0];
 sensorList[2].numberOfErrors = 0;
 sensorList[2].data.binVal = 0;
-sensorList[2].isSCS = 0;
+sensorList[2].isSCS = 1;
 
+sensorList[3].sensorStruct.CAN_ID = 0x0204;
+sensorList[3].sensorStruct.samplingfreq = 0;
+sensorList[3].sensorStruct.period = 10;
+sensorList[3].sensorStruct.cutOffFreq = 20;
+sensorList[3].sensorStruct.unit = percentage;
+sensorList[3].sensorStruct.sensor_Type = potentiometer;
+sensorList[3].sensorStruct.totalNumberOfpolynomials = 2;
+sensorList[3].sensorStruct.polynomialList = &coefList4[0];
+sensorList[3].numberOfErrors = 0;
+sensorList[3].data.binVal = 0;
+sensorList[3].isSCS = 0;
+
+sensorList[4].sensorStruct.CAN_ID = 0x0206;
+sensorList[4].sensorStruct.samplingfreq = 0;
+sensorList[4].sensorStruct.period = 10;
+sensorList[4].sensorStruct.cutOffFreq = 10;
+sensorList[4].sensorStruct.unit = celsius;
+sensorList[4].sensorStruct.sensor_Type = thermistor;
+sensorList[4].sensorStruct.totalNumberOfpolynomials = 3;
+sensorList[4].sensorStruct.polynomialList = &coefList5[0];
+sensorList[4].numberOfErrors = 0;
+sensorList[4].data.binVal = 0;
+sensorList[4].isSCS = 0;
 
 //bit_set(PORTD, BIT(1));
 sei(); 
