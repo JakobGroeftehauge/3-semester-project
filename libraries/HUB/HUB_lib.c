@@ -36,7 +36,7 @@
 
 		 if(sensorNum[i].sensorStruct.CAN_ID == receiveMOb->id)
 		 {
-			sensorNum[i].data = receiveMOb->pt_data[1];  //Change to support floats
+			sensorNum[i].data.binVal = (((((receiveMOb->pt_data[2] << 8) + receiveMOb->pt_data[3]) << 8)+receiveMOb->pt_data[4]) << 8)+receiveMOb->pt_data[5];  //Change to support floats
 			sensorNum[i].numberOfMessages++;
 			return; 		
 		 }
