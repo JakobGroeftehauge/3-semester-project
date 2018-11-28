@@ -27,7 +27,7 @@ volatile st_cmd_t receiveMObs[NUMBER_OF_SENSOR];
 volatile uint8_t transmitBuffers[NUMBER_OF_SENSOR][MSG_SIZE];
 volatile st_cmd_t transmitMObs[NUMBER_OF_SENSOR];
 volatile float polynomialLists[NUMBER_OF_SENSOR][polynomialSize];
-Filter lowpass1;
+Filter lowPass1 = {6, 20,{{-0.2051450,0.0286554},{-0.2547188,0.1912965},{-0.3660429,0.6076038}},{{1, 1.9719105, 1},{1, 1.7994412, 1},{0.0174262, 0.0286020,0.0174262}}};
 
 //NEEDS TO BE IMPLEMENTED
 	//Make the sensor CAN-IDs be based on some kind of offset
