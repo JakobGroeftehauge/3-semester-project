@@ -94,7 +94,7 @@ coefList4[1].floatVal = 1;
 coefList5[0].floatVal = 0;
 coefList5[1].floatVal = 2;
 coefList5[2].floatVal = 1;
-//Setup sensorData structs
+//Setup sensorData struct
 
 sensorList[0].sensorStruct.CAN_ID = 200;
 sensorList[0].sensorStruct.samplingfreq = 0;
