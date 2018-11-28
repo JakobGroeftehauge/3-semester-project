@@ -108,6 +108,8 @@ if ( CANSTMOB & ( 1 << RXOK) ){  	// Interrupt caused by receive finished
 	CANCDMOB = (( 1 << CONMOB1 ) | ( 8 << DLC0));  //Enable transmission, set data length to 8. 
 	
 	CANSTMOB = 0x00; //reset MOb status register
+	
+	recieveMOb->newData = 1;
 
 	// Note - the DLC field of the CANCDMO register is updated by the received MOb. If the value differs from expected DLC, an error is set
 
