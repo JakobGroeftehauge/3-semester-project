@@ -136,7 +136,7 @@ int main(void)
 	can_cmd(&receiveMObs[1]);
 	can_cmd(&receiveMObs[2]);	// Setting up receiveMOb
 	can_cmd(&receiveMObs[3]);
-	//bit_set(PORTD,BIT(1));
+	bit_set(PORTD,BIT(1));
 	sei();					// Global interrupt enable
 	
 	while(tick<255)
@@ -159,14 +159,10 @@ int main(void)
 //-------------------- MAIN CODE ---------------------------------//
 while(1)
 {		
-	
-	bit_set(PORTD,BIT(1));
-	
 	for (uint8_t i = 0; i < NUMBER_OF_RECEIVEMOBS; i++)
 	{
 		if (receiveMObs[i].newData == 1)
 		{
-			bit_set(PORTD,BIT(7));
 			for (uint8_t u = 0; u < NUMBER_OF_SENSOR; u++)
 			{
 				if (receiveMObs[i].id == Sensorlist[u].CAN_ID)
@@ -200,7 +196,7 @@ while(1)
 		transmitCounter2++;	// Transmitting counter 2
 		
 //---------------------- Sampling data ------------------- // 		
-		if (samplingCounter1 >= Sensorlist[0].samplingfreq && Sensorlist[0].samplingfreq !=0 )	//Determines if it is time to sample data for sensor 1. 
+		if ((samplingCounter1) >= Sensorlist[0].samplingfreq && Sensorlist[0].samplingfreq !=0 )	//Determines if it is time to sample data for sensor 1. 
 		{
 			sampleData(&Sensorlist[0]);
 			//float input0 = 1;
@@ -208,7 +204,7 @@ while(1)
 			samplingCounter1 = 0;	
 			
 		}
-		if (samplingCounter2 >= Sensorlist[1].samplingfreq && Sensorlist[1].samplingfreq !=0  )	//Same as above
+		if ((samplingCounter2) >= Sensorlist[1].samplingfreq && Sensorlist[1].samplingfreq !=0  )	//Same as above
 		{
 			sampleData(&Sensorlist[1]);
 			//float input1 = 1;
@@ -216,12 +212,12 @@ while(1)
 			samplingCounter2 = 0;
 		}
 //-------------------- Transmitting data ------------------- // 
-		if (transmitCounter1 >= Sensorlist[0].period && Sensorlist[0].period != 0)				//Determines if it is time to transmit data for sensor 1. 
+		if ((transmitCounter1/2) >= Sensorlist[0].period && Sensorlist[0].period != 0)				//Determines if it is time to transmit data for sensor 1. 
 		{
 			sendFilteretData(&Sensorlist[0]);//Sending the data. The data have been converted using the polynomial and filtered. 
 			transmitCounter1=0;
 		}
-		if (transmitCounter2 >= Sensorlist[1].period && Sensorlist[1].period != 0)				//Same as above.
+		if ((transmitCounter2/2) >= Sensorlist[1].period && Sensorlist[1].period != 0)				//Same as above.
 		{
 			sendFilteretData(&Sensorlist[1]);
 			transmitCounter2=0;
@@ -246,7 +242,6 @@ ISR(TIMER0_COMPA_vect)			//Timer interrupt (1kHz)
 
 ISR( CAN_INT_vect )				//Receive interrupt
 {
-	bit_set(PORTD,BIT(7));
 	uint8_t saveCanpage = CANPAGE;
 	//receivedMessages++;			// Inc receivedMessages which will be used in main loop.
 	uint8_t HPMOb = (CANHPMOB & 0xF0)>>4;
@@ -259,7 +254,6 @@ ISR( CAN_INT_vect )				//Receive interrupt
 	//
 	//decodeMessage2(&Sensorlist[HPMOb], &lowPass1);
 	CANPAGE = saveCanpage;
-	bit_clear(PORTD,BIT(7));
 }
 
 //ISR(ADC_vect)

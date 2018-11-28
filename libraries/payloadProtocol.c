@@ -183,7 +183,7 @@ void assignFilter(sensor_at_node* sensor, Filter* filterlist, uint8_t antalFiltr
 	
 	sensor->filterPt = filterlist;
 
-	uint16_t samplingPeriod = (filterlist->cutOffAt100Hz*1000)/(sensor->cutOffFreq*100); 
+	uint16_t samplingPeriod = (filterlist->cutOffAt100Hz*2000)/(sensor->cutOffFreq*100); 
 	sensor->samplingfreq = samplingPeriod & 0xFF; 
 
 }
