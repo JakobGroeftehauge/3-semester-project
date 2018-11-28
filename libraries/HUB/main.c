@@ -160,8 +160,6 @@ sensorList[4].numberOfErrors = 0;
 sensorList[4].data.binVal = 0;
 sensorList[4].isSCS = 0;
 
-
-
 //bit_set(PORTD, BIT(1));
 sei(); 
 
