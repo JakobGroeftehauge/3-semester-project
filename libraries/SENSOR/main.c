@@ -16,8 +16,8 @@
 #include "Sampling_Data.h"
 #define NUMBER_OF_SENSOR 2
 #define NUMBER_OF_RECEIVEMOBS 4
-#define Sensor1_ID 0x1
-#define Sensor2_ID 0x2
+#define Sensor1_ID 100
+#define Sensor2_ID 204
 #define polynomialSize 8
 volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
@@ -38,7 +38,11 @@ Filter lowPass1 = {6, 10,{{-0.978726409252575,0.251141008333413},{-1.12478022295
 
 int main(void)
 {
-	
+	for(uint8_t i = 0; i<polynomialSize; i++)
+	{
+		polynomialLists[0][i]=0;
+		polynomialLists[1][i]=0;
+	}
 	
 	//Initialize variable used by main program
 	uint8_t samplingCounter1 = 0;
@@ -81,20 +85,6 @@ int main(void)
 			receiveMObs[i].id = Sensorlist[1].CAN_ID;
 		}
 	}
-
-	// ------- More similar to old approach
-	//for (uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
-	//{
-		//receiveMObs[i].pt_data = &receiveBuffers[i];
-		//receiveMObs[i].MObNumber = i;
-		//receiveMObs[i].dlc = MSG_SIZE;
-		//receiveMObs[i].cmd = RX;
-		//receiveMObs[i].mask = 0b11111111;
-		//receiveMObs[i].id = Sensorlist[i].CAN_ID;
-		//receiveMObs[i].newData = 0;
-	//}
-		//
-	//setup transmit MOb
 	for (uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
 	{
 		transmitMObs[i].pt_data = &transmitBuffers[i];
@@ -139,8 +129,24 @@ int main(void)
 	bit_set(PORTD,BIT(1));
 	sei();					// Global interrupt enable
 	
-	while(tick<255)
+	while(tick<200)
 	{	
+		for (uint8_t i = 0; i < NUMBER_OF_RECEIVEMOBS; i++)
+		{
+			if (receiveMObs[i].newData == 1)
+			{
+				for (uint8_t u = 0; u < NUMBER_OF_SENSOR; u++)
+				{
+					if (receiveMObs[i].id == Sensorlist[u].CAN_ID)
+					{
+						decodeMessage2(&Sensorlist[u], &receiveMObs[i], &lowPass1);
+						receiveMObs[i].newData = 0;
+					}
+				}
+
+			}
+			
+		}
 	}
 	
 	if(Sensorlist[0].sensorSetupBool == 0)

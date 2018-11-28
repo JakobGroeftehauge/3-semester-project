@@ -13,6 +13,11 @@ void decodeCoefficient(sensor_at_node* Sensor, st_cmd_t* receiveMOb)
 {	
 	uint8_t coeffNumber =(receiveMOb->pt_data[1]& 0xF0)/16;
 	
+	if (coeffNumber == 1)
+	{
+		bit_set(PORTD,BIT(7));
+	}
+	
 	Sensor->totalNumberOfpolynomials = receiveMOb->pt_data[1]&0b00001111;
 	Sensor->polynomialList[coeffNumber].binVal = receiveMOb->pt_data[2];
 	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 8  ) + receiveMOb->pt_data[3];
