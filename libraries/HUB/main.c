@@ -79,7 +79,7 @@ heartBeatSCS = 0;
 
 
 //volatile sensorData sensorList[NUMBER_OF_SENSOR];
-floatUnion coefList1[2];
+floatUnion coefList1[2]; 
 floatUnion coefList2[2];
 floatUnion coefList3[2];
 floatUnion coefList4[2];
@@ -102,7 +102,6 @@ coefList5[0].floatVal = 0;
 coefList5[1].floatVal = 2;
 coefList5[2].floatVal = 1;
 //Setup sensorData structs
-
 
 sensorList[0].sensorStruct.CAN_ID = 200;
 sensorList[0].sensorStruct.samplingfreq = 0;
