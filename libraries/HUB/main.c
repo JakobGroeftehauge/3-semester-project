@@ -96,7 +96,7 @@ coefList5[1].floatVal = 2;
 coefList5[2].floatVal = 1;
 //Setup sensorData structs
 
-sensorList[0].sensorStruct.CAN_ID = 0x0200;
+sensorList[0].sensorStruct.CAN_ID = 200;
 sensorList[0].sensorStruct.samplingfreq = 0;
 sensorList[0].sensorStruct.period = 10;
 sensorList[0].sensorStruct.cutOffFreq = 10;
@@ -111,7 +111,7 @@ sensorList[0].isSCS = 0;
 
 
 
-sensorList[1].sensorStruct.CAN_ID = 0x0202;
+sensorList[1].sensorStruct.CAN_ID = 202;
 sensorList[1].sensorStruct.samplingfreq = 0;
 sensorList[1].sensorStruct.period = 10;
 sensorList[1].sensorStruct.cutOffFreq = 12;
@@ -124,7 +124,7 @@ sensorList[1].data.binVal = 0;
 sensorList[1].ACK = 0;
 sensorList[1].isSCS = 0;
 
-sensorList[2].sensorStruct.CAN_ID = 0x0100;
+sensorList[2].sensorStruct.CAN_ID = 100;
 sensorList[2].sensorStruct.samplingfreq = 0;
 sensorList[2].sensorStruct.period = 5;
 sensorList[2].sensorStruct.cutOffFreq = 15;
@@ -136,7 +136,7 @@ sensorList[2].numberOfErrors = 0;
 sensorList[2].data.binVal = 0;
 sensorList[2].isSCS = 1;
 
-sensorList[3].sensorStruct.CAN_ID = 0x0204;
+sensorList[3].sensorStruct.CAN_ID = 204;
 sensorList[3].sensorStruct.samplingfreq = 0;
 sensorList[3].sensorStruct.period = 10;
 sensorList[3].sensorStruct.cutOffFreq = 20;
@@ -148,7 +148,7 @@ sensorList[3].numberOfErrors = 0;
 sensorList[3].data.binVal = 0;
 sensorList[3].isSCS = 0;
 
-sensorList[4].sensorStruct.CAN_ID = 0x0206;
+sensorList[4].sensorStruct.CAN_ID = 206;
 sensorList[4].sensorStruct.samplingfreq = 0;
 sensorList[4].sensorStruct.period = 10;
 sensorList[4].sensorStruct.cutOffFreq = 10;
