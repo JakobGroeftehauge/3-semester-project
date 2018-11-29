@@ -22,25 +22,24 @@ void sampleData(sensor_at_node* sensor)
 	
 	if (sensor->sensorNumber == 1) 
 	{
-		ADC_input1();
+		ADC_input(2);
 		ADC_Start();
-		while(ADIF == 0)
+		while(ADCSRA & (1<<ADSC))
 		{
 		}
 		buffer =ADCL; //shifter med 4
 		buffer += ADCH*256;
 		ADC_data = buffer;
-		bit_set(ADCSRA,BIT(4));
+		//bit_set(ADCSRA,BIT(4));
 		sensor->filterValue.floatVal = calculateFilterAlternative(ADC_data, sensor->filterPt, &(sensor->bufferList));
 
 
 	} 
 	if (sensor->sensorNumber==2)
 	{	
-		ADC_input2(); //ADC7
+		ADC_input(7);
 		ADC_Start();
-		//bit_set(PORTD,BIT(7));
-		while(ADIF == 0)
+		while(ADCSRA & (1<<ADSC))
 		{
 			
 		}
