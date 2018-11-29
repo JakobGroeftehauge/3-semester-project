@@ -12,7 +12,7 @@
 void decodeCoefficient(sensor_at_node* Sensor, st_cmd_t* receiveMOb)
 {	
 	uint8_t coeffNumber =(receiveMOb->pt_data[1]& 0xF0)/16;
-	
+
 	Sensor->totalNumberOfpolynomials = receiveMOb->pt_data[1]&0b00001111;
 	Sensor->polynomialList[coeffNumber].binVal = receiveMOb->pt_data[2];
 	Sensor->polynomialList[coeffNumber].binVal = ((Sensor->polynomialList[coeffNumber].binVal) << 8  ) + receiveMOb->pt_data[3];
@@ -121,11 +121,17 @@ void decodeHubServiceMessage(sensor_at_node* sensor, st_cmd_t* receiveMOb)
 void shutDownSensor(sensor_at_node* sensor)
 {
 	sensor->period = 0;
+	sensor->sensor_Type = 0;
+	sensor->unit = 0;
 	sensor->samplingfreq = 0;
+	sensor->filterValue.floatVal = 0;
+	sensor->receiveMOb = 0;
 	sensor->polynomialList[0].floatVal = 0;
 	sensor->polynomialList[1].floatVal = 1;
 	sensor->totalNumberOfpolynomials = 2;
 	sensor->cutOffFreq = 0;
+	sensor ->sensorSetupBool = 0;
+	sensor ->filterPt = 0;
 }
 
 //Decoding message from hub and determines what kind of message type it is.
