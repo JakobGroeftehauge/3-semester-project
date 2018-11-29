@@ -235,7 +235,9 @@ while(1)
 		{
 			sendFilteretData(&Sensorlist[1]);
 			transmitCounter2=0;
+			/// Test
 			bit_clear(PORTD,BIT(7));
+			/// Test End 
 		}
 	}
 }
