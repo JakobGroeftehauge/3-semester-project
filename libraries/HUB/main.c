@@ -223,21 +223,22 @@ while(1)
 	}
 	heartBeatSCS++; 
 	tick--; 
-}
 	//// - Test
-	if (testTick > 50 && finalMessage < 1 && nodesSetupTest == 1){
+	if (testTick > 50 && finalMessage < 2 && nodesSetupTest == 1 && messagesReceived > 1500)
+	{
 		finalMessage++;
-		
+		testTick = 0; 
 		transmitMOb.id = 0xFF;
 		//transmitMOb.dlc = 2;
 		transmitMOb.pt_data[0] = (messagesReceived >> 8) & 0xFF;
 		transmitMOb.pt_data[1] = messagesReceived & 0xFF;
-		
-		can_cmd(&transmitMOb);
 		bit_set(PORTD, BIT(1));
+		can_cmd(&transmitMOb);
+		
 		
 	}
 	//// - Test End
+}
 
 }
 
@@ -254,12 +255,14 @@ void chip_init(void){
 
 ISR(TIMER0_COMPA_vect)
 {
+	//bit_flip(PORTD, BIT(7));
 	tick++;
 	testTick++;
 }
 
 ISR( CAN_INT_vect )
 {
+	
 	//// - Test
 	messagesReceived++;
 	testTick = 0;
