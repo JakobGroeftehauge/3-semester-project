@@ -137,7 +137,7 @@ sensorList[2].sensorStruct.period = 5;
 sensorList[2].sensorStruct.cutOffFreq = 15;
 sensorList[2].sensorStruct.unit = percentage;
 sensorList[2].sensorStruct.sensor_Type = potentiometer;
-sensorList[2].sensorStruct.totalNumberOfpolynomials = 3;
+sensorList[2].sensorStruct.totalNumberOfpolynomials = 2;
 sensorList[2].sensorStruct.polynomialList = &coefList3[0];
 sensorList[2].numberOfErrors = 0;
 sensorList[2].data.binVal = 0;
@@ -186,6 +186,7 @@ transmitMOb.id = 0x0000; //reset CAN-id
 
 while(1)
 {
+	
 	if(tick > 0)
 	{
 		if(heartBeatSCS > 20)
@@ -228,11 +229,12 @@ while(1)
 		finalMessage++;
 		
 		transmitMOb.id = 0xFF;
-		transmitMOb.dlc = 2;
+		//transmitMOb.dlc = 2;
 		transmitMOb.pt_data[0] = (messagesReceived >> 8) & 0xFF;
 		transmitMOb.pt_data[1] = messagesReceived & 0xFF;
 		
 		can_cmd(&transmitMOb);
+		bit_set(PORTD, BIT(1));
 		
 	}
 	//// - Test End

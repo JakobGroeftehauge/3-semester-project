@@ -16,13 +16,14 @@
 #include "Sampling_Data.h"
 #define NUMBER_OF_SENSOR 2
 #define NUMBER_OF_RECEIVEMOBS 4
-#define Sensor1_ID 100
-#define Sensor2_ID 204
+#define Sensor1_ID 200
+#define Sensor2_ID 202
 #define polynomialSize 8
 
 //// - Test definitions and variables
 #define TEST_MESSAGES_TO_TRANSMIT 1500
-volatile uint16_t transmitTestCounter = 0;
+volatile uint16_t transmitTestCounter1 = 0;
+volatile uint16_t transmitTestCounter2 = 0;
 //// - End of test definitions and variables
 
 volatile uint8_t tick = 0; // Used by the timer
@@ -211,24 +212,25 @@ while(1)
 			samplingCounter2 = 0;
 		}
 //-------------------- Transmitting data ------------------- // 
-		if ((transmitCounter1/2) >= Sensorlist[0].period && Sensorlist[0].period != 0 && transmitTestCounter < TEST_MESSAGES_TO_TRANSMIT)				//Determines if it is time to transmit data for sensor 1. 
+		if ((transmitCounter1/2) >= Sensorlist[0].period && Sensorlist[0].period != 0 && transmitTestCounter1 < TEST_MESSAGES_TO_TRANSMIT)				//Determines if it is time to transmit data for sensor 1. 
 		{
 			sendFilteretData(&Sensorlist[0]);//Sending the data. The data have been converted using the polynomial and filtered. 
 			transmitCounter1=0;
+			//// - Test
+			transmitTestCounter1++;
+			//// - Test End
 		}
-		if ((transmitCounter2/2) >= Sensorlist[1].period && Sensorlist[1].period != 0 && transmitTestCounter < TEST_MESSAGES_TO_TRANSMIT)				//Same as above.
+		if ((transmitCounter2/2) >= Sensorlist[1].period && Sensorlist[1].period != 0 && transmitTestCounter2 < TEST_MESSAGES_TO_TRANSMIT)				//Same as above.
 		{
 			sendFilteretData(&Sensorlist[1]);
 			transmitCounter2=0;
+			//// - Test
+			transmitTestCounter2++;
+			//// - Test End
 		}
 		
-		//// - Test
-		if (transmitTestCounter <= TEST_MESSAGES_TO_TRANSMIT)
-		{
-			transmitTestCounter++;
-		}
 		
-		//// - Test End
+		
 	}
 }
 }
