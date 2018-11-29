@@ -175,7 +175,7 @@ transmitMOb.id = 0x0000; //reset CAN-id
 
 while(1)
 {
-	bit_set(PORTD,BIT(7)); 
+	bit_set(PORTD,BIT(7)); //Test related "Start"
 	uint8_t k = 0;
 	for(uint8_t i=0;i<NUMBER_OF_SENSOR;i++)
 	{
@@ -188,6 +188,8 @@ while(1)
 	{
 		bit_clear(PORTD,BIT(7));
 	}
+	//Test stop
+	
 // 	if(tick > 0)
 // 	{
 // 		if(heartBeatSCS > 20)
