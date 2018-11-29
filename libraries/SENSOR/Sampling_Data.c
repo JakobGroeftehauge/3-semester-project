@@ -26,22 +26,20 @@ void sampleData(sensor_at_node* sensor)
 		ADC_Start();
 		while(ADIF == 0)
 		{
-			//bit_flip(PORTD,BIT(7));
 		}
 		buffer =ADCL; //shifter med 4
 		buffer += ADCH*256;
 		ADC_data = buffer;
 		bit_set(ADCSRA,BIT(4));
-		//ADC_data = 50; 
 		sensor->filterValue.floatVal = calculateFilterAlternative(ADC_data, sensor->filterPt, &(sensor->bufferList));
 
 
 	} 
-	else if (sensor->sensorNumber==2)
+	if (sensor->sensorNumber==2)
 	{	
 		ADC_input2(); //ADC7
 		ADC_Start();
-		
+		//bit_set(PORTD,BIT(7));
 		while(ADIF == 0)
 		{
 			
@@ -50,9 +48,7 @@ void sampleData(sensor_at_node* sensor)
 		buffer += ADCH*256;
 		ADC_data = buffer;
 		bit_set(ADCSRA,BIT(4));
-		//ADC_data = 50;
 		sensor->filterValue.floatVal = calculateFilterAlternative(ADC_data, sensor->filterPt, &(sensor->bufferList));
-		//sensor->filterValue.floatVal=ADC_data;
 	}
 	if(preventWireOff > 100)
 	{

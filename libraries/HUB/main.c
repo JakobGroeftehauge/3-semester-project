@@ -94,7 +94,7 @@ coefList4[1].floatVal = 1;
 coefList5[0].floatVal = 0;
 coefList5[1].floatVal = 2;
 coefList5[2].floatVal = 1;
-//Setup sensorData structs
+//Setup sensorData struct
 
 sensorList[0].sensorStruct.CAN_ID = 200;
 sensorList[0].sensorStruct.samplingfreq = 0;
@@ -130,7 +130,7 @@ sensorList[2].sensorStruct.period = 5;
 sensorList[2].sensorStruct.cutOffFreq = 15;
 sensorList[2].sensorStruct.unit = percentage;
 sensorList[2].sensorStruct.sensor_Type = potentiometer;
-sensorList[2].sensorStruct.totalNumberOfpolynomials = 3;
+sensorList[2].sensorStruct.totalNumberOfpolynomials = 2;
 sensorList[2].sensorStruct.polynomialList = &coefList3[0];
 sensorList[2].numberOfErrors = 0;
 sensorList[2].data.binVal = 0;

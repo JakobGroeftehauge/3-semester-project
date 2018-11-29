@@ -12,6 +12,5 @@ void ADCSetup()
 	ADC_setup();
 	ADC_pin1();
 	ADC_pin2();
-	ADC_pin3();
 }
 
