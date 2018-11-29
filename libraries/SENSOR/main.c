@@ -19,6 +19,12 @@
 #define Sensor1_ID 0x1
 #define Sensor2_ID 0x2
 #define polynomialSize 8
+
+//// - Test definitions and variables
+#define TEST_MESSAGES_TO_TRANSMIT 1500
+volatile uint16_t transmitTestCounter = 0;
+//// - End of test definitions and variables
+
 volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
 volatile sensor_at_node Sensorlist[NUMBER_OF_SENSOR];
@@ -216,16 +222,24 @@ while(1)
 			bit_clear(PORTD,BIT(7));
 		}
 //-------------------- Transmitting data ------------------- // 
-		if ((transmitCounter1/2) >= Sensorlist[0].period && Sensorlist[0].period != 0)				//Determines if it is time to transmit data for sensor 1. 
+		if ((transmitCounter1/2) >= Sensorlist[0].period && Sensorlist[0].period != 0 && transmitTestCounter < TEST_MESSAGES_TO_TRANSMIT)				//Determines if it is time to transmit data for sensor 1. 
 		{
 			sendFilteretData(&Sensorlist[0]);//Sending the data. The data have been converted using the polynomial and filtered. 
 			transmitCounter1=0;
 		}
-		if ((transmitCounter2/2) >= Sensorlist[1].period && Sensorlist[1].period != 0)				//Same as above.
+		if ((transmitCounter2/2) >= Sensorlist[1].period && Sensorlist[1].period != 0 && transmitTestCounter < TEST_MESSAGES_TO_TRANSMIT)				//Same as above.
 		{
 			sendFilteretData(&Sensorlist[1]);
 			transmitCounter2=0;
 		}
+		
+		//// - Test
+		if (transmitTestCounter <= TEST_MESSAGES_TO_TRANSMIT)
+		{
+			transmitTestCounter++;
+		}
+		
+		//// - Test End
 	}
 }
 }
