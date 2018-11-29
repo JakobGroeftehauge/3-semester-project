@@ -47,7 +47,7 @@ int main(void)
 
 	// --------------------------- setup CAN ID -------------------------------
 	Sensorlist[0].CAN_ID = Sensor1_ID;
-	Sensorlist[1].CAN_ID = Sensor2_ID;
+	//Sensorlist[1].CAN_ID = Sensor2_ID;
 		
 	//setup pointers in sensor structs, and other default values
 	for (uint8_t i = 0; i < NUMBER_OF_SENSOR; i++)
