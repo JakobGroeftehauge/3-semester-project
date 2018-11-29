@@ -38,6 +38,8 @@ Filter lowPass1 = {6, 10,{{-0.978726409252575,0.251141008333413},{-1.12478022295
 
 int main(void)
 {
+	bit_set(PORTD,BIT(7)); //Power off test start
+	
 	for(uint8_t i = 0; i< polynomialSize; i++)
 	{
 		polynomialLists[0][i]=0;
@@ -209,11 +211,13 @@ while(1)
 		{
 			sendFilteretData(&Sensorlist[0]);//Sending the data. The data have been converted using the polynomial and filtered. 
 			transmitCounter1=0;
+			bit_clear(PORTD,BIT(7));
 		}
 		if ((transmitCounter2/2) >= Sensorlist[1].period && Sensorlist[1].period != 0)				//Same as above.
 		{
 			sendFilteretData(&Sensorlist[1]);
 			transmitCounter2=0;
+			bit_clear(PORTD,BIT(7)); //Power off test finnished
 		}
 	}
 }
