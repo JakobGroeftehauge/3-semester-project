@@ -153,7 +153,7 @@ while(1)
 				{
 				if(sensorList[i].numberOfMessages ==  0 && sensorList[i].ACK)
 				{
-				//alertFunction(); 
+				bit_set(PORTD, BIT(7));
 				}
 				sensorList[i].numberOfMessages = 0; 
 				}
@@ -167,7 +167,7 @@ while(1)
 					{
 						if(sensorList[i].numberOfMessages == 0 && sensorList[i].ACK)
 						{
-						//alertFunction(); 
+						bit_set(PORTD, BIT(7));
 						}
 						sensorList[i].numberOfMessages = 0; 
 					}

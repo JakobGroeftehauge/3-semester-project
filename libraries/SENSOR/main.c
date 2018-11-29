@@ -18,6 +18,7 @@
 #define Sensor1_ID 0x1
 #define Sensor2_ID 0x2
 #define polynomialSize 8
+volatile uint8_t number_of_send_messages; ; 
 volatile uint8_t tick = 0; // Used by the timer
 volatile uint8_t receivedMessages = 0; 
 volatile sensor_at_node Sensorlist[NUMBER_OF_SENSOR];
@@ -42,6 +43,7 @@ int main(void)
 	uint8_t samplingCounter2 = 0;
 	uint8_t transmitCounter1 = 0;
 	uint8_t transmitCounter2 = 0;
+	number_of_send_messages = 0; 
 
 	// --------------------------- setup CAN ID -------------------------------
 	Sensorlist[0].CAN_ID = Sensor1_ID;
@@ -147,32 +149,37 @@ while(1)
 		transmitCounter2++;	// Transmitting counter 2
 		
 //---------------------- Sampling data ------------------- // 		
-		if (samplingCounter1 >= Sensorlist[0].samplingfreq && Sensorlist[0].samplingfreq !=0 )	//Determines if it is time to sample data for sensor 1. 
+		if (samplingCounter1 >= Sensorlist[0].samplingfreq && Sensorlist[0].samplingfreq !=0)	//Determines if it is time to sample data for sensor 1. 
 		{
 			sampleData(&Sensorlist[0]);
 			//float input0 = 1;
 			//Sensorlist[0].filterValue.floatVal = calculateFilterAlternative(Sensorlist[0].filterValue.floatVal, Sensorlist[0].filterPt, &(Sensorlist[0].bufferList));															//Samples the data and filter it. 
-			samplingCounter1 = 0;	
-			
+			samplingCounter1 = 0;		
 		}
-		if (samplingCounter2 >= Sensorlist[1].samplingfreq && Sensorlist[1].samplingfreq !=0  )	//Same as above
-		{
-			sampleData(&Sensorlist[1]);
-			//float input1 = 1;
-			//Sensorlist[0].filterValue.floatVal = calculateFilterAlternative(Sensorlist[1].filterValue.floatVal, Sensorlist[1].filterPt, &(Sensorlist[1].bufferList));
-			samplingCounter2 = 0;
-		}
+		//if (samplingCounter2 >= Sensorlist[1].samplingfreq && Sensorlist[1].samplingfreq !=0  )	//Same as above
+		//{
+			//sampleData(&Sensorlist[1]);
+			////float input1 = 1;
+			////Sensorlist[0].filterValue.floatVal = calculateFilterAlternative(Sensorlist[1].filterValue.floatVal, Sensorlist[1].filterPt, &(Sensorlist[1].bufferList));
+			//samplingCounter2 = 0;
+		//}
 //-------------------- Transmitting data ------------------- // 
-		if (transmitCounter1 >= Sensorlist[0].period && Sensorlist[0].period != 0)				//Determines if it is time to transmit data for sensor 1. 
-		{
+		if (transmitCounter1 >= Sensorlist[0].period && Sensorlist[0].period != 0 && number_of_send_messages < 10)				//Determines if it is time to transmit data for sensor 1. 
+		{																			//Stop transmitting after 10 messages. 
 			sendFilteretData(&Sensorlist[0]);//Sending the data. The data have been converted using the polynomial and filtered. 
+			if(number_of_send_messages == 9)
+			{
+			bit_set(PORTD, BIT(7)); //Set bit 7 high when 10 messages has be sent
+			}
+
 			transmitCounter1=0;
+			number_of_send_messages++; 
 		}
-		if (transmitCounter2 >= Sensorlist[1].period && Sensorlist[1].period != 0)				//Same as above.
-		{
-			sendFilteretData(&Sensorlist[1]);
-			transmitCounter2=0;
-		}
+		//if (transmitCounter2 >= Sensorlist[1].period && Sensorlist[1].period != 0)				//Same as above.
+		//{
+			//sendFilteretData(&Sensorlist[1]);
+			//transmitCounter2=0;
+		//}
 	}
 }
 }

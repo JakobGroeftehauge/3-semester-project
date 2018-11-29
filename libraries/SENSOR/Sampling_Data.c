@@ -32,7 +32,7 @@ void sampleData(sensor_at_node* sensor)
 		buffer += ADCH*256;
 		ADC_data = buffer;
 		bit_set(ADCSRA,BIT(4));
-		//ADC_data = 200; 
+		ADC_data = 200; 
 		sensor->filterValue.floatVal = calculateFilterAlternative(ADC_data, sensor->filterPt, &(sensor->bufferList));
 
 
@@ -50,7 +50,7 @@ void sampleData(sensor_at_node* sensor)
 		buffer += ADCH*256;
 		ADC_data = buffer;
 		bit_set(ADCSRA,BIT(4));
-		//ADC_data = 200;
+		ADC_data = 200;
 		sensor->filterValue.floatVal = calculateFilterAlternative(ADC_data, sensor->filterPt, &(sensor->bufferList));
 	}
 	if(preventWireOff > 100)
