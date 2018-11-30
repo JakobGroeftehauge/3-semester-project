@@ -224,10 +224,10 @@ while(1)
 	heartBeatSCS++; 
 	tick--; 
 	//// - Test
-	if (testTick > 50 && finalMessage < 2 && nodesSetupTest == 1 && messagesReceived > 1500)
+	if (testTick > 50 && finalMessage < 1 && nodesSetupTest == 1 && messagesReceived > 1500)
 	{
 		finalMessage++;
-		testTick = 0; 
+		//testTick = 0; 
 		transmitMOb.id = 0xFF;
 		//transmitMOb.dlc = 2;
 		transmitMOb.pt_data[0] = (messagesReceived >> 8) & 0xFF;
