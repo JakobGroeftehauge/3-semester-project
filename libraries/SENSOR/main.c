@@ -162,6 +162,8 @@ int main(void)
 	{
 		sendSensorRequesterSetup(&Sensorlist[1]);
 	}
+	
+	tick = 0;
 //-------------------- MAIN CODE ---------------------------------//
 while(1)
 {		
