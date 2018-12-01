@@ -161,57 +161,74 @@ sensorList[4].data.binVal = 0;
 sensorList[4].isSCS = 0;
 
 //bit_set(PORTD, BIT(1));
+
+
 sei(); 
-
-
 initSensors(sensorList, &transmitMOb);
 //setupAlertFunction(&blinkLED());
 
 
 transmitMOb.id = 0x0000; //reset CAN-id
 //receivedMessage = 0; 
+while(tick<200)
+{
 
-
+}
+tick = 0; 
 
 while(1)
 {
 	if(tick > 0)
 	{
-		if(heartBeatSCS > 20)
+		heartBeatSCS++; 
+
+		if(heartBeatSCS > 50)
 		{
-			if (heartBeatReg > 5)
+			if(heartBeatReg > 5)
 			{
-				for(i = 0; i < NUMBER_OF_SENSOR; i++)
+				for(uint8_t u = 0; u < NUMBER_OF_SENSOR; u++)
 				{
-				if(sensorList[i].numberOfMessages ==  0 && sensorList[i].ACK)
-				{
-				//alertFunction(); 
-				}
-				sensorList[i].numberOfMessages = 0; 
-				}
-			heartBeatReg = 0; 
-			}
-			else
-			{
-				for (i = 0; i < NUMBER_OF_SENSOR; i++)
-				{
-					if(sensorList[i].isSCS == 1)
+					if(sensorList[u].numberOfMessages == 0 && sensorList[u].ACK == 1)
 					{
-						if(sensorList[i].numberOfMessages == 0 && sensorList[i].ACK)
-						{
-						//alertFunction(); 
-						}
-						sensorList[i].numberOfMessages = 0; 
+						transmitMOb.id = 0xFF;
+						transmitMOb.dlc = 2;
+						transmitMOb.pt_data[0] = sensorList[u].sensorStruct.CAN_ID;
+						transmitMOb.pt_data[1] = sensorList[u].numberOfMessages;
+						can_cmd(&transmitMOb);
+						transmitMOb.dlc = 8;
+						sensorList[u].ACK=0;
+
 					}
+					sensorList[u].numberOfMessages = 0;
+				}
+				heartBeatReg = 0; 
+			}
+		else
+			{
+				for(uint8_t u = 0; u < NUMBER_OF_SENSOR; u++)
+				{
+					if(sensorList[u].numberOfMessages == 0 && sensorList[u].ACK == 1 && sensorList[u].isSCS == 1)
+					{
+						transmitMOb.id = 0xFF;
+						transmitMOb.dlc = 2;
+						transmitMOb.pt_data[0] = sensorList[u].sensorStruct.CAN_ID;
+						transmitMOb.pt_data[1] = sensorList[u].numberOfMessages;
+						can_cmd(&transmitMOb);
+						transmitMOb.dlc = 8;
+						sensorList[u].ACK=0;
+
+					}
+					sensorList[u].numberOfMessages = 0;
 				}
 			}
+			heartBeatSCS = 0;
 			heartBeatReg++; 
-			heartBeatSCS = 0; 
 		}
+		tick--; 
 	}
-	heartBeatSCS++; 
-	tick--; 
+
 }
+
 
 }
 
@@ -229,11 +246,13 @@ void chip_init(void){
 ISR(TIMER0_COMPA_vect)
 {
 	tick++;
+	//heartBeatSCS++; 
 }
 
 ISR( CAN_INT_vect )
 {
 	//bit_set(PORTD, BIT(7));
+	uint8_t saveCanPage = CANPAGE;
 	uint8_t HPMOb = (CANHPMOB & 0xF0) >> 4;
 	transfer_data(&receiveMObs[HPMOb]);
 	
@@ -266,4 +285,5 @@ ISR( CAN_INT_vect )
 			break; 
 		}
 		}
+		CANPAGE = saveCanPage;
 }
