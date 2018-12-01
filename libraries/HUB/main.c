@@ -175,13 +175,6 @@ transmitMOb.id = 0x0000; //reset CAN-id
 
 while(1)
 {
-	bit_set(PORTD,BIT(7)); //Power off test
-	if (sensorList[4].ACK==1)
-	{
-		bit_clear(PORTD,BIT(7));
-	}
-	// Power Off test stop
-	
 	if(tick > 0)
 	{
 		if(heartBeatSCS > 20)
