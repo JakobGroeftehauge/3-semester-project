@@ -16,12 +16,12 @@
 #include "Sampling_Data.h"
 #define NUMBER_OF_SENSOR 2
 #define NUMBER_OF_RECEIVEMOBS 4
-#define Sensor1_ID 200
+#define Sensor1_ID 200	
 #define Sensor2_ID 202
 #define polynomialSize 8
 
 //// - Test definitions and variables
-#define TEST_MESSAGES_TO_TRANSMIT 1500
+#define TEST_MESSAGES_TO_TRANSMIT 1800
 volatile uint16_t transmitTestCounter1 = 0;
 volatile uint16_t transmitTestCounter2 = 0;
 //// - End of test definitions and variables
@@ -227,6 +227,10 @@ while(1)
 			//// - Test
 			transmitTestCounter2++;
 			//// - Test End
+		}
+		if (transmitTestCounter2 > TEST_MESSAGES_TO_TRANSMIT && transmitTestCounter1 > TEST_MESSAGES_TO_TRANSMIT)
+		{
+			bit_set(PORTD,BIT(7));
 		}
 		
 		

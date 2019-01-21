@@ -41,7 +41,7 @@ can_init();
 TimerSetup();
 
 heartBeatSCS = 0; 
-
+//bit_set(PORTD, BIT(7));
 
 	//st_cmd_t receiveMObs[NUMBER_OF_RECEIVEMOBS];
 	//uint8_t recieveBuffers[NUMBER_OF_RECEIVEMOBS][MSG_SIZE];
@@ -105,7 +105,7 @@ coefList5[2].floatVal = 1;
 
 sensorList[0].sensorStruct.CAN_ID = 200;
 sensorList[0].sensorStruct.samplingfreq = 0;
-sensorList[0].sensorStruct.period = 10;
+sensorList[0].sensorStruct.period = 5;
 sensorList[0].sensorStruct.cutOffFreq = 10;
 sensorList[0].sensorStruct.unit = other_unit;
 sensorList[0].sensorStruct.sensor_Type = potentiometer;
@@ -120,7 +120,7 @@ sensorList[0].isSCS = 0;
 
 sensorList[1].sensorStruct.CAN_ID = 202;
 sensorList[1].sensorStruct.samplingfreq = 0;
-sensorList[1].sensorStruct.period = 10;
+sensorList[1].sensorStruct.period = 5;
 sensorList[1].sensorStruct.cutOffFreq = 12;
 sensorList[1].sensorStruct.unit = percentage;
 sensorList[1].sensorStruct.sensor_Type = potentiometer;
@@ -145,7 +145,7 @@ sensorList[2].isSCS = 1;
 
 sensorList[3].sensorStruct.CAN_ID = 204;
 sensorList[3].sensorStruct.samplingfreq = 0;
-sensorList[3].sensorStruct.period = 10;
+sensorList[3].sensorStruct.period = 5;
 sensorList[3].sensorStruct.cutOffFreq = 20;
 sensorList[3].sensorStruct.unit = percentage;
 sensorList[3].sensorStruct.sensor_Type = potentiometer;
@@ -157,7 +157,7 @@ sensorList[3].isSCS = 0;
 
 sensorList[4].sensorStruct.CAN_ID = 206;
 sensorList[4].sensorStruct.samplingfreq = 0;
-sensorList[4].sensorStruct.period = 10;
+sensorList[4].sensorStruct.period = 5;
 sensorList[4].sensorStruct.cutOffFreq = 10;
 sensorList[4].sensorStruct.unit = celsius;
 sensorList[4].sensorStruct.sensor_Type = thermistor;
@@ -221,10 +221,10 @@ while(1)
 			heartBeatSCS = 0; 
 		}
 	}
-	heartBeatSCS++; 
+	heartBeatSCS++;  
 	tick--; 
 	//// - Test
-	if (testTick > 50 && finalMessage < 1 && nodesSetupTest == 1 && messagesReceived > 1500)
+	if (testTick > 50 && finalMessage < 1 && nodesSetupTest > 0 && messagesReceived > 10)
 	{
 		finalMessage++;
 		//testTick = 0; 
